@@ -16,6 +16,7 @@ export default class Clientes extends Component {
         <Form size='small'>
           <Form.Group widths='equal'>
             <Form.Input label='Nome' placeholder='Nome do Cliente' />
+            <Form.Input label='CPF' placeholder='CPF do Cliente' />
           </Form.Group>
           <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
           <Button color='blue' size='small' style={{width: 90}}>Limpar</Button>
@@ -28,6 +29,7 @@ export default class Clientes extends Component {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Nome</Table.HeaderCell>
+              <Table.HeaderCell width={2}>CPF</Table.HeaderCell>
               <Table.HeaderCell>Ações</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
@@ -35,6 +37,7 @@ export default class Clientes extends Component {
           <Table.Body>
             <Table.Row>
               <Table.Cell>Maria</Table.Cell>
+              <Table.Cell>111.111.111-11</Table.Cell>
               <Table.Cell collapsing textAlign='left'>
                 <Button color='blue' size='small' icon>
                   <Icon name='edit' />
