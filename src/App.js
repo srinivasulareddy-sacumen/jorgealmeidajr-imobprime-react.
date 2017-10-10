@@ -7,10 +7,27 @@ import './App.css'
 
 import Corretores from './components/Corretores'
 import Imobiliarias from './components/Imobiliarias'
+import Imoveis from './components/Imoveis'
+import Clientes from './components/Clientes'
 
 export default class App extends Component {
 
   state = { activeItem: 'home' }
+
+  componentDidMount() {
+    const urlArray = window.location.href.split("/")
+    if(urlArray.indexOf("corretores") !== -1)
+      this.handleItemClick('corretores')
+
+    else if(urlArray.indexOf("clientes") !== -1)
+      this.handleItemClick('clientes')
+    
+    else if(urlArray.indexOf("imoveis") !== -1)
+      this.handleItemClick('imoveis')
+
+    else if(urlArray.indexOf("imobiliarias") !== -1)
+      this.handleItemClick('imobiliarias')
+  }
 
   handleItemClick = (name) => this.setState({ activeItem: name })
 
@@ -21,9 +38,9 @@ export default class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to iMobiPrime</h1>
+          <h1 className="App-title">Welcome to iMobPrime</h1>
         </header>
-        <Segment inverted style={{margin: 0}}>
+        <Segment inverted style={{margin: 0, borderRadius: 0}}>
           <Menu inverted pointing secondary>
             <Menu.Item 
               name='home' active={activeItem === 'home'} 
@@ -63,8 +80,8 @@ export default class App extends Component {
         </Segment>
 
         <div className="App-intro">
-          <Route path="/clientes" component={Corretores}/>
-          <Route path="/imoveis" component={Corretores}/>
+          <Route path="/clientes" component={Clientes}/>
+          <Route path="/imoveis" component={Imoveis}/>
           <Route path="/corretores" component={Corretores}/>
           <Route path="/imobiliarias" component={Imobiliarias}/>
         </div>
