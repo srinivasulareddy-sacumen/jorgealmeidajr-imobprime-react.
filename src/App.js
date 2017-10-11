@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
-import { Segment, Menu } from 'semantic-ui-react'
+
+import { 
+  Segment, Menu, Sidebar,
+  Form, Button,
+  Icon
+} from 'semantic-ui-react'
+
 import { Link, Route } from 'react-router-dom'
 
 import logo from './logo.svg'
@@ -12,7 +18,10 @@ import Clientes from './components/Clientes'
 
 export default class App extends Component {
 
-  state = { activeItem: 'home' }
+  state = { 
+    activeItem: 'home',
+    loginVisible: false
+  }
 
   componentDidMount() {
     const urlArray = window.location.href.split("/")
@@ -27,9 +36,13 @@ export default class App extends Component {
 
     else if(urlArray.indexOf("imobiliarias") !== -1)
       this.handleItemClick('imobiliarias')
+
+    this.setState({ loginVisible: false })
   }
 
-  handleItemClick = (name) => this.setState({ activeItem: name })
+  handleItemClick = (name) => this.setState({ activeItem: name, loginVisible: false })
+
+  toggleLoginVisibility = () => this.setState({ loginVisible: !this.state.loginVisible })
 
   render() {
     const { activeItem } = this.state
@@ -76,15 +89,64 @@ export default class App extends Component {
               as={Link} to='/imobiliarias'>
               Imobiliárias
             </Menu.Item>
+
+            <Menu.Menu position='right'>
+              <Menu.Item name='login' active onClick={() => this.toggleLoginVisibility()}>
+                Login
+              </Menu.Item>
+              <Menu.Item name='logout' active onClick={() => this.setState({ loginVisible: false })}>
+                Logout
+              </Menu.Item>
+              <Menu.Item name='conta' active onClick={() => this.handleMinhaContaClick()}>
+                Minha Conta
+              </Menu.Item>
+            </Menu.Menu>
           </Menu>
         </Segment>
 
-        <div className="App-intro">
-          <Route path="/clientes" component={Clientes}/>
-          <Route path="/imoveis" component={Imoveis}/>
-          <Route path="/corretores" component={Corretores}/>
-          <Route path="/imobiliarias" component={Imobiliarias}/>
-        </div>
+        <Sidebar.Pushable>
+          <Sidebar animation='overlay' width='very wide' direction='right' visible={false}>
+            <Segment inverted color='blue' style={{height: '100%'}}>
+              <Form size='small' inverted>
+                <Form.Input label='Email' placeholder='Email' />
+                <Form.Input label='Senha' placeholder='Senha' />
+                <Button color='red' size='small' style={{width: 90}} 
+                  onClick={() => this.setState({ loginVisible: false })}>Cancelar</Button>
+                <Button color='facebook' size='small' style={{width: 90}} 
+                  onClick={() => this.setState({ loginVisible: false })}>Salvar</Button>
+              </Form>
+            </Segment>
+          </Sidebar>
+
+          <Sidebar animation='overlay' width='very wide' direction='right' visible={this.state.loginVisible}>
+            <Segment inverted color='teal' style={{height: '100%'}}>
+              <Form size='small' inverted>
+                <Form.Input label='Email' placeholder='Email' />
+                <Form.Input label='Senha' placeholder='Senha' />
+                <Button color='red' size='small' style={{width: 90}} 
+                  onClick={() => this.setState({ loginVisible: false })}>Cancelar</Button>
+                <Button color='blue' size='small' style={{width: 90}} 
+                  onClick={() => this.setState({ loginVisible: false })}>Login</Button>
+              </Form>
+            </Segment>
+          </Sidebar>
+
+          <Sidebar.Pusher>
+            <div className="App-intro">
+              <Route path="/clientes" component={Clientes}/>
+              <Route path="/imoveis" component={Imoveis}/>
+              <Route path="/corretores" component={Corretores}/>
+              <Route path="/imobiliarias" component={Imobiliarias}/>
+            </div>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
+
+        <footer className="App-footer">
+          <h3>Aplicativo implementado pela iMob Soluções</h3>
+          <a href='https://github.com/jorgealmeidajr/imobprime-react' style={{color: 'white'}}>
+            <Icon name='github' size='huge' />Acessar o código-fonte da aplicação
+          </a>
+        </footer>
       </div>
     )
   }

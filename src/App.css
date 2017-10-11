@@ -21,6 +21,15 @@
 
 .App-intro {
   padding: 8px;
+  min-height: 800px;
+}
+
+.App-footer {
+  background-color: #222;
+  height: 120px;
+  padding: 10px;
+  color: white;
+  text-align: center;
 }
 
 @keyframes App-logo-spin {
