@@ -11,6 +11,7 @@ import { Link, Route } from 'react-router-dom'
 import logo from './logo.svg'
 import './App.css'
 
+import Home from './components/Home'
 import Corretores from './components/Corretores'
 import Imobiliarias from './components/Imobiliarias'
 import Imoveis from './components/Imoveis'
@@ -133,6 +134,8 @@ export default class App extends Component {
 
           <Sidebar.Pusher>
             <div className="App-intro">
+              <Route exact path="/" component={Home}/>
+              <Route path="/home" component={Home}/>
               <Route path="/clientes" component={Clientes}/>
               <Route path="/imoveis" component={Imoveis}/>
               <Route path="/corretores" component={Corretores}/>
