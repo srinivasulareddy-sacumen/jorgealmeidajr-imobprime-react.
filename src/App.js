@@ -6,7 +6,7 @@ import {
   Icon
 } from 'semantic-ui-react'
 
-import { Link, Route } from 'react-router-dom'
+import { Link, Switch, Route } from 'react-router-dom'
 
 import logo from './logo.svg'
 import './App.css'
@@ -134,12 +134,14 @@ export default class App extends Component {
 
           <Sidebar.Pusher>
             <div className="App-intro">
-              <Route exact path="/" component={Home}/>
-              <Route path="/home" component={Home}/>
-              <Route path="/clientes" component={Clientes}/>
-              <Route path="/imoveis" component={Imoveis}/>
-              <Route path="/corretores" component={Corretores}/>
-              <Route path="/imobiliarias" component={Imobiliarias}/>
+              <Switch>
+                <Route exact path="/" component={Home}/>
+                <Route path="/home" component={Home}/>
+                <Route path="/clientes" component={Clientes}/>
+                <Route path="/imoveis" component={Imoveis}/>
+                <Route path="/corretores" component={Corretores}/>
+                <Route path="/imobiliarias" component={Imobiliarias}/>
+              </Switch>
             </div>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
