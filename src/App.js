@@ -21,7 +21,9 @@ export default class App extends Component {
 
   state = { 
     activeItem: 'home',
-    loginVisible: false
+    loginVisible: false,
+    loginForm: { email: '', senha: '' },
+    usuarioLogado: null
   }
 
   componentDidMount() {
@@ -44,6 +46,42 @@ export default class App extends Component {
   handleItemClick = (name) => this.setState({ activeItem: name, loginVisible: false })
 
   toggleLoginVisibility = () => this.setState({ loginVisible: !this.state.loginVisible })
+
+  handleLoginFormChange = (event) => {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value
+    const name = target.name
+
+    this.setState({
+      loginForm: {...this.state.loginForm, [name]: value }
+    })
+  }
+
+  handleLoginButtonClicked = () => {
+    this.setState({ loginVisible: false }, () => {
+      if(sessionStorage) {
+        const usuarioLogado = {email: this.state.loginForm.usuario, perfil: 'admin'}
+        sessionStorage.setItem("usuarioLogado", usuarioLogado)
+        this.setState({ usuarioLogado: usuarioLogado, loginForm: { email: '', senha: '' } })
+      } else {
+        alert("Sorry, your browser do not support session storage.")
+      }
+    })
+  }
+
+  handleLogoutButtonClicked = () => {
+    this.setState({ loginVisible: false }, () => {
+      if(sessionStorage) {
+        const usuarioLogado = null
+        sessionStorage.setItem("usuarioLogado", usuarioLogado)
+        this.setState({ usuarioLogado: usuarioLogado })
+      } else {
+        alert("Sorry, your browser do not support session storage.")
+      }
+    })
+  }
+
+  handleMinhaContaClick = () => {}
 
   render() {
     const { activeItem } = this.state
@@ -92,15 +130,26 @@ export default class App extends Component {
             </Menu.Item>
 
             <Menu.Menu position='right'>
-              <Menu.Item name='login' active onClick={() => this.toggleLoginVisibility()}>
-                Login
-              </Menu.Item>
-              <Menu.Item name='logout' active onClick={() => this.setState({ loginVisible: false })}>
-                Logout
-              </Menu.Item>
-              <Menu.Item name='conta' active onClick={() => this.handleMinhaContaClick()}>
-                Minha Conta
-              </Menu.Item>
+              {
+                this.state.usuarioLogado == null &&
+                <Menu.Item name='login' active onClick={() => this.toggleLoginVisibility()}>
+                  Login
+                </Menu.Item>
+              }
+              
+              {
+                this.state.usuarioLogado != null &&
+                <Menu.Item name='logout' active onClick={() => this.handleLogoutButtonClicked()}>
+                  Logout
+                </Menu.Item>
+              }
+
+              {
+                this.state.usuarioLogado != null &&
+                <Menu.Item name='conta' active onClick={() => this.handleMinhaContaClick()}>
+                  Minha Conta
+                </Menu.Item>
+              }
             </Menu.Menu>
           </Menu>
         </Segment>
@@ -122,12 +171,19 @@ export default class App extends Component {
           <Sidebar animation='overlay' width='very wide' direction='right' visible={this.state.loginVisible}>
             <Segment inverted color='teal' style={{height: '100%'}}>
               <Form size='small' inverted>
-                <Form.Input label='Email' placeholder='Email' />
-                <Form.Input label='Senha' placeholder='Senha' />
+                <Form.Input label='Email' placeholder='Email' name='email'
+                  value={this.state.loginForm.email} 
+                  onChange={this.handleLoginFormChange} />
+
+                <Form.Input label='Senha' placeholder='Senha' type="password" name='senha'
+                  value={this.state.loginForm.senha} 
+                  onChange={this.handleLoginFormChange} />
+
                 <Button color='red' size='small' style={{width: 90}} 
                   onClick={() => this.setState({ loginVisible: false })}>Cancelar</Button>
+
                 <Button color='blue' size='small' style={{width: 90}} 
-                  onClick={() => this.setState({ loginVisible: false })}>Login</Button>
+                  onClick={() => this.handleLoginButtonClicked()}>Login</Button>
               </Form>
             </Segment>
           </Sidebar>
