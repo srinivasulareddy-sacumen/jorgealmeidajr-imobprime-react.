@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 
 import { 
-  Button, 
+  Button, Icon, Header,
+  Menu, Input,
   Sidebar, Segment,
   Modal
 } from 'semantic-ui-react'
@@ -29,6 +30,7 @@ export default class Home extends Component {
   state = {
     searchFormVisible: false,
     imovelDetailsVisible: false,
+    searchMode: 'map',
     markers: [
       { index: 1, position: { lat: -27.547659, lng: -48.497837 } },
       { index: 2, position: { lat: -27.560695, lng: -48.501969 } },
@@ -44,9 +46,31 @@ export default class Home extends Component {
   render() {
     return (
       <div>
-        <h1>Busca de Imóveis</h1>
+        <Header as='h1'>Busca de Imóveis</Header>
 
-        <Button color='blue' size='small' style={{width: 90}} onClick={() => this.toggleSearchFormVisibility()}>Buscar</Button>
+        <Menu>
+          <Menu.Item>
+            <Button icon color='blue' onClick={() => this.toggleSearchFormVisibility()}>
+              <Icon name='search' />
+            </Button>  
+          </Menu.Item>
+
+          <Menu.Item>
+            <Input 
+              className='icon' icon='search' 
+              placeholder='Informe a cidade ou o bairro do imóvel...' 
+              style={{width: 320}}
+            />
+          </Menu.Item>
+
+          <Menu.Item position='right'>
+            <Button.Group>
+              <Button color='google plus' icon='world' content='Mapa'></Button>
+              <Button.Or text='ou' />
+              <Button color='blue' icon='grid layout' content='Grid'></Button>
+            </Button.Group>
+          </Menu.Item>
+        </Menu>
 
         <Sidebar.Pushable>
           <Sidebar animation='overlay' width='very wide' direction='left' visible={this.state.searchFormVisible}>
@@ -56,6 +80,7 @@ export default class Home extends Component {
           </Sidebar>
 
           <Sidebar.Pusher>
+            {this.state.searchMode === 'map' &&
             <MyMapComponent 
               markers={this.state.markers}
               googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbAZsAD0dyCmoVyIJJhmlGa4XtjsxFdqQ&v=3.exp&libraries=geometry,drawing,places"
@@ -63,7 +88,9 @@ export default class Home extends Component {
               containerElement={<div style={{ height: `700px` }} />}
               mapElement={<div style={{ height: `100%` }} />}
               toggleImovelDetailsVisibility={this.toggleImovelDetailsVisibility}
-            />
+            />}
+
+            
           </Sidebar.Pusher>
         </Sidebar.Pushable>
 
