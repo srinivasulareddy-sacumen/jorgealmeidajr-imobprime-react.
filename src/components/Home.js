@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 
 import { 
   Button, 
-  Sidebar, Segment 
+  Sidebar, Segment,
+  Modal
 } from 'semantic-ui-react'
 
 import { 
@@ -12,12 +13,12 @@ import {
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) => (
   <GoogleMap
-    defaultZoom={11}
-    defaultCenter={{ lat: -27.594244, lng: -48.549028 }}
+    defaultZoom={14}
+    defaultCenter={{ lat: -27.539909, lng: -48.498802 }}
   >
     {
       props.markers.map((marker) =>
-        <Marker key={marker.index} position={marker.position} />
+        <Marker key={marker.index} position={marker.position} onClick={() => props.toggleImovelDetailsVisibility()} />
       )
     }
   </GoogleMap>
@@ -27,6 +28,7 @@ export default class Home extends Component {
 
   state = {
     searchFormVisible: false,
+    imovelDetailsVisible: false,
     markers: [
       { index: 1, position: { lat: -27.547659, lng: -48.497837 } },
       { index: 2, position: { lat: -27.560695, lng: -48.501969 } },
@@ -36,6 +38,8 @@ export default class Home extends Component {
   }
 
   toggleSearchFormVisibility = () => this.setState({ searchFormVisible: !this.state.searchFormVisible })
+
+  toggleImovelDetailsVisibility = () => this.setState({ imovelDetailsVisible: !this.state.imovelDetailsVisible })
 
   render() {
     return (
@@ -58,9 +62,24 @@ export default class Home extends Component {
               loadingElement={<div style={{ height: `100%` }} />}
               containerElement={<div style={{ height: `700px` }} />}
               mapElement={<div style={{ height: `100%` }} />}
+              toggleImovelDetailsVisibility={this.toggleImovelDetailsVisibility}
             />
           </Sidebar.Pusher>
-        </Sidebar.Pushable>        
+        </Sidebar.Pushable>
+
+        <Modal 
+          size='large' dimmer={false} 
+          open={this.state.imovelDetailsVisible} 
+          onClose={this.toggleImovelDetailsVisibility}
+        >
+          <Modal.Header>Detalhes do Imóvel Selecionado</Modal.Header>
+          <Modal.Content>
+            <p>imovel mimi</p>
+          </Modal.Content>
+          <Modal.Actions>
+            <Button negative onClick={this.toggleImovelDetailsVisibility}>Fechar</Button>
+          </Modal.Actions>
+        </Modal>
       </div>
     )
   }
