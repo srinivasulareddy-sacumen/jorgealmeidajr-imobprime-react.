@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { 
   Button, Icon, Header,
-  Menu, Input,
+  Menu, Input, Form,
   Sidebar, Segment,
   Modal
 } from 'semantic-ui-react'
@@ -31,6 +31,10 @@ export default class Home extends Component {
     searchFormVisible: false,
     imovelDetailsVisible: false,
     searchMode: 'map',
+    tipoImovel: null,
+    disponibilidade: null,
+    numeroQuartos: null,
+    numeroGaragens: null,
     markers: [
       { index: 1, position: { lat: -27.547659, lng: -48.497837 } },
       { index: 2, position: { lat: -27.560695, lng: -48.501969 } },
@@ -42,6 +46,8 @@ export default class Home extends Component {
   toggleSearchFormVisibility = () => this.setState({ searchFormVisible: !this.state.searchFormVisible })
 
   toggleImovelDetailsVisibility = () => this.setState({ imovelDetailsVisible: !this.state.imovelDetailsVisible })
+
+  handleDisponibilidadeChange = (e, { value }) => { }
 
   render() {
     return (
@@ -75,7 +81,40 @@ export default class Home extends Component {
         <Sidebar.Pushable>
           <Sidebar animation='overlay' width='very wide' direction='left' visible={this.state.searchFormVisible}>
             <Segment style={{height: '100%'}}>
-              mimimimi
+              <Form size='tiny'>
+                <Form.Input label='Tipo do Imóvel' placeholder='Tipo do Imóvel...' />
+                <Form.Input label='Cidade' placeholder='Cidade...' />
+                <Form.Input label='Bairro' placeholder='Bairro...' />
+
+                <Form.Group inline>
+                  <label>Disponível para</label>
+                  <Form.Radio label='Venda' value='venda' checked={this.state.disponibilidade === 'venda'} onChange={this.handleDisponibilidadeChange} />
+                  <Form.Radio label='Aluguel' value='aluguel' checked={this.state.disponibilidade === 'aluguel'} onChange={this.handleDisponibilidadeChange} />
+                </Form.Group>
+
+                <Form.Group inline>
+                  <label>Quartos</label>
+                  <Form.Radio label='1' value='1' checked={this.state.numeroQuartos === '1'} />
+                  <Form.Radio label='2' value='2' checked={this.state.numeroQuartos === '2'} />
+                  <Form.Radio label='+3' value='+3' checked={this.state.numeroQuartos === '+3'} />
+                </Form.Group>
+
+                <Form.Group inline>
+                  <label>Garagens</label>
+                  <Form.Radio label='1' value='1' checked={this.state.numeroGaragens === '1'} />
+                  <Form.Radio label='2' value='2' checked={this.state.numeroGaragens === '2'} />
+                  <Form.Radio label='+3' value='+3' checked={this.state.numeroGaragens === '+3'} />
+                </Form.Group>
+
+                <Button 
+                  color='red' size='tiny' icon='remove' content='Cancelar'
+                  onClick={() => this.toggleSearchFormVisibility()}
+                />
+                <Button 
+                  color='blue' size='tiny' icon='search' content='Buscar' 
+                  onClick={() => this.toggleSearchFormVisibility()}
+                />
+              </Form>
             </Segment>
           </Sidebar>
 
@@ -90,7 +129,7 @@ export default class Home extends Component {
               toggleImovelDetailsVisibility={this.toggleImovelDetailsVisibility}
             />}
 
-            
+            {this.state.searchMode === 'grid' && <div />}
           </Sidebar.Pusher>
         </Sidebar.Pushable>
 
