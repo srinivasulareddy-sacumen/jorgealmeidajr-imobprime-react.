@@ -36,7 +36,9 @@ export default class ImoveisAPI {
 
   static getSituaçoesImovel() {
     const situacoesImovel = [
+      { nome: 'Imóvel na planta'},
       { nome: 'Em Construção'},
+      { nome: 'Reservado'},
       { nome: 'Disponível para Comprar'},
       { nome: 'Vendido'},
       { nome: 'Disponível para Alugar'},

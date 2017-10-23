@@ -58,26 +58,43 @@ export default class App extends Component {
   }
 
   handleLoginButtonClicked = () => {
+    const email = this.state.loginForm.email.toLocaleLowerCase()
+    const perfil = this.state.loginForm.email.toLocaleLowerCase()
+
+    if(email === 'admin' || email === 'corretor') {
+      this.setState({ loginVisible: false }, () => {
+        if(sessionStorage) {
+          const usuarioLogado = { email, perfil }
+
+          sessionStorage.setItem("usuarioLogado", usuarioLogado)
+          this.setState({ usuarioLogado: usuarioLogado, loginForm: { email: '', senha: '' } })
+        } else {
+          alert("Sorry, your browser do not support session storage.")
+        }
+      })
+
+    } else {
+      this.setState({ usuarioLogado: null, loginForm: { email: '', senha: '' } })
+    }
+  }
+
+  handleLogoutButtonClicked = () => {
     this.setState({ loginVisible: false }, () => {
       if(sessionStorage) {
-        const usuarioLogado = {email: this.state.loginForm.usuario, perfil: 'admin'}
-        sessionStorage.setItem("usuarioLogado", usuarioLogado)
-        this.setState({ usuarioLogado: usuarioLogado, loginForm: { email: '', senha: '' } })
+        sessionStorage.setItem("usuarioLogado", null)
+        this.setState({ usuarioLogado: null }, () => window.location.href = '/home')
+
       } else {
         alert("Sorry, your browser do not support session storage.")
       }
     })
   }
 
-  handleLogoutButtonClicked = () => {
-    this.setState({ loginVisible: false }, () => {
-      if(sessionStorage) {
-        const usuarioLogado = null
-        sessionStorage.setItem("usuarioLogado", usuarioLogado)
-        this.setState({ usuarioLogado: usuarioLogado })
-      } else {
-        alert("Sorry, your browser do not support session storage.")
-      }
+  handleCancelLoginClicked = () => {
+    this.setState({ 
+      loginVisible: false,
+      usuarioLogado: null, 
+      loginForm: { email: '', senha: '' } 
     })
   }
 
@@ -85,6 +102,7 @@ export default class App extends Component {
 
   render() {
     const { activeItem } = this.state
+    const emailPlaceholder = `Coloque 'admin' ou 'corretor'`
 
     return (
       <div className="App">
@@ -101,34 +119,46 @@ export default class App extends Component {
               Home
             </Menu.Item>
 
-            <Menu.Item 
-              name='clientes' active={activeItem === 'clientes'} 
-              onClick={() => this.handleItemClick('clientes')}
-              as={Link} to='/clientes'>
-              Clientes
-            </Menu.Item>
+            {
+              this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'corretor' &&
+              <Menu.Item 
+                name='clientes' active={activeItem === 'clientes'} 
+                onClick={() => this.handleItemClick('clientes')}
+                as={Link} to='/clientes'>
+                Clientes
+              </Menu.Item>
+            }
 
-            <Menu.Item 
-              name='imoveis' active={activeItem === 'imoveis'} 
-              onClick={() => this.handleItemClick('imoveis')}
-              as={Link} to='/imoveis'>
-              Imóveis
-            </Menu.Item>
-
-            <Menu.Item 
-              name='corretores' active={activeItem === 'corretores'} 
-              onClick={() => this.handleItemClick('corretores')}
-              as={Link} to='/corretores'>
-              Corretores
-            </Menu.Item>
-
-            <Menu.Item 
-              name='imobiliarias' active={activeItem === 'imobiliarias'} 
-              onClick={() => this.handleItemClick('imobiliarias')}
-              as={Link} to='/imobiliarias'>
-              Imobiliárias
-            </Menu.Item>
-
+            {
+              this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'corretor' &&
+              <Menu.Item 
+                name='imoveis' active={activeItem === 'imoveis'} 
+                onClick={() => this.handleItemClick('imoveis')}
+                as={Link} to='/imoveis'>
+                Imóveis
+              </Menu.Item>
+            }
+            
+            {
+              this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'admin' &&
+              <Menu.Item 
+                name='corretores' active={activeItem === 'corretores'} 
+                onClick={() => this.handleItemClick('corretores')}
+                as={Link} to='/corretores'>
+                Corretores
+              </Menu.Item>
+            }
+            
+            {
+              this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'admin' &&
+              <Menu.Item 
+                name='imobiliarias' active={activeItem === 'imobiliarias'} 
+                onClick={() => this.handleItemClick('imobiliarias')}
+                as={Link} to='/imobiliarias'>
+                Imobiliárias
+              </Menu.Item>
+            }
+            
             <Menu.Menu position='right'>
               {
                 this.state.usuarioLogado == null &&
@@ -145,7 +175,7 @@ export default class App extends Component {
               }
 
               {
-                this.state.usuarioLogado != null &&
+                this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'corretor' &&
                 <Menu.Item name='conta' active onClick={() => this.handleMinhaContaClick()}>
                   Minha Conta
                 </Menu.Item>
@@ -170,8 +200,8 @@ export default class App extends Component {
 
           <Sidebar animation='overlay' width='very wide' direction='right' visible={this.state.loginVisible}>
             <Segment inverted color='teal' style={{height: '100%'}}>
-              <Form size='small' inverted>
-                <Form.Input label='Email' placeholder='Email' name='email'
+              <Form size='small' inverted>                
+                <Form.Input label='Email' placeholder={emailPlaceholder} name='email'
                   value={this.state.loginForm.email} 
                   onChange={this.handleLoginFormChange} />
 
@@ -180,7 +210,7 @@ export default class App extends Component {
                   onChange={this.handleLoginFormChange} />
 
                 <Button color='red' size='small' style={{width: 90}} 
-                  onClick={() => this.setState({ loginVisible: false })}>Cancelar</Button>
+                  onClick={this.handleCancelLoginClicked}>Cancelar</Button>
 
                 <Button color='blue' size='small' style={{width: 90}} 
                   onClick={() => this.handleLoginButtonClicked()}>Login</Button>
