@@ -89,9 +89,11 @@ export default class Home extends Component {
 
           <Menu.Item position='right'>
             <Button.Group>
-              <Button color='google plus' icon='world' content='Mapa'></Button>
+              <Button color='google plus' icon='world' content='Mapa'
+                onClick={() => this.setState({ searchMode: 'map' })}></Button>
               <Button.Or text='ou' />
-              <Button color='blue' icon='grid layout' content='Grid'></Button>
+              <Button color='blue' icon='grid layout' content='Grid' 
+                onClick={() => this.setState({ searchMode: 'grid' })}></Button>
             </Button.Group>
           </Menu.Item>
         </Menu>
@@ -108,6 +110,16 @@ export default class Home extends Component {
                   <label>Disponível para</label>
                   <Form.Radio label='Venda' value='venda' checked={this.state.disponibilidade === 'venda'} onChange={this.handleDisponibilidadeChange} />
                   <Form.Radio label='Aluguel' value='aluguel' checked={this.state.disponibilidade === 'aluguel'} onChange={this.handleDisponibilidadeChange} />
+                </Form.Group>
+
+                <Form.Group widths='equal'>
+                  <Form.Input label='Preço inicial' placeholder='Preço Inicial' />
+                  <Form.Input label='Preço final' placeholder='Preço final' />
+                </Form.Group>
+
+                <Form.Group widths='equal'>
+                  <Form.Input label='Área inicial' placeholder='Área Inicial' />
+                  <Form.Input label='Área final' placeholder='Área final' />
                 </Form.Group>
 
                 <Form.Group inline>
@@ -147,7 +159,70 @@ export default class Home extends Component {
               toggleImovelDetailsVisibility={this.toggleImovelDetailsVisibility}
             />}
 
-            {this.state.searchMode === 'grid' && <div />}
+            {
+              this.state.searchMode === 'grid' && 
+              <Grid columns={3} divided>
+                <Grid.Row>
+                  <Grid.Column>
+                    <Image src='img/imovel01.jpg' size='small' />
+                    Disponível para Venda<br />
+                    Valor: <b>R$1.500.000</b><br />
+                    Rua Teste, número 1111<br />
+                    Centro, Florianópolis - SC<br />
+                    2 dormitórios<br />
+                    2 banheiros<br />
+                    1 vaga de garagem<br />
+                    Área Total: 60 m²
+                  </Grid.Column>
+
+                  <Grid.Column>
+                    <Image src='img/imovel01.jpg' size='small' />
+                    Disponível para Venda<br />
+                    Valor: <b>R$1.500.000</b><br />
+                    Rua Teste, número 1111<br />
+                    Centro, Florianópolis - SC<br />
+                    2 dormitórios<br />
+                    2 banheiros<br />
+                    1 vaga de garagem<br />
+                    Área Total: 60 m²  
+                  </Grid.Column>
+
+                  <Grid.Column>
+                    <Image src='img/imovel01.jpg' size='small' />
+                    Disponível para Venda<br />
+                    Valor: <b>R$1.500.000</b><br />
+                    Rua Teste, número 1111<br />
+                    Centro, Florianópolis - SC<br />
+                    2 dormitórios<br />
+                    2 banheiros<br />
+                    1 vaga de garagem<br />
+                    Área Total: 60 m²  
+                  </Grid.Column>
+                </Grid.Row>
+
+                <Grid.Row>
+                  <Grid.Column>
+                    <Image src='img/imovel01.jpg' size='small' />
+                    Disponível para Venda<br />
+                    Valor: <b>R$1.500.000</b><br />
+                    Rua Teste, número 1111<br />
+                    Centro, Florianópolis - SC<br />
+                    2 dormitórios<br />
+                    2 banheiros<br />
+                    1 vaga de garagem<br />
+                    Área Total: 60 m²
+                  </Grid.Column>
+
+                  <Grid.Column>
+
+                  </Grid.Column>
+
+                  <Grid.Column>
+
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            }
           </Sidebar.Pusher>
         </Sidebar.Pushable>
 
@@ -171,7 +246,7 @@ export default class Home extends Component {
                   Área Total: 60 m²
                 </Grid.Column>
                 <Grid.Column>
-                  <Image src='img/imovel01.jpg' size='large' />      
+                  <Image src='img/imovel01.jpg' size='large' />
                 </Grid.Column>
               </Grid.Row>
             </Grid>
