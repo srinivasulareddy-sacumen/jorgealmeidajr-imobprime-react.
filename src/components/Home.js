@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 
 import { 
-  Button, Icon, Header,
+  Button, Icon, 
+  Header, Image, Grid,
   Menu, Input, Form,
   Sidebar, Segment,
   Modal
@@ -11,6 +12,9 @@ import {
   withGoogleMap, withScriptjs,
   GoogleMap, Marker 
 } from "react-google-maps"
+
+import ImoveisAPI from '../api/ImoveisAPI'
+import CidadesAPI from '../api/CidadesAPI'
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) => (
   <GoogleMap
@@ -35,12 +39,24 @@ export default class Home extends Component {
     disponibilidade: null,
     numeroQuartos: null,
     numeroGaragens: null,
+    tiposImovel: [],
+    cidades: [],
     markers: [
       { index: 1, position: { lat: -27.547659, lng: -48.497837 } },
       { index: 2, position: { lat: -27.560695, lng: -48.501969 } },
       { index: 3, position: { lat: -27.556242, lng: -48.499497 } },
       { index: 4, position: { lat: -27.554760, lng: -48.497931 } }
     ]
+  }
+
+  componentDidMount() {
+    const tiposImovel = ImoveisAPI.getTiposImovel()
+      .map((tipo) => ({ key: tipo.id, text: tipo.nome, value: tipo.id }))
+
+    const cidades = CidadesAPI.getCidades()
+      .map((cidade) => ({ key: cidade.id, text: cidade.nome, value: cidade.id }))
+
+    this.setState({ tiposImovel, cidades })
   }
 
   toggleSearchFormVisibility = () => this.setState({ searchFormVisible: !this.state.searchFormVisible })
@@ -50,6 +66,8 @@ export default class Home extends Component {
   handleDisponibilidadeChange = (e, { value }) => { }
 
   render() {
+    const { tiposImovel, cidades } = this.state
+
     return (
       <div>
         <Header as='h1'>Busca de Imóveis</Header>
@@ -82,9 +100,9 @@ export default class Home extends Component {
           <Sidebar animation='overlay' width='very wide' direction='left' visible={this.state.searchFormVisible}>
             <Segment style={{height: '100%'}}>
               <Form size='tiny'>
-                <Form.Input label='Tipo do Imóvel' placeholder='Tipo do Imóvel...' />
-                <Form.Input label='Cidade' placeholder='Cidade...' />
-                <Form.Input label='Bairro' placeholder='Bairro...' />
+                <Form.Select label='Tipo do Imóvel' placeholder='Tipo do Imóvel' options={tiposImovel} />
+                <Form.Select search label='Cidade' placeholder='Cidade' options={cidades} />
+                <Form.Input label='Bairro' placeholder='Bairro' />
 
                 <Form.Group inline>
                   <label>Disponível para</label>
@@ -140,7 +158,23 @@ export default class Home extends Component {
         >
           <Modal.Header>Detalhes do Imóvel Selecionado</Modal.Header>
           <Modal.Content>
-            <p>imovel mimi</p>
+            <Grid columns={2} divided>
+              <Grid.Row>
+                <Grid.Column>
+                  <Header as='h2'>Disponível para Venda</Header>
+                  Valor: <b>R$1.500.000</b><br />
+                  Rua Teste, número 1111<br />
+                  Centro, Florianópolis - SC<br />
+                  2 dormitórios<br />
+                  2 banheiros<br />
+                  1 vaga de garagem<br />
+                  Área Total: 60 m²
+                </Grid.Column>
+                <Grid.Column>
+                  <Image src='img/imovel01.jpg' size='large' />      
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
           </Modal.Content>
           <Modal.Actions>
             <Button negative onClick={this.toggleImovelDetailsVisibility}>Fechar</Button>
