@@ -103,6 +103,7 @@ export default class App extends Component {
   render() {
     const { activeItem } = this.state
     const emailPlaceholder = `Coloque 'admin' ou 'corretor'`
+    const versao = "0.1.0"
 
     return (
       <div className="App">
@@ -233,7 +234,7 @@ export default class App extends Component {
         </Sidebar.Pushable>
 
         <footer className="App-footer">
-          <h3>Aplicativo implementado pela iMob Soluções</h3>
+          <h3>Aplicativo implementado pela iMob Soluções - versão {versao}</h3>
           <a href='https://github.com/jorgealmeidajr/imobprime-react' style={{color: 'white'}}>
             <Icon name='github' size='huge' />Acessar o código-fonte da aplicação
           </a>
