@@ -115,24 +115,24 @@ export default class Home extends Component {
                 <Form.Group widths='equal'>
                   <Form.Field>
                     <label>Preço inicial</label>
-                    <Input label='R$' placeholder='Preço inicial' />
+                    <Input label='R$' placeholder='0,00' />
                   </Form.Field>
 
                   <Form.Field>
                     <label>Preço final</label>
-                    <Input label='R$' placeholder='Preço final' />
+                    <Input label='R$' placeholder='0,00' />
                   </Form.Field>
                 </Form.Group>
 
                 <Form.Group widths='equal'>                  
                   <Form.Field>
                     <label>Área inicial</label>
-                    <Input label='m²' labelPosition='right' placeholder='Área inicial' />
+                    <Input label='m²' labelPosition='right' placeholder='0' />
                   </Form.Field>
 
                   <Form.Field>
                     <label>Área final</label>
-                    <Input label='m²' labelPosition='right' placeholder='Área final' />
+                    <Input label='m²' labelPosition='right' placeholder='0' />
                   </Form.Field>
                 </Form.Group>
 

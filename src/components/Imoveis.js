@@ -59,20 +59,20 @@ export default class Imoveis extends Component {
           <Form.Group widths='equal'>
             <Form.Field>
               <label>Preço inicial</label>
-              <Input label='R$' placeholder='Preço inicial' />
+              <Input label='R$' placeholder='0,00' />
             </Form.Field>
             <Form.Field>
               <label>Preço final</label>
-              <Input label='R$' placeholder='Preço final' />
+              <Input label='R$' placeholder='0,00' />
             </Form.Field>
 
             <Form.Field>
               <label>Área inicial</label>
-              <Input label='m²' labelPosition='right' placeholder='Área inicial' />
+              <Input label='m²' labelPosition='right' placeholder='0' />
             </Form.Field>
             <Form.Field>
               <label>Área final</label>
-              <Input label='m²' labelPosition='right' placeholder='Área final' />
+              <Input label='m²' labelPosition='right' placeholder='0' />
             </Form.Field>
           </Form.Group>
 
@@ -127,38 +127,50 @@ export default class Imoveis extends Component {
           <Modal.Header>Cadastro de um novo Imóvel</Modal.Header>
           <Modal.Content scrolling>
             <Form size='small'>
-              <Form.Select label='Proprietário' search placeholder='Cliente e Proprietário do Imóvel' />
+              <Form.Select label='Proprietário' required search placeholder='Proprietário do Imóvel' />
               
-              <Form.Input type="file" label='Foto Principal do Imóvel' />
-
               <Form.Group widths='equal'>
-                <Form.Select label='Tipo de Imóvel' placeholder='Tipo de Imóvel' options={tiposImovel} />
+                <Form.Select label='Tipo de Imóvel' required placeholder='Tipo de Imóvel' options={tiposImovel} />
                 <Form.Select label='Situação do Imóvel' placeholder='Situação do Imóvel' options={situacoesImovel} />
-                <Form.Input label='Área Total em m²' placeholder='Área Total do Imóvel em m²' />
+
+                <Form.Field>
+                  <label>Área total</label>
+                  <Input label='m²' labelPosition='right' placeholder='0' />
+                </Form.Field>
               </Form.Group>
               
               <Form.Group widths='equal'>
-                <Form.Input label='Valor R$' placeholder='Valor' />
-                <Form.Input label='Valor do IPTU R$' placeholder='Valor do IPTU' />
-                <Form.Input label='Valor do Condomínio R$' placeholder='Valor do Condomínio' />
+                <Form.Field>
+                  <label>Valor</label>
+                  <Input label='R$' placeholder='0,00' />
+                </Form.Field>
+
+                <Form.Field>
+                  <label>Valor do Condomínio</label>
+                  <Input label='R$' placeholder='0,00' />
+                </Form.Field>
+
+                <Form.Input label='Número de Quartos' placeholder='0' />
+                <Form.Input label='Número de Banheiros' placeholder='0' />
+                <Form.Input label='Vagas na Garagem' placeholder='0' />
               </Form.Group>
 
-              <Form.Group widths='equal'>
-                <Form.Input label='Número de Quartos' placeholder='Numero de Quartos' />
-                <Form.Input label='Número de Banheiros' placeholder='Número de Banheiros' />
-                <Form.Input label='Vagas na Garagem' placeholder='Número de Vagas na Garagem' />
-              </Form.Group>
+              <Form.Input type="file" label='Foto Principal do Imóvel' />
 
               <Divider />
               
               <Header size='medium'>Endereço do Imóvel</Header>
               <Form.Group>
-                <Form.Input label='CEP' placeholder='CEP' width={4} />
+                <Form.Field required>
+                  <label>CEP</label>
+                  <Input label='#' placeholder='99.999-999' width={4} />
+                </Form.Field>
+
                 <Form.Input label='Rua' placeholder='Rua' width={6} />
                 <Form.Input label='Bairro' placeholder='Bairro' width={6} />
               </Form.Group>
               <Form.Group>
-                <Form.Input label='Número' placeholder='Número' width={4} />
+                <Form.Input label='Número' placeholder='0' width={4} />
                 <Form.Input label='Complemento' placeholder='Complemento' width={6} />
               </Form.Group>
               <Form.Group widths='equal'>
