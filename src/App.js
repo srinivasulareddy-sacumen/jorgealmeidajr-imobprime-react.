@@ -90,6 +90,18 @@ export default class App extends Component {
     })
   }
 
+  // TODO: submit form quando pressionar o enter
+  onEnterPressedLoginSubmit = (e) => {
+    try {
+      if(e.keyCode === 13 && e.shiftKey === false) {
+        console.log(this.state.loginForm) // o state nao vem com os dados do form
+        //this.handleLoginButtonClicked()
+      }
+    } catch(error) {
+      console.error('ERRO: ' + error)
+    }
+  }
+
   handleCancelLoginClicked = () => {
     this.setState({ 
       loginVisible: false,
@@ -140,16 +152,7 @@ export default class App extends Component {
               </Menu.Item>
             }
             
-            {
-              this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'admin' &&
-              <Menu.Item 
-                name='corretores' active={activeItem === 'corretores'} 
-                onClick={() => this.handleItemClick('corretores')}
-                as={Link} to='/corretores'>
-                Corretores
-              </Menu.Item>
-            }
-            
+            {/* Os itens de menu /imobiliarias e /corretores podem ser acessados pelo ADMIN */}
             {
               this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'admin' &&
               <Menu.Item 
@@ -157,6 +160,15 @@ export default class App extends Component {
                 onClick={() => this.handleItemClick('imobiliarias')}
                 as={Link} to='/imobiliarias'>
                 Imobiliárias
+              </Menu.Item>
+            }
+            {
+              this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'admin' &&
+              <Menu.Item 
+                name='corretores' active={activeItem === 'corretores'} 
+                onClick={() => this.handleItemClick('corretores')}
+                as={Link} to='/corretores'>
+                Corretores
               </Menu.Item>
             }
             
@@ -201,7 +213,7 @@ export default class App extends Component {
 
           <Sidebar animation='overlay' width='very wide' direction='right' visible={this.state.loginVisible}>
             <Segment inverted color='teal' style={{height: '100%'}}>
-              <Form size='small' inverted>                
+              <Form size='small' inverted>
                 <Form.Input label='Email' placeholder={emailPlaceholder} name='email'
                   value={this.state.loginForm.email} 
                   onChange={this.handleLoginFormChange} />
@@ -214,7 +226,7 @@ export default class App extends Component {
                   onClick={this.handleCancelLoginClicked}>Cancelar</Button>
 
                 <Button color='blue' size='small' style={{width: 90}} 
-                  onClick={() => this.handleLoginButtonClicked()}>Login</Button>
+                  onClick={this.handleLoginButtonClicked}>Login</Button>
               </Form>
             </Segment>
           </Sidebar>
