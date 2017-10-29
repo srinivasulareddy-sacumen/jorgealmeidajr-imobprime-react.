@@ -83,7 +83,7 @@ export default class Home extends Component {
             <Input 
               className='icon' icon='search' 
               placeholder='Informe a cidade ou o bairro do imóvel...' 
-              style={{width: 320}}
+              style={{width: 380}}
             />
           </Menu.Item>
 
@@ -101,7 +101,7 @@ export default class Home extends Component {
         <Sidebar.Pushable>
           <Sidebar animation='overlay' width='very wide' direction='left' visible={this.state.searchFormVisible}>
             <Segment style={{height: '100%'}}>
-              <Form size='tiny'>
+              <Form size='small'>
                 <Form.Select label='Tipo do Imóvel' placeholder='Tipo do Imóvel' options={tiposImovel} />
                 <Form.Select search label='Cidade' placeholder='Cidade' options={cidades} />
                 <Form.Input label='Bairro' placeholder='Bairro' />
@@ -113,13 +113,27 @@ export default class Home extends Component {
                 </Form.Group>
 
                 <Form.Group widths='equal'>
-                  <Form.Input label='Preço inicial' placeholder='Preço Inicial' />
-                  <Form.Input label='Preço final' placeholder='Preço final' />
+                  <Form.Field>
+                    <label>Preço inicial</label>
+                    <Input label='R$' placeholder='Preço inicial' />
+                  </Form.Field>
+
+                  <Form.Field>
+                    <label>Preço final</label>
+                    <Input label='R$' placeholder='Preço final' />
+                  </Form.Field>
                 </Form.Group>
 
-                <Form.Group widths='equal'>
-                  <Form.Input label='Área inicial' placeholder='Área Inicial' />
-                  <Form.Input label='Área final' placeholder='Área final' />
+                <Form.Group widths='equal'>                  
+                  <Form.Field>
+                    <label>Área inicial</label>
+                    <Input label='m²' labelPosition='right' placeholder='Área inicial' />
+                  </Form.Field>
+
+                  <Form.Field>
+                    <label>Área final</label>
+                    <Input label='m²' labelPosition='right' placeholder='Área final' />
+                  </Form.Field>
                 </Form.Group>
 
                 <Form.Group inline>
@@ -137,11 +151,11 @@ export default class Home extends Component {
                 </Form.Group>
 
                 <Button 
-                  color='red' size='tiny' icon='remove' content='Cancelar'
+                  color='red' size='small' icon='remove' content='Cancelar'
                   onClick={() => this.toggleSearchFormVisibility()}
                 />
                 <Button 
-                  color='blue' size='tiny' icon='search' content='Buscar' 
+                  color='blue' size='small' icon='search' content='Buscar' 
                   onClick={() => this.toggleSearchFormVisibility()}
                 />
               </Form>

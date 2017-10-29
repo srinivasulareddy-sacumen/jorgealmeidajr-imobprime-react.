@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { 
-  Form, Button, 
+  Form, Input, Button, 
   Divider, Modal, Header, Image,
   Table, Icon
 } from 'semantic-ui-react'
@@ -52,15 +52,28 @@ export default class Imoveis extends Component {
           </Form.Group>
 
           <Form.Group widths='equal'>
-            <Form.Select label='Cidade' search placeholder='Selecione a Cidade do Imóvel' options={cidades} />
-            <Form.Select label='Estado' search placeholder='Selecione a Estado do Imóvel' options={estados} />
+            <Form.Select label='Cidade' search placeholder='Selecione a Cidade' options={cidades} />
+            <Form.Select label='Estado' search placeholder='Selecione a Estado' options={estados} />
           </Form.Group>
 
           <Form.Group widths='equal'>
-            <Form.Input label='Preço inicial' placeholder='Preço inicial do Imóvel' />
-            <Form.Input label='Preço limite' placeholder='Preço limite do Imóvel' />
-            <Form.Input label='Área inicial' placeholder='Área inicial em m² do Imóvel' />
-            <Form.Input label='Área limite' placeholder='Área limite em m² do Imóvel' />
+            <Form.Field>
+              <label>Preço inicial</label>
+              <Input label='R$' placeholder='Preço inicial' />
+            </Form.Field>
+            <Form.Field>
+              <label>Preço final</label>
+              <Input label='R$' placeholder='Preço final' />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Área inicial</label>
+              <Input label='m²' labelPosition='right' placeholder='Área inicial' />
+            </Form.Field>
+            <Form.Field>
+              <label>Área final</label>
+              <Input label='m²' labelPosition='right' placeholder='Área final' />
+            </Form.Field>
           </Form.Group>
 
           <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
