@@ -1,36 +1,61 @@
 import React, { Component } from 'react'
 
 import { 
-  Form, Button, 
+  Form, Input, Button, 
   Divider, Modal,
   Table, Icon
 } from 'semantic-ui-react'
 
+import CidadesAPI from '../api/CidadesAPI'
+import ImobiliariasAPI from '../api/ImobiliariasAPI'
+
 export default class Corretores extends Component {
 
   state = {
-    createModalVibible: false
+    createModalVibible: false,
+    estados: [],
+    cidades: [],
+    imobiliarias: []
+  }
+
+  componentDidMount() {
+    const estados = CidadesAPI.getEstados()
+      .map((c) => ({ key: c.id, text: c.nome, value: c.id }))
+
+    const cidades = CidadesAPI.getCidades()
+      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
+
+    const imobiliarias = ImobiliariasAPI.getImobiliarias()
+      .map((i) => ({ key: i.id, text: i.nome, value: i.id }))
+
+    this.setState({ estados, cidades, imobiliarias })
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
   render() {
+    const { estados, cidades, imobiliarias } = this.state
+
     return (
       <div>
         <h1>Listagem de Corretores</h1>
 
         <Form size='small'>
-          <Form.Group widths='equal'>
-            <Form.Input label='Nome' placeholder='Nome do Corretor' />
-            <Form.Input label='CPF' placeholder='CPF do Corretor' width={4} />
-            <Form.Input label='CRECI' placeholder='Registro CRECI do Corretor' width={4} />
+          <Form.Group>
+            <Form.Input label='Nome' placeholder='Nome do Corretor' width={8} />
+            
+            <Form.Field width={4}>
+              <label>CPF</label>
+              <Input label='#' placeholder='999.999.999-99' />
+            </Form.Field>
+
+            <Form.Input label='CRECI' placeholder='0' width={4} />
           </Form.Group>
 
-          <Form.Input label='Imobiliária' placeholder='Imobiliária' />
-
           <Form.Group widths='equal'>
-            <Form.Input label='Estado' placeholder='Estado de atuação do Corretor' />
-            <Form.Input label='Cidade' placeholder='Cidade de atuação do Corretor' />
+            <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={imobiliarias} />
+            <Form.Select label='Estado' placeholder='Estado de atuação do Corretor' search options={estados} />
+            <Form.Select label='Cidade' placeholder='Cidade de atuação do Corretor' search options={cidades} />
           </Form.Group>
 
           <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
@@ -57,9 +82,9 @@ export default class Corretores extends Component {
           <Table.Body>
             <Table.Row>
               <Table.Cell>Maria</Table.Cell>
-              <Table.Cell>333.333.333-33</Table.Cell>
+              <Table.Cell>999.999.999-99</Table.Cell>
               <Table.Cell>1500</Table.Cell>
-              <Table.Cell>Florianopolis/SC</Table.Cell>
+              <Table.Cell>Florianópolis/SC</Table.Cell>
               <Table.Cell>48 3232 3232</Table.Cell>
               <Table.Cell>48 93232 3232</Table.Cell>
               <Table.Cell>maria@gmail.com</Table.Cell>
@@ -83,22 +108,49 @@ export default class Corretores extends Component {
           <Modal.Header>Cadastro de um novo Corretor</Modal.Header>
           <Modal.Content scrolling>
             <Form size='small'>
-              <Form.Input label='Imobiliária' placeholder='Imobiliária' />
               <Form.Group widths='equal'>
-                <Form.Input label='Nome' placeholder='Nome do Corretor' />
-                <Form.Input label='CPF' placeholder='CPF do Corretor' />
-                <Form.Input label='CRECI' placeholder='Registro do CRECI do Corretor' />
+                <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={imobiliarias} required />
+                <Form.Input label='Nome' placeholder='Nome do Corretor' required />
               </Form.Group>
-              <Form.Input label='Email' placeholder='Email do Corretor' />
-              <Form.Input label='Site' placeholder='Site do Corretor' />
+
               <Form.Group widths='equal'>
-                <Form.Input label='Telefone' placeholder='Telefone do Corretor' />
-                <Form.Input label='Celular' placeholder='Celular do Corretor' />
+                <Form.Field required>
+                  <label>CPF</label>
+                  <Input label='#' placeholder='999.999.999-99' />
+                </Form.Field>
+
+                <Form.Input label='CRECI' placeholder='0' required />
               </Form.Group>
+
+              <Form.Group widths='equal'>
+                <Form.Field required>
+                  <label>Email</label>
+                  <Input label='@' placeholder='Email do Corretor' />
+                </Form.Field>
+
+                <Form.Field>
+                  <label>Site</label>
+                  <Input label='http://' placeholder='Site do Corretor' />
+                </Form.Field>
+              </Form.Group>
+
+              <Form.Group widths='equal'>
+                <Form.Field>
+                  <label>Telefone</label>
+                  <Input label='#' placeholder='(99) 9999-9999' />
+                </Form.Field>
+
+                <Form.Field>
+                  <label>Celular</label>
+                  <Input label='#' placeholder='(99) 99999-9999' />
+                </Form.Field>
+              </Form.Group>
+
               <Divider />
+
               <Form.Group widths='equal'>
-                <Form.Input label='Estado' placeholder='Estado de atuação' />
-                <Form.Input label='Cidade' placeholder='Cidade de atuação' />
+                <Form.Select label='Estado' placeholder='Estado de atuação' search options={estados} />
+                <Form.Select label='Cidade' placeholder='Cidade de atuação' search options={cidades} />
               </Form.Group>
             </Form>
           </Modal.Content>
