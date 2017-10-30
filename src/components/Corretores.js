@@ -68,13 +68,14 @@ export default class Corretores extends Component {
         <Table celled striped compact size='small'>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell width={3}>Nome</Table.HeaderCell>
+              <Table.HeaderCell width={2}>Nome</Table.HeaderCell>
               <Table.HeaderCell width={2}>CPF</Table.HeaderCell>
               <Table.HeaderCell width={1}>CRECI</Table.HeaderCell>
               <Table.HeaderCell>Cidade</Table.HeaderCell>
               <Table.HeaderCell width={2}>Telefone</Table.HeaderCell>
               <Table.HeaderCell width={2}>Celular</Table.HeaderCell>
               <Table.HeaderCell>Email</Table.HeaderCell>
+              <Table.HeaderCell width={1}>Ativo</Table.HeaderCell>
               <Table.HeaderCell>Ações</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
@@ -88,6 +89,12 @@ export default class Corretores extends Component {
               <Table.Cell>48 3232 3232</Table.Cell>
               <Table.Cell>48 93232 3232</Table.Cell>
               <Table.Cell>maria@gmail.com</Table.Cell>
+
+              <Table.Cell>
+                <Form.Radio label='Sim' value='yes' checked />
+                <Form.Radio label='Não' value='no' />
+              </Table.Cell>
+
               <Table.Cell collapsing textAlign='left'>
                 <Button color='blue' size='small' icon>
                   <Icon name='edit' />
@@ -109,21 +116,21 @@ export default class Corretores extends Component {
           <Modal.Content scrolling>
             <Form size='small'>
               <Form.Group widths='equal'>
-                <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={imobiliarias} required />
-                <Form.Input label='Nome' placeholder='Nome do Corretor' required />
+                <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={imobiliarias} required error />
+                <Form.Input label='Nome' placeholder='Nome do Corretor' required error />
               </Form.Group>
 
               <Form.Group widths='equal'>
-                <Form.Field required>
+                <Form.Field required error>
                   <label>CPF</label>
                   <Input label='#' placeholder='999.999.999-99' />
                 </Form.Field>
 
-                <Form.Input label='CRECI' placeholder='0' required />
+                <Form.Input label='CRECI' placeholder='0' required error />
               </Form.Group>
 
               <Form.Group widths='equal'>
-                <Form.Field required>
+                <Form.Field required error>
                   <label>Email</label>
                   <Input label='@' placeholder='Email do Corretor' />
                 </Form.Field>

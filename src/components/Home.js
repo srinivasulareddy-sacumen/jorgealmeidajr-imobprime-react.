@@ -186,7 +186,10 @@ export default class Home extends Component {
                     2 dormitórios<br />
                     2 banheiros<br />
                     1 vaga de garagem<br />
-                    Área Total: 60 m²
+                    Área Total: 60 m²<br />
+                    <br />
+                    <b>Contacte o Corretor : Nome / CRECI</b><br />
+                    Email / Celular / Telefone
                   </Grid.Column>
 
                   <Grid.Column>
@@ -198,7 +201,10 @@ export default class Home extends Component {
                     2 dormitórios<br />
                     2 banheiros<br />
                     1 vaga de garagem<br />
-                    Área Total: 60 m²  
+                    Área Total: 60 m²<br />
+                    <br />
+                    <b>Contacte o Corretor : Nome / CRECI</b><br />
+                    Email / Celular / Telefone
                   </Grid.Column>
 
                   <Grid.Column>
@@ -210,7 +216,10 @@ export default class Home extends Component {
                     2 dormitórios<br />
                     2 banheiros<br />
                     1 vaga de garagem<br />
-                    Área Total: 60 m²  
+                    Área Total: 60 m²<br />
+                    <br />
+                    <b>Contacte o Corretor : Nome / CRECI</b><br />
+                    Email / Celular / Telefone  
                   </Grid.Column>
                 </Grid.Row>
 
@@ -224,7 +233,10 @@ export default class Home extends Component {
                     2 dormitórios<br />
                     2 banheiros<br />
                     1 vaga de garagem<br />
-                    Área Total: 60 m²
+                    Área Total: 60 m²<br />
+                    <br />
+                    <b>Contacte o Corretor : Nome / CRECI</b><br />
+                    Email / Celular / Telefone
                   </Grid.Column>
 
                   <Grid.Column>
@@ -257,7 +269,10 @@ export default class Home extends Component {
                   2 dormitórios<br />
                   2 banheiros<br />
                   1 vaga de garagem<br />
-                  Área Total: 60 m²
+                  Área Total: 60 m²<br />
+                  <br />
+                  <b>Contacte o Corretor : Nome / CRECI</b><br />
+                  Email / Celular / Telefone
                 </Grid.Column>
                 <Grid.Column>
                   <Image src='img/imovel01.jpg' size='large' />
