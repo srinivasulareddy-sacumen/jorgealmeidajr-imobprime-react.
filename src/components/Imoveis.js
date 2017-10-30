@@ -127,10 +127,10 @@ export default class Imoveis extends Component {
           <Modal.Header>Cadastro de um novo Imóvel</Modal.Header>
           <Modal.Content scrolling>
             <Form size='small'>
-              <Form.Select label='Proprietário' required search placeholder='Proprietário do Imóvel' />
+              <Form.Select label='Proprietário' required error search placeholder='Proprietário do Imóvel' />
               
               <Form.Group widths='equal'>
-                <Form.Select label='Tipo de Imóvel' required placeholder='Tipo de Imóvel' options={tiposImovel} />
+                <Form.Select label='Tipo de Imóvel' required error placeholder='Tipo de Imóvel' options={tiposImovel} />
                 <Form.Select label='Situação do Imóvel' placeholder='Situação do Imóvel' options={situacoesImovel} />
 
                 <Form.Field>
@@ -161,7 +161,7 @@ export default class Imoveis extends Component {
               
               <Header size='medium'>Endereço do Imóvel</Header>
               <Form.Group>
-                <Form.Field required>
+                <Form.Field required error>
                   <label>CEP</label>
                   <Input label='#' placeholder='99.999-999' width={4} />
                 </Form.Field>
@@ -169,10 +169,12 @@ export default class Imoveis extends Component {
                 <Form.Input label='Rua' placeholder='Rua' width={6} />
                 <Form.Input label='Bairro' placeholder='Bairro' width={6} />
               </Form.Group>
+
               <Form.Group>
                 <Form.Input label='Número' placeholder='0' width={4} />
                 <Form.Input label='Complemento' placeholder='Complemento' width={6} />
               </Form.Group>
+
               <Form.Group widths='equal'>
                 <Form.Select label='Estado' search placeholder='Estado' options={estados} />
                 <Form.Select label='Cidade' search placeholder='Cidade' options={cidades} />
