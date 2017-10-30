@@ -1,21 +1,37 @@
 import React, { Component } from 'react'
 
 import { 
-  Form, Button, 
+  Form, Input, Button, 
   Divider, Header,
   Table, Icon, 
   Modal
 } from 'semantic-ui-react'
 
+import CidadesAPI from '../api/CidadesAPI'
+
 export default class Clientes extends Component {
 
   state = {
-    createModalVibible: false
+    createModalVibible: false,
+    estados: [],
+    cidades: []
+  }
+
+  componentDidMount() {
+    const estados = CidadesAPI.getEstados()
+      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
+
+    const cidades = CidadesAPI.getCidades()
+      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
+
+    this.setState({ estados, cidades })
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
   render() {
+    const { estados, cidades } = this.state
+
     return (
       <div>
         <h1>Listagem de Clientes</h1>
@@ -23,12 +39,18 @@ export default class Clientes extends Component {
         <Form size='small'>
           <Form.Group widths='equal'>
             <Form.Input label='Nome' placeholder='Nome do Cliente' />
-            <Form.Input label='CPF' placeholder='CPF do Cliente' />
+            
+            <Form.Field>
+              <label>CPF</label>
+              <Input label='#' placeholder='999.999.999-99' />
+            </Form.Field>
           </Form.Group>
+
           <Form.Group widths='equal'>
-            <Form.Input label='Estado' placeholder='Estado' />
-            <Form.Input label='Cidade' placeholder='Cidade' />
+            <Form.Select label='Estado' placeholder='Estado' search options={estados} />
+            <Form.Select label='Cidade' placeholder='Cidade' search options={cidades} />
           </Form.Group>
+
           <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
           <Button color='blue' size='small' style={{width: 90}}>Limpar</Button>
           <Button color='green' size='small' style={{width: 90}} onClick={this.toggleCreateModalVisibility}>Adicionar</Button>
@@ -78,28 +100,52 @@ export default class Clientes extends Component {
           <Modal.Content scrolling>
             <Form size='small'>
               <Form.Group widths='equal'>
-                <Form.Input label='Nome' placeholder='Nome do Cliente' />
-                <Form.Input label='CPF' placeholder='CPF do Cliente' />
+                <Form.Input label='Nome' placeholder='Nome do Cliente' required error />
+                
+                <Form.Field required error>
+                  <label>CPF</label>
+                  <Input label='#' placeholder='999.999.999-99' />
+                </Form.Field>
               </Form.Group>
+
               <Form.Group widths='equal'>
-                <Form.Input label='Telefone' placeholder='Telefone do Cliente' />
-                <Form.Input label='Celular' placeholder='Celular do Cliente' />
+                <Form.Field>
+                  <label>Email</label>
+                  <Input label='@' placeholder='Email do Cliente' />
+                </Form.Field>
+
+                <Form.Field>
+                  <label>Celular</label>
+                  <Input label='#' placeholder='(99) 99999-9999' />
+                </Form.Field>
+
+                <Form.Field>
+                  <label>Telefone</label>
+                  <Input label='#' placeholder='(99) 9999-9999' />
+                </Form.Field>
               </Form.Group>
-              <Form.Input label='Email' placeholder='Email do Cliente' />
+
               <Divider />
+
               <Header size='medium'>Endereço do Cliente</Header>
               <Form.Group>
-                <Form.Input label='CEP' placeholder='CEP' width={4} />
+                <Form.Field width={4} required error>
+                  <label>CEP</label>
+                  <Input label='#' placeholder='99.999-999' />
+                </Form.Field>
+
                 <Form.Input label='Rua' placeholder='Rua' width={6} />
                 <Form.Input label='Bairro' placeholder='Bairro' width={6} />
               </Form.Group>
+
               <Form.Group>
-                <Form.Input label='Número' placeholder='Número' width={4} />
+                <Form.Input label='Número' placeholder='0' width={4} />
                 <Form.Input label='Complemento' placeholder='Complemento' width={6} />
               </Form.Group>
+
               <Form.Group widths='equal'>
-                <Form.Input label='Estado' placeholder='Estado' />
-                <Form.Input label='Cidade' placeholder='Cidade' />
+                <Form.Select label='Estado' placeholder='Estado' search options={estados} />
+                <Form.Select label='Cidade' placeholder='Cidade' search options={cidades} />
               </Form.Group>
             </Form>
           </Modal.Content>

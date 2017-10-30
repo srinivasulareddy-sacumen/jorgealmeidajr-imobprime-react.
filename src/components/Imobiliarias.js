@@ -97,14 +97,14 @@ export default class Imobiliarias extends Component {
           <Modal.Content scrolling>
             <Form size='small'>
               <Form.Group widths='equal'>
-                <Form.Input required label='Razão Social' placeholder='Razão Social da Imobiliária' />
+                <Form.Input required error label='Razão Social' placeholder='Razão Social da Imobiliária' />
                 
-                <Form.Field required>
+                <Form.Field required error>
                   <label>CNPJ</label>
                   <Input label='#' placeholder='99.999.999/9999-99' />
                 </Form.Field>
 
-                <Form.Field required>
+                <Form.Field required error>
                   <label>COFECI</label>
                   <Input placeholder='0' />
                 </Form.Field>
@@ -116,7 +116,7 @@ export default class Imobiliarias extends Component {
 
               <Header size='medium'>Endereço da sede</Header>
               <Form.Group>
-                <Form.Field required width={4}>
+                <Form.Field required width={4} error>
                   <label>CEP</label>
                   <Input label='#' placeholder='99.999-999' />
                 </Form.Field>
