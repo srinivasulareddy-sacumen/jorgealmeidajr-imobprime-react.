@@ -131,27 +131,7 @@ export default class App extends Component {
               as={Link} to='/home'>
               Home
             </Menu.Item>
-
-            {
-              this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'corretor' &&
-              <Menu.Item 
-                name='clientes' active={activeItem === 'clientes'} 
-                onClick={() => this.handleItemClick('clientes')}
-                as={Link} to='/clientes'>
-                Clientes
-              </Menu.Item>
-            }
-
-            {
-              this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'corretor' &&
-              <Menu.Item 
-                name='imoveis' active={activeItem === 'imoveis'} 
-                onClick={() => this.handleItemClick('imoveis')}
-                as={Link} to='/imoveis'>
-                Imóveis
-              </Menu.Item>
-            }
-            
+                        
             {/* Os itens de menu /imobiliarias e /corretores podem ser acessados pelo ADMIN */}
             {
               this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'admin' &&
@@ -169,6 +149,28 @@ export default class App extends Component {
                 onClick={() => this.handleItemClick('corretores')}
                 as={Link} to='/corretores'>
                 Corretores
+              </Menu.Item>
+            }
+
+            {
+              this.state.usuarioLogado != null && 
+              (this.state.usuarioLogado.perfil === 'corretor' || this.state.usuarioLogado.perfil === 'admin') &&
+              <Menu.Item 
+                name='clientes' active={activeItem === 'clientes'} 
+                onClick={() => this.handleItemClick('clientes')}
+                as={Link} to='/clientes'>
+                Clientes
+              </Menu.Item>
+            }
+
+            {
+              this.state.usuarioLogado != null && 
+              (this.state.usuarioLogado.perfil === 'corretor' || this.state.usuarioLogado.perfil === 'admin') &&
+              <Menu.Item 
+                name='imoveis' active={activeItem === 'imoveis'} 
+                onClick={() => this.handleItemClick('imoveis')}
+                as={Link} to='/imoveis'>
+                Imóveis
               </Menu.Item>
             }
             
