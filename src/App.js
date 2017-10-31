@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { 
   Segment, Menu, Sidebar,
-  Form, Button,
+  Form, Input, Button,
   Icon
 } from 'semantic-ui-react'
 
@@ -17,13 +17,20 @@ import Imobiliarias from './components/Imobiliarias'
 import Imoveis from './components/Imoveis'
 import Clientes from './components/Clientes'
 
+import ImobiliariasAPI from './api/ImobiliariasAPI'
+import CidadesAPI from './api/CidadesAPI'
+
 export default class App extends Component {
 
   state = { 
     activeItem: 'home',
     loginVisible: false,
     loginForm: { email: '', senha: '' },
-    usuarioLogado: null
+    usuarioLogado: null,
+    meusDadosVisible: false,
+    imobiliarias: [],
+    estados: [],
+    cidades: []
   }
 
   componentDidMount() {
@@ -40,12 +47,23 @@ export default class App extends Component {
     else if(urlArray.indexOf("imobiliarias") !== -1)
       this.handleItemClick('imobiliarias')
 
-    this.setState({ loginVisible: false })
+    const imobiliarias = ImobiliariasAPI.getImobiliarias()
+      .map((i) => ({ key: i.id, text: i.nome, value: i.id }))
+
+    const estados = CidadesAPI.getEstados()
+      .map((c) => ({ key: c.id, text: c.nome, value: c.id }))
+
+    const cidades = CidadesAPI.getCidades()
+      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
+
+    this.setState({ loginVisible: false, imobiliarias, estados, cidades })
   }
 
   handleItemClick = (name) => this.setState({ activeItem: name, loginVisible: false })
 
   toggleLoginVisibility = () => this.setState({ loginVisible: !this.state.loginVisible })
+
+  toggleMeusDadosVisibility = () => this.setState({ meusDadosVisible: !this.state.meusDadosVisible })
 
   handleLoginFormChange = (event) => {
     const target = event.target
@@ -110,10 +128,10 @@ export default class App extends Component {
     })
   }
 
-  handleMinhaContaClick = () => {}
+  handleMeusDadosClicked = () => this.toggleMeusDadosVisibility()
 
   render() {
-    const { activeItem } = this.state
+    const { activeItem, meusDadosVisible, imobiliarias, estados, cidades } = this.state
     const emailPlaceholder = `Coloque 'admin' ou 'corretor'`
     const versao = "0.1.0"
 
@@ -191,8 +209,8 @@ export default class App extends Component {
 
               {
                 this.state.usuarioLogado != null && this.state.usuarioLogado.perfil === 'corretor' &&
-                <Menu.Item name='conta' active onClick={() => this.handleMinhaContaClick()}>
-                  Minha Conta
+                <Menu.Item name='conta' active onClick={this.handleMeusDadosClicked}>
+                  Meus Dados
                 </Menu.Item>
               }
             </Menu.Menu>
@@ -200,15 +218,59 @@ export default class App extends Component {
         </Segment>
 
         <Sidebar.Pushable>
-          <Sidebar animation='overlay' width='very wide' direction='right' visible={false}>
-            <Segment inverted color='blue' style={{height: '100%'}}>
-              <Form size='small' inverted>
-                <Form.Input label='Email' placeholder='Email' />
-                <Form.Input label='Senha' placeholder='Senha' />
+          <Sidebar animation='overlay' width='very wide' direction='right' visible={meusDadosVisible}>
+            <Segment style={{height: '100%'}}>
+              <Form size='small'>
+                <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={imobiliarias} required error />
+
+                <Form.Input label='Nome' placeholder='Nome do Corretor' required error />
+
+                <Form.Group widths='equal'>
+                  <Form.Field>
+                    <label>CPF</label>
+                    <b>999.999.999-99</b>
+                  </Form.Field>
+
+                  <Form.Field>
+                    <label>CRECI</label>
+                    <b>9999</b>
+                  </Form.Field>
+                </Form.Group>
+
+                <Form.Field>
+                  <label>Site</label>
+                  <Input label='http://' placeholder='Site do Corretor' />
+                </Form.Field>
+
+                <Form.Group widths='equal'>
+                  <Form.Field>
+                    <label>Telefone</label>
+                    <Input label='#' placeholder='(99) 9999-9999' />
+                  </Form.Field>
+
+                  <Form.Field>
+                    <label>Celular</label>
+                    <Input label='#' placeholder='(99) 99999-9999' />
+                  </Form.Field>
+                </Form.Group>
+
+                <Form.Group widths='equal'>
+                  <Form.Select label='Estado' placeholder='Estado de atuação' search options={estados} required error />
+                  <Form.Select label='Cidade' placeholder='Cidade de atuação' search options={cidades} />
+                </Form.Group>
+
+                <Form.Field>
+                  <label>Email</label>
+                  <b>emaildocorretor@gmail.com</b>
+                </Form.Field>
+
+                <Form.Input type='password' label='Senha Anterior' placeholder='Senha Anterior' />
+                <Form.Input type='password' label='Nova Senha' placeholder='Nova Senha' />
+
                 <Button color='red' size='small' style={{width: 90}} 
-                  onClick={() => this.setState({ loginVisible: false })}>Cancelar</Button>
+                  onClick={this.toggleMeusDadosVisibility}>Cancelar</Button>
                 <Button color='facebook' size='small' style={{width: 90}} 
-                  onClick={() => this.setState({ loginVisible: false })}>Salvar</Button>
+                  onClick={this.toggleMeusDadosVisibility}>Salvar</Button>
               </Form>
             </Segment>
           </Sidebar>

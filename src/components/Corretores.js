@@ -156,7 +156,7 @@ export default class Corretores extends Component {
               <Divider />
 
               <Form.Group widths='equal'>
-                <Form.Select label='Estado' placeholder='Estado de atuação' search options={estados} />
+                <Form.Select label='Estado' placeholder='Estado de atuação' search options={estados} required error />
                 <Form.Select label='Cidade' placeholder='Cidade de atuação' search options={cidades} />
               </Form.Group>
             </Form>
