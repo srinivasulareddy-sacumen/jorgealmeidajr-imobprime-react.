@@ -109,7 +109,7 @@ export default class Clientes extends Component {
               </Form.Group>
 
               <Form.Group widths='equal'>
-                <Form.Field>
+                <Form.Field required error>
                   <label>Email</label>
                   <Input label='@' placeholder='Email do Cliente' />
                 </Form.Field>
