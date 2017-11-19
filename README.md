@@ -13,9 +13,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Introduction
 
-This project will be used for estate agents that have to manage properties for their clients. Those estate agents are associated with real estates. There are clients that have properties to sell or rent.
+This project will be used for estate agents that have to manage properties for their clients. Those estate agents are associated with real estates. There are clients associated with estate agents that have properties to sell or rent.
 
-This app will focus in estate agents necessities and it will provide an easy and fast way to search properties to sell or rent.
+This application will focus in estate agents necessities and it will provide an easy and fast way for clients to search properties to sell or rent.
 
 ## Folder Structure
 
@@ -63,6 +63,10 @@ Your app is ready to be deployed!
 ## Features
 
 ### Home Page
+
+The image below is the initial page of the application. You can click in the search button in the left to filter properties by some parameters. You can search properties available to sell or rent in the input text typing the city name or district name. At the right there are two buttons that change the way to see the result of search, you can choose the map format default that uses Google Maps or the grid.
+
+![001](https://user-images.githubusercontent.com/6424524/32994027-a0fe05b6-cd48-11e7-8cde-60b15eff4a08.png)
 
 ### Real Estates Page
 
