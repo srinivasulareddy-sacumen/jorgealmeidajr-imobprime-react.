@@ -62,29 +62,39 @@ Your app is ready to be deployed!
 
 ### Home Page
 
-The image below is the initial page of the application. You can click in the search button in the left to filter properties by some parameters. You can search properties available to sell or rent in the input text typing the city name or district name. At the right there are two buttons that change the way to see the result of search, you can choose the map format default that uses Google Maps or the grid.
+This page is going to be public and accessed by anyone.
+
+The image below is the initial page of the application. You can click in the search button in the left to filter properties by some parameters. You can search properties available to sell or rent in the input text typing the city name or district name. At the right there are two buttons that change the way to see the result of search, you can choose the map format default that uses Google Maps or the grid. 
 
 ![home-page](https://user-images.githubusercontent.com/6424524/32994027-a0fe05b6-cd48-11e7-8cde-60b15eff4a08.png)
 
 ### Real Estates Page
 
-The image below is a printscreen of the `Real Estates` page that has CRUD functionalities. Here you can list all real estates, filter real estates by some parameters, create a new real estate, update or delete a real estate.
+This page is going to be accessed only by the `Administrator` of the application.
+
+The image below is a printscreen of the `Real Estates` page that has CRUD functionalities. Here you can list all real estates, filter real estates by some parameters, create a new real estate, update or delete a real estate. 
 
 ![real-estates-page](https://user-images.githubusercontent.com/6424524/32994098-c67492fa-cd49-11e7-9366-cec7347bd36f.png)
 
 ### Real Estate Agents or Brokers Page
 
-The image below is a printscreen of the `Real Estates Agents or Brokers` page that has CRUD functionalities. Here you can list all real estate agents, filter real estates agents by some parameters, create a new real estate agent, update or delete a real estate agent.
+This page is going to be accessed only by the `Administrator` of the application.
+
+The image below is a printscreen of the `Real Estates Agents or Brokers` page that has CRUD functionalities. Here you can list all real estate agents, filter real estates agents by some parameters, create a new real estate agent, update or delete a real estate agent. Here the administrator can activate or deactivate an `Real Estate Agent or Broker` account.
 
 ![corretores](https://user-images.githubusercontent.com/6424524/33036857-d5dc0c32-ce16-11e7-9a8c-f458f7b6880c.png)
 
 ### Clients Page
+
+This page is going to be accessed by the `Administrator` and the `Real Estate Agent or Broker`.
 
 The image below is a printscreen of the `Clients` page that has CRUD functionalities. Here you can list all clients, filter clients by some parameters, create a new client, update or delete a client.
 
 ![clients](https://user-images.githubusercontent.com/6424524/33036872-e6fcd29e-ce16-11e7-89ab-b1006ce4d8d6.png)
 
 ### Properties Page
+
+This page is going to be accessed by the `Administrator` and the `Real Estate Agent or Broker`.
 
 The image below is a printscreen of the `Properties` page that has CRUD functionalities. Here you can list all properties, filter properties by some parameters, create a new property, update or delete a property.
 
@@ -93,7 +103,7 @@ The image below is a printscreen of the `Properties` page that has CRUD function
 ## Missing Features to implement
 
 * Security with JWT or other library;
-* Authorization and access control with login and profile(admin and estate agent);
+* Authorization and access control with login and profile(admin and real estate agent);
 * Create a backend project with REST API;
 * Create the database(there is one version made in mysql) and apply indexing;
 * Internationalization(change the locales between english or brazilian portuguese);
