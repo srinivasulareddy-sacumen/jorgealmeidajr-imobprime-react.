@@ -1,7 +1,7 @@
 
 # iMobPrime - React Frontend for a Real Estate Management App
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app) and contains only the frontend of a prototype for a real estate management application made with React.
+This is a **React** project created with the [Create React App](https://github.com/facebookincubator/create-react-app) utility and contains only the `frontend` of a prototype for a `Real Estate Management Application`.
 
 ## Table of Contents
 
@@ -13,9 +13,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Introduction
 
-This project will be used by `Estate Agents` that have to manage multiple `Properties` for their `Clients`. Those estate agents are associated with real estates. There are clients associated with estate agents that have properties to sell or rent.
+This project was created to be used by `Real Estate Agents or Brokers` that have to manage many `Properties` for their `Clients`. Those `Real Estate Agents or Brokers` are associated and work with `Real Estates`. For this application there are `Clients` and their data are managed by `Real Estate Agents or Brokers`. There are `Clients or Owners` that have properties to sell or rent and `Clients Interested` in a `Property` to buy or rent.
 
-This application will focus in the `Estate Agents` necessities and it will provide an easy and fast way for their `Clients` to search properties to sell or rent.
+This project is going to focus in the `Real Estate Agents or Brokers` necessities, they are going to be the main actor for this project. This application will provide an easy and fast way for `Clients Interested` in a `Property` to search properties to sell or rent.
 
 ## Folder Structure
 
@@ -24,20 +24,18 @@ The folder structure of the project looks like this:
 ```
 imobprime-react/
   README.md
-  node_modules/
   package.json
   public/
   src/
-    App.css
+    api/        -> Classes for REST API integration
+    components/ -> Stateless React Components
     App.js
-    index.css
     index.js
-    logo.svg
 ```
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the root project directory, you can run:
 
 ### `npm start`
 
@@ -70,15 +68,27 @@ The image below is the initial page of the application. You can click in the sea
 
 ### Real Estates Page
 
-The image below is a printscreen of the real estates page. Here you can list, filter, create, update or delete a real estate.
+The image below is a printscreen of the `Real Estates` page that has CRUD functionalities. Here you can list all real estates, filter real estates by some parameters, create a new real estate, update or delete a real estate.
 
 ![real-estates-page](https://user-images.githubusercontent.com/6424524/32994098-c67492fa-cd49-11e7-9366-cec7347bd36f.png)
 
-### Estate Agents Page
+### Real Estate Agents or Brokers Page
+
+The image below is a printscreen of the `Real Estates Agents or Brokers` page that has CRUD functionalities. Here you can list all real estate agents, filter real estates agents by some parameters, create a new real estate agent, update or delete a real estate agent.
+
+![corretores](https://user-images.githubusercontent.com/6424524/33036857-d5dc0c32-ce16-11e7-9a8c-f458f7b6880c.png)
 
 ### Clients Page
 
+The image below is a printscreen of the `Clients` page that has CRUD functionalities. Here you can list all clients, filter clients by some parameters, create a new client, update or delete a client.
+
+![clients](https://user-images.githubusercontent.com/6424524/33036872-e6fcd29e-ce16-11e7-89ab-b1006ce4d8d6.png)
+
 ### Properties Page
+
+The image below is a printscreen of the `Properties` page that has CRUD functionalities. Here you can list all properties, filter properties by some parameters, create a new property, update or delete a property.
+
+![properties](https://user-images.githubusercontent.com/6424524/33036889-f303a52c-ce16-11e7-8eac-d67b07fd6566.png)
 
 ## Missing Features to implement
 
