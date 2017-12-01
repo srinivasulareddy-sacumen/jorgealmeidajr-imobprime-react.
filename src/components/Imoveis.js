@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { 
-  Form, Input, Button, 
+  Form, Input, Select, Button, 
   Divider, Modal, Header, Image,
   Table, Icon
 } from 'semantic-ui-react'
@@ -46,33 +46,57 @@ export default class Imoveis extends Component {
 
         <Form size='small'>
           <Form.Group widths='equal'>
-            <Form.Select label='Proprietário' search placeholder='Nome do proprietátio do Imóvel' />
-            <Form.Select label='Tipo de Imóvel' placeholder='Selecione o Tipo de Imóvel' options={tiposImovel} />
-            <Form.Select label='Situação do Imóvel' placeholder='Selecione a Situação do Imóvel' options={situacoesImovel} />
+            <Form.Field>
+              <label>Proprietário</label>
+              <Form.Group inline>
+                <Select search placeholder='Nome do Proprietátio do Imóvel' className='form-select' style={{width: '90%'}} />
+                
+                <Button color='blue' size='tiny' icon style={{marginLeft: 4}}>
+                  <Icon name='edit' />
+                </Button>
+              </Form.Group>
+            </Form.Field>
+
+            <Form.Field>
+              <label>Tipo de Imóvel</label>
+              <Select placeholder='Selecione o Tipo de Imóvel' options={tiposImovel} className='form-select' />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Situação do Imóvel</label>
+              <Select placeholder='Selecione a Situação do Imóvel' options={situacoesImovel} className='form-select' />
+            </Form.Field>
           </Form.Group>
 
           <Form.Group widths='equal'>
-            <Form.Select label='Cidade' search placeholder='Selecione a Cidade' options={cidades} />
-            <Form.Select label='Estado' search placeholder='Selecione a Estado' options={estados} />
+            <Form.Field>
+              <label>Estado</label>
+              <Select label='Estado' search placeholder='Selecione o Estado' options={estados} className='form-select' />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Cidade</label>
+              <Select search placeholder='Selecione a Cidade' options={cidades} className='form-select' />
+            </Form.Field>
           </Form.Group>
 
           <Form.Group widths='equal'>
             <Form.Field>
               <label>Preço inicial</label>
-              <Input label='R$' placeholder='0,00' />
+              <Input label='R$' placeholder='0,00' className='form-input' />
             </Form.Field>
             <Form.Field>
               <label>Preço final</label>
-              <Input label='R$' placeholder='0,00' />
+              <Input label='R$' placeholder='0,00' className='form-input' />
             </Form.Field>
 
             <Form.Field>
               <label>Área inicial</label>
-              <Input label='m²' labelPosition='right' placeholder='0' />
+              <Input label='m²' labelPosition='right' placeholder='0' className='form-input' />
             </Form.Field>
             <Form.Field>
               <label>Área final</label>
-              <Input label='m²' labelPosition='right' placeholder='0' />
+              <Input label='m²' labelPosition='right' placeholder='0' className='form-input' />
             </Form.Field>
           </Form.Group>
 

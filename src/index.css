@@ -3,3 +3,24 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.form-input {
+  border-color: #a9a9a9 !important;
+  border-style: solid !important;
+  border-width: 1px !important;
+}
+
+.form-input input {
+  border-radius: 0px !important;
+}
+
+.form-select {
+  border-color: #a9a9a9 !important;
+  border-style: solid !important;
+  border-width: 1px !important;
+  border-radius: 0px !important;
+}
+
+.form-select input {
+  border-radius: 0px !important;
+}
