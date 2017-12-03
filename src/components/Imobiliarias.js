@@ -6,6 +6,7 @@ import {
   Table, Icon, Image
 } from 'semantic-ui-react'
 
+import ImobiliariasAPI from '../api/ImobiliariasAPI'
 import CidadesAPI from '../api/CidadesAPI'
 
 export default class Imobiliarias extends Component {
@@ -13,7 +14,8 @@ export default class Imobiliarias extends Component {
   state = {
     createModalVibible: false,
     estados: [],
-    cidades: []
+    cidades: [],
+    realEstates: []
   }
 
   componentDidMount() {
@@ -24,12 +26,20 @@ export default class Imobiliarias extends Component {
       .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
 
     this.setState({ estados, cidades })
+
+    ImobiliariasAPI.fetchAll()
+      .then((response) => {
+        this.setState({ realEstates: response.data })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
   render() {
-    const { estados, cidades } = this.state
+    const { estados, cidades, realEstates } = this.state
 
     return (
       <div>
@@ -80,21 +90,25 @@ export default class Imobiliarias extends Component {
           </Table.Header>
 
           <Table.Body>
-            <Table.Row>
-              <Table.Cell><Image src='img/ibagy-logo.png' size='tiny' /></Table.Cell>
-              <Table.Cell>IBagy</Table.Cell>
-              <Table.Cell>99.999.999/9999-99</Table.Cell>
-              <Table.Cell>2500</Table.Cell>
-              <Table.Cell>Florianópolis/SC</Table.Cell>
-              <Table.Cell collapsing textAlign='left'>
-                <Button color='blue' size='small' icon>
-                  <Icon name='edit' />
-                </Button>
-                <Button color='red' size='small' icon>
-                  <Icon name='remove' />
-                </Button>
-              </Table.Cell>
-            </Table.Row>
+            {realEstates.map(r => {
+              return (
+                <Table.Row key={r.id}>
+                  <Table.Cell><Image src='img/ibagy-logo.png' size='tiny' /> / {r.logoImagePath}</Table.Cell>
+                  <Table.Cell>{r.name}</Table.Cell>
+                  <Table.Cell>{r.cnpj}</Table.Cell>
+                  <Table.Cell>{r.cofeci}</Table.Cell>
+                  <Table.Cell>{r.addressZipCode.city.name} / {r.addressZipCode.city.state.stateAbbreviation}</Table.Cell>
+                  <Table.Cell collapsing textAlign='left'>
+                    <Button color='blue' size='small' icon>
+                      <Icon name='edit' />
+                    </Button>
+                    <Button color='red' size='small' icon>
+                      <Icon name='remove' />
+                    </Button>
+                  </Table.Cell>
+                </Table.Row>
+              )
+            })}
           </Table.Body>
         </Table>
 
