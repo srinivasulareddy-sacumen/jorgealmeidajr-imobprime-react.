@@ -47,8 +47,14 @@ export default class App extends Component {
     else if(urlArray.indexOf("imobiliarias") !== -1)
       this.handleItemClick('imobiliarias')
 
-    const imobiliarias = ImobiliariasAPI.getImobiliarias()
-      .map((i) => ({ key: i.id, text: i.nome, value: i.id }))
+    ImobiliariasAPI.fetchAll()
+      .then((response) => {
+        const imobiliarias = response.data.map((i) => ({ key: i.id, text: i.name, value: i.id }))
+        this.setState({ imobiliarias: imobiliarias })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
 
     const estados = CidadesAPI.getEstados()
       .map((c) => ({ key: c.id, text: c.nome, value: c.id }))
@@ -56,7 +62,7 @@ export default class App extends Component {
     const cidades = CidadesAPI.getCidades()
       .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
 
-    this.setState({ loginVisible: false, imobiliarias, estados, cidades })
+    this.setState({ loginVisible: false, estados, cidades })
   }
 
   handleItemClick = (name) => this.setState({ activeItem: name, loginVisible: false })
