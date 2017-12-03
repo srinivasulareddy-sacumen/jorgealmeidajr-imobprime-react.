@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { 
-  Form, Input, Button, 
+  Form, Input, Select, Button, 
   Divider, Header, Modal,
   Table, Icon, Image
 } from 'semantic-ui-react'
@@ -37,17 +37,27 @@ export default class Imobiliarias extends Component {
 
         <Form size='small'>
           <Form.Group widths='equal'>
-            <Form.Input label='Razão Social' placeholder='Razão Social da Imobiliária' />
-
             <Form.Field>
-              <label>CNPJ</label>
-              <Input label='#' placeholder='99.999.999/9999-99' />
+              <label>Razão Social</label>
+              <Input placeholder='Razão Social da Imobiliária' className='form-input' />
+            </Form.Field>
+            
+            <Form.Field>
+              <label>CNPJ</label> 
+              <Input label='#' placeholder='99.999.999/9999-99' className='form-input' />
             </Form.Field>
           </Form.Group>
 
           <Form.Group widths='equal'>
-            <Form.Select label='Estado' placeholder='Estado' search options={estados} />
-            <Form.Select label='Cidade' placeholder='Cidade do endereço da Imobiliária' search options={cidades} />
+            <Form.Field>
+              <label>Estado</label>
+              <Select search placeholder='Selecione o Estado do endereço da Imobiliária' options={estados} className='form-select' />
+            </Form.Field>
+
+            <Form.Field>
+              <label>Cidade</label>
+              <Select search placeholder='Selecione a Cidade do endereço da Imobiliária' options={cidades} className='form-select' />
+            </Form.Field>
           </Form.Group>
 
           <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
