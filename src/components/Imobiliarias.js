@@ -6,28 +6,33 @@ import {
   Table, Icon, Image
 } from 'semantic-ui-react'
 
-import ImobiliariasAPI from '../api/ImobiliariasAPI'
+import StatesAPI from '../api/StatesAPI'
+import RealEstatesAPI from '../api/RealEstatesAPI'
 import CidadesAPI from '../api/CidadesAPI'
 
 export default class Imobiliarias extends Component {
 
   state = {
+    searchByName: '',
+    searchByCNPJ: '',
+    searchByState: null,
+    searchByCity: null,
+
     createModalVibible: false,
-    estados: [],
+    states: [],
     cidades: [],
     realEstates: []
   }
 
   componentDidMount() {
-    const estados = CidadesAPI.getEstados()
-      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
+    this.init()
 
     const cidades = CidadesAPI.getCidades()
       .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
 
-    this.setState({ estados, cidades })
+    this.setState({ cidades })
 
-    ImobiliariasAPI.fetchAll()
+    RealEstatesAPI.fetchAll()
       .then((response) => {
         this.setState({ realEstates: response.data })
       })
@@ -36,10 +41,66 @@ export default class Imobiliarias extends Component {
       })
   }
 
+  async init() {
+    try {
+      const statesData = await StatesAPI.fetchAll();
+      const states = statesData.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+
+      this.setState({ states })
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
+  // handleChange = (event) => this.setState({ [event.target.name]: event.target.value })
+
+  handleSelectChange = (name, value) => this.setState({ [name]: value })
+
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
+  search = (e) => {
+    e.preventDefault()
+    const {searchByName, searchByState, searchQuery} = this.state
+    console.log(searchByName, searchByState, searchQuery)
+  }
+
+  clearSearchForm = (e) => {
+    e.preventDefault()
+    
+    this.setState({
+      searchByName: '',
+      searchByCNPJ: '',
+      searchByState: null,
+      searchByCity: null
+    })
+  }
+
+  handleSearchChange = (e, { searchQuery }) => {
+    this.setState({ searchQuery })
+  }
+
+  handleSearchCidadeFocus = (e, data) => { 
+    if(this.state.searchByState !== null)  {
+      CidadesAPI.filter('', this.state.searchByState)
+        .then((response) => {
+          this.setState({ cidades: response.data.map((e) => ({ key: e.id, text: e.name, value: e.id })) })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    } else {
+      CidadesAPI.fetchAll()
+        .then((response) => {
+          this.setState({ cidades: response.data.map((e) => ({ key: e.id, text: e.name, value: e.id })) })
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  }
+
   render() {
-    const { estados, cidades, realEstates } = this.state
+    const { states, cidades, realEstates } = this.state
 
     return (
       <div>
@@ -49,29 +110,51 @@ export default class Imobiliarias extends Component {
           <Form.Group widths='equal'>
             <Form.Field>
               <label>Razão Social</label>
-              <Input placeholder='Razão Social da Imobiliária' className='form-input' />
+              <Input 
+                placeholder='Razão Social da Imobiliária' 
+                className='form-input' 
+                onChange={e => this.setState({ searchByName: e.target.value })}
+                value={this.state.searchByName} />
             </Form.Field>
             
             <Form.Field>
               <label>CNPJ</label> 
-              <Input label='#' placeholder='99.999.999/9999-99' className='form-input' />
+              <Input 
+                label='#' placeholder='99.999.999/9999-99' 
+                className='form-input' 
+                onChange={e => this.setState({ searchByCNPJ: e.target.value })}
+                value={this.state.searchByCNPJ}/>
             </Form.Field>
           </Form.Group>
 
           <Form.Group widths='equal'>
             <Form.Field>
               <label>Estado</label>
-              <Select search placeholder='Selecione o Estado do endereço da Imobiliária' options={estados} className='form-select' />
+              <Select 
+                placeholder='Selecione o Estado do endereço da Imobiliária' 
+                className='form-select'
+                search 
+                options={states}
+                onChange={(e, {value}) => this.handleSelectChange('searchByState', value)} 
+                value={this.state.searchByState} />
             </Form.Field>
 
             <Form.Field>
               <label>Cidade</label>
-              <Select search placeholder='Selecione a Cidade do endereço da Imobiliária' options={cidades} className='form-select' />
+              <Select 
+                placeholder='Selecione a Cidade do endereço da Imobiliária' 
+                className='form-select'
+                search
+                options={cidades} 
+                onFocus={this.handleSearchCidadeFocus}
+                onSearchChange={this.handleSearchChange}
+                onChange={(e, {value}) => this.handleSelectChange('searchByCity', value)} 
+                value={this.state.searchByCity}/>
             </Form.Field>
           </Form.Group>
 
-          <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
-          <Button color='blue' size='small' style={{width: 90}}>Limpar</Button>
+          <Button color='blue' size='small' style={{width: 90}} onClick={this.search}>Buscar</Button>
+          <Button color='blue' size='small' style={{width: 90}} onClick={this.clearSearchForm}>Limpar</Button>
           <Button color='green' size='small' style={{width: 90}} onClick={this.toggleCreateModalVisibility}>Adicionar</Button>
         </Form>
 
@@ -155,7 +238,7 @@ export default class Imobiliarias extends Component {
               </Form.Group>
 
               <Form.Group widths='equal'>
-                <Form.Select label='Estado' placeholder='Estado' search options={estados} />
+                <Form.Select label='Estado' placeholder='Estado' search options={states} />
                 <Form.Select label='Cidade' placeholder='Cidade' search options={cidades} />
               </Form.Group>
             </Form>

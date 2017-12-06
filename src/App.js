@@ -17,7 +17,7 @@ import Imobiliarias from './components/Imobiliarias'
 import Imoveis from './components/Imoveis'
 import Clientes from './components/Clientes'
 
-import ImobiliariasAPI from './api/ImobiliariasAPI'
+//import ImobiliariasAPI from './api/ImobiliariasAPI'
 import CidadesAPI from './api/CidadesAPI'
 
 export default class App extends Component {
@@ -47,14 +47,14 @@ export default class App extends Component {
     else if(urlArray.indexOf("imobiliarias") !== -1)
       this.handleItemClick('imobiliarias')
 
-    ImobiliariasAPI.fetchAll()
+    /*ImobiliariasAPI.fetchAll()
       .then((response) => {
         const imobiliarias = response.data.map((i) => ({ key: i.id, text: i.name, value: i.id }))
         this.setState({ imobiliarias: imobiliarias })
       })
       .catch((error) => {
         console.log(error)
-      })
+      })*/
 
     const estados = CidadesAPI.getEstados()
       .map((c) => ({ key: c.id, text: c.nome, value: c.id }))

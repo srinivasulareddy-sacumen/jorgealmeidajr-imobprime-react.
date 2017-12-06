@@ -1,5 +1,32 @@
 
+import axios from 'axios'
+
+const ROOT_URL = window.location.href.indexOf('localhost') > 0 ? 'http://localhost:8080/api' : '/api'
+
 export default class CidadesAPI {
+
+  static fetchAll() {
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/cities`,
+      headers: []
+    })
+
+    return request
+  }
+
+  static filter(name, stateId) {
+    if(name === null) name = ''
+    if(stateId === null) stateId = ''
+
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/cities/filter?name=${name}&stateId=${stateId}`,
+      headers: []
+    })
+
+    return request
+  }
 
   static sortAscByString(value1, value2) {
     if (value1 < value2) // ASC
