@@ -7,7 +7,7 @@ import {
   Modal
 } from 'semantic-ui-react'
 
-import CidadesAPI from '../api/CidadesAPI'
+import CidadesAPI from '../api/CitiesAPI'
 
 export default class Clientes extends Component {
 

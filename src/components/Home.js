@@ -14,7 +14,7 @@ import {
 } from "react-google-maps"
 
 import ImoveisAPI from '../api/ImoveisAPI'
-import CidadesAPI from '../api/CidadesAPI'
+import CidadesAPI from '../api/CitiesAPI'
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) => (
   <GoogleMap

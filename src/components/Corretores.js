@@ -6,7 +6,7 @@ import {
   Table, Icon
 } from 'semantic-ui-react'
 
-import CidadesAPI from '../api/CidadesAPI'
+import CidadesAPI from '../api/CitiesAPI'
 import ImobiliariasAPI from '../api/RealEstatesAPI'
 
 export default class Corretores extends Component {

@@ -8,7 +8,7 @@ import {
 
 import StatesAPI from '../api/StatesAPI'
 import RealEstatesAPI from '../api/RealEstatesAPI'
-import CidadesAPI from '../api/CidadesAPI'
+import CitiesAPI from '../api/CitiesAPI'
 
 export default class Imobiliarias extends Component {
 
@@ -20,17 +20,12 @@ export default class Imobiliarias extends Component {
 
     createModalVibible: false,
     states: [],
-    cidades: [],
+    cities: [],
     realEstates: []
   }
 
   componentDidMount() {
     this.init()
-
-    const cidades = CidadesAPI.getCidades()
-      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
-
-    this.setState({ cidades })
 
     RealEstatesAPI.fetchAll()
       .then((response) => {
@@ -43,10 +38,13 @@ export default class Imobiliarias extends Component {
 
   async init() {
     try {
-      const statesData = await StatesAPI.fetchAll();
+      const statesData = await StatesAPI.fetchAll()
       const states = statesData.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
 
-      this.setState({ states })
+      const citiesData = await CitiesAPI.fetchAll()
+      const cities = citiesData.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+
+      this.setState({ states, cities })
     } catch(error) {
       console.log(error)
     }
@@ -80,27 +78,23 @@ export default class Imobiliarias extends Component {
   }
 
   handleSearchCidadeFocus = (e, data) => { 
-    if(this.state.searchByState !== null)  {
-      CidadesAPI.filter('', this.state.searchByState)
-        .then((response) => {
-          this.setState({ cidades: response.data.map((e) => ({ key: e.id, text: e.name, value: e.id })) })
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    } else {
-      CidadesAPI.fetchAll()
-        .then((response) => {
-          this.setState({ cidades: response.data.map((e) => ({ key: e.id, text: e.name, value: e.id })) })
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+    this.updateSearchCidadeSelect()
+  }
+
+  updateSearchCidadeSelect = async () => {
+    try {
+      if(this.state.searchByState !== null) {
+        const cities = await CitiesAPI.filter(null, this.state.searchByState)
+
+        this.setState({ cities: cities.data.map((e) => ({ key: e.id, text: e.name, value: e.id })) })
+      }
+    } catch(error) {
+      console.log(error)
     }
   }
 
   render() {
-    const { states, cidades, realEstates } = this.state
+    const { states, cities, realEstates } = this.state
 
     return (
       <div>
@@ -145,7 +139,7 @@ export default class Imobiliarias extends Component {
                 placeholder='Selecione a Cidade do endereço da Imobiliária' 
                 className='form-select'
                 search
-                options={cidades} 
+                options={cities} 
                 onFocus={this.handleSearchCidadeFocus}
                 onSearchChange={this.handleSearchChange}
                 onChange={(e, {value}) => this.handleSelectChange('searchByCity', value)} 
@@ -239,7 +233,7 @@ export default class Imobiliarias extends Component {
 
               <Form.Group widths='equal'>
                 <Form.Select label='Estado' placeholder='Estado' search options={states} />
-                <Form.Select label='Cidade' placeholder='Cidade' search options={cidades} />
+                <Form.Select label='Cidade' placeholder='Cidade' search options={cities} />
               </Form.Group>
             </Form>
           </Modal.Content>

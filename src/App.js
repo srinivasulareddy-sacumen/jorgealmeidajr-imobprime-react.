@@ -17,8 +17,8 @@ import Imobiliarias from './components/Imobiliarias'
 import Imoveis from './components/Imoveis'
 import Clientes from './components/Clientes'
 
-//import ImobiliariasAPI from './api/ImobiliariasAPI'
-import CidadesAPI from './api/CidadesAPI'
+import RealEstatesAPI from './api/RealEstatesAPI'
+import CitiesAPI from './api/CitiesAPI'
 
 export default class App extends Component {
 
@@ -56,10 +56,10 @@ export default class App extends Component {
         console.log(error)
       })*/
 
-    const estados = CidadesAPI.getEstados()
+    const estados = CitiesAPI.getEstados()
       .map((c) => ({ key: c.id, text: c.nome, value: c.id }))
 
-    const cidades = CidadesAPI.getCidades()
+    const cidades = CitiesAPI.getCidades()
       .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
 
     this.setState({ loginVisible: false, estados, cidades })

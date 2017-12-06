@@ -7,7 +7,7 @@ import {
 } from 'semantic-ui-react'
 
 import ImoveisAPI from '../api/ImoveisAPI'
-import CidadesAPI from '../api/CidadesAPI'
+import CidadesAPI from '../api/CitiesAPI'
 
 export default class Imoveis extends Component {
 

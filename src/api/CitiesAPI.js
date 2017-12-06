@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const ROOT_URL = window.location.href.indexOf('localhost') > 0 ? 'http://localhost:8080/api' : '/api'
 
-export default class CidadesAPI {
+export default class CitiesAPI {
 
   static fetchAll() {
     const request = axios({
@@ -18,7 +18,7 @@ export default class CidadesAPI {
   static filter(name, stateId) {
     if(name === null) name = ''
     if(stateId === null) stateId = ''
-
+    
     const request = axios({
       method: 'get',
       url: `${ROOT_URL}/cities/filter?name=${name}&stateId=${stateId}`,
@@ -48,7 +48,7 @@ export default class CidadesAPI {
     let id = 1
 
     return cidades
-      .sort((c1, c2) => CidadesAPI.sortAscByString(c1.nome.toLocaleLowerCase(), c2.nome.toLocaleLowerCase()))
+      .sort((c1, c2) => this.sortAscByString(c1.nome.toLocaleLowerCase(), c2.nome.toLocaleLowerCase()))
       .map((cidade) => ({ id: id++, ...cidade }))
   }
 
@@ -62,7 +62,7 @@ export default class CidadesAPI {
     let id = 1
 
     return estados
-      .sort((e1, e2) => CidadesAPI.sortAscByString(e1.nome.toLocaleLowerCase(), e2.nome.toLocaleLowerCase()))
+      .sort((e1, e2) => this.sortAscByString(e1.nome.toLocaleLowerCase(), e2.nome.toLocaleLowerCase()))
       .map((estado) => ({ id: id++, ...estado }))
   }
 
