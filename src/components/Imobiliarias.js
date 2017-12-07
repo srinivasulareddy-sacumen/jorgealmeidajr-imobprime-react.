@@ -6,6 +6,8 @@ import {
   Table, Icon, Image
 } from 'semantic-ui-react'
 
+import RealEstatesSearch from './RealEstatesSearch'
+
 import StatesAPI from '../api/StatesAPI'
 import RealEstatesAPI from '../api/RealEstatesAPI'
 import CitiesAPI from '../api/CitiesAPI'
@@ -26,7 +28,10 @@ export default class Imobiliarias extends Component {
 
   componentDidMount() {
     this.init()
+    this.fetchInitialRealEstatesPage()
+  }
 
+  fetchInitialRealEstatesPage = () => {
     RealEstatesAPI.fetchAll()
       .then((response) => {
         this.setState({ realEstates: response.data })
@@ -56,41 +61,26 @@ export default class Imobiliarias extends Component {
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
-  search = (e) => {
-    e.preventDefault()
-    const {searchByName, searchByState, searchQuery} = this.state
-    console.log(searchByName, searchByState, searchQuery)
+  handleFilter = (searchByName, searchByCNPJ, searchByState, searchByCity) => {
+    console.log(searchByName, searchByCNPJ, searchByState, searchByCity)
+
+    RealEstatesAPI.filter(searchByName, searchByCNPJ, searchByState, searchByCity)
+      .then((response) => {
+        this.setState({ realEstates: response.data })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
-  clearSearchForm = (e) => {
-    e.preventDefault()
-    
-    this.setState({
-      searchByName: '',
-      searchByCNPJ: '',
-      searchByState: null,
-      searchByCity: null
-    })
-  }
-
-  handleSearchChange = (e, { searchQuery }) => {
-    this.setState({ searchQuery })
-  }
-
-  handleSearchCidadeFocus = (e, data) => { 
-    this.updateSearchCidadeSelect()
-  }
-
-  updateSearchCidadeSelect = async () => {
+  fetchCities = async (name, stateId) => {
+    let cities = []
     try {
-      if(this.state.searchByState !== null) {
-        const cities = await CitiesAPI.filter(null, this.state.searchByState)
-
-        this.setState({ cities: cities.data.map((e) => ({ key: e.id, text: e.name, value: e.id })) })
-      }
+        cities = await CitiesAPI.filter(name, stateId)
     } catch(error) {
       console.log(error)
     }
+    return cities
   }
 
   render() {
@@ -100,57 +90,11 @@ export default class Imobiliarias extends Component {
       <div>
         <h1>Listagem de Imobiliárias</h1>
 
-        <Form size='small'>
-          <Form.Group widths='equal'>
-            <Form.Field>
-              <label>Razão Social</label>
-              <Input 
-                placeholder='Razão Social da Imobiliária' 
-                className='form-input' 
-                onChange={e => this.setState({ searchByName: e.target.value })}
-                value={this.state.searchByName} />
-            </Form.Field>
-            
-            <Form.Field>
-              <label>CNPJ</label> 
-              <Input 
-                label='#' placeholder='99.999.999/9999-99' 
-                className='form-input' 
-                onChange={e => this.setState({ searchByCNPJ: e.target.value })}
-                value={this.state.searchByCNPJ}/>
-            </Form.Field>
-          </Form.Group>
-
-          <Form.Group widths='equal'>
-            <Form.Field>
-              <label>Estado</label>
-              <Select 
-                placeholder='Selecione o Estado do endereço da Imobiliária' 
-                className='form-select'
-                search 
-                options={states}
-                onChange={(e, {value}) => this.handleSelectChange('searchByState', value)} 
-                value={this.state.searchByState} />
-            </Form.Field>
-
-            <Form.Field>
-              <label>Cidade</label>
-              <Select 
-                placeholder='Selecione a Cidade do endereço da Imobiliária' 
-                className='form-select'
-                search
-                options={cities} 
-                onFocus={this.handleSearchCidadeFocus}
-                onSearchChange={this.handleSearchChange}
-                onChange={(e, {value}) => this.handleSelectChange('searchByCity', value)} 
-                value={this.state.searchByCity}/>
-            </Form.Field>
-          </Form.Group>
-
-          <Button color='blue' size='small' style={{width: 90}} onClick={this.search}>Buscar</Button>
-          <Button color='blue' size='small' style={{width: 90}} onClick={this.clearSearchForm}>Limpar</Button>
-          <Button color='green' size='small' style={{width: 90}} onClick={this.toggleCreateModalVisibility}>Adicionar</Button>
-        </Form>
+        <RealEstatesSearch 
+          states={states} 
+          fetchInitialRealEstatesPage={this.fetchInitialRealEstatesPage}
+          fetchCities={this.fetchCities}
+          onFilter={this.handleFilter} />
 
         <Divider />
 

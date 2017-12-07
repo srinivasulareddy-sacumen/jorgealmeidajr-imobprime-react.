@@ -15,4 +15,19 @@ export default class RealEstatesAPI {
     return request
   }
 
+  static filter(name, cnpj, stateId, cityId) {
+    if(name === null) name = ''
+    if(cnpj === null) cnpj = ''
+    if(stateId === null) stateId = ''
+    if(cityId === null) cityId = ''
+    
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/real-estates/filter?name=${name}&cnpj=${cnpj}&stateId=${stateId}&cityId=${cityId}`,
+      headers: []
+    })
+
+    return request
+  }
+
 }
