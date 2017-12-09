@@ -96,7 +96,7 @@ export default class RealEstatesSearch extends Component {
 
         <Button color='blue' size='small' style={{width: 90}} onClick={this.search}>Buscar</Button>
         <Button color='blue' size='small' style={{width: 90}} onClick={this.clearSearchForm}>Limpar</Button>
-        <Button color='green' size='small' style={{width: 90}} onClick={this.toggleCreateModalVisibility}>Adicionar</Button>
+        <Button color='green' size='small' style={{width: 90}} onClick={this.props.toggleCreateModalVisibility}>Adicionar</Button>
       </Form>
     )
   }
