@@ -17,7 +17,8 @@ export default class Imobiliarias extends Component {
 
   state = {
     createModalVibible: false,
-    createRealEstate: {},
+    editModalVisible: false,
+    realEstate: null,
     states: [],
     cities: [],
     realEstates: []
@@ -62,6 +63,8 @@ export default class Imobiliarias extends Component {
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
+  toggleEditModalVisibility = () => this.setState({ editModalVisible: !this.state.editModalVisible })
+
   handleFilter = (searchByName, searchByCNPJ, searchByState, searchByCity) => {
     console.log(searchByName, searchByCNPJ, searchByState, searchByCity)
 
@@ -88,14 +91,27 @@ export default class Imobiliarias extends Component {
     return cities
   }
 
-  setCreateRealEstate = (obj) => {
-    let newCreateRealEstate = Object.assign(this.state.createRealEstate, obj)
-    this.setState({createRealEstate: newCreateRealEstate})
+  save = () => {
+    console.log(this.realEstateCreateForm.getRealEstate())
+    this.toggleCreateModalVisibility()
   }
 
-  save = () => {
-    console.log(this.state.createRealEstate)
-    this.toggleCreateModalVisibility()
+  clearCreateForm = () => {
+    this.realEstateCreateForm.resetForm()
+  }
+
+  showEditForm = (id) => {
+    RealEstatesAPI.fetchById(id)
+      .then((response) => {
+        this.setState({ realEstate: response.data, editModalVisible: true })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  showDeleteConfirmation = (id) => {
+    console.log(id)
   }
 
   render() {
@@ -136,10 +152,10 @@ export default class Imobiliarias extends Component {
                   <Table.Cell>{r.cofeci}</Table.Cell>
                   <Table.Cell>{r.addressZipCode.city.name} / {r.addressZipCode.city.state.stateAbbreviation}</Table.Cell>
                   <Table.Cell collapsing textAlign='left'>
-                    <Button color='blue' size='small' icon>
+                    <Button color='blue' size='small' icon onClick={() => this.showEditForm(r.id)}>
                       <Icon name='edit' />
                     </Button>
-                    <Button color='red' size='small' icon>
+                    <Button color='red' size='small' icon onClick={() => this.showDeleteConfirmation(r.id)}>
                       <Icon name='remove' />
                     </Button>
                   </Table.Cell>
@@ -155,10 +171,33 @@ export default class Imobiliarias extends Component {
           onClose={this.toggleCreateModalVisibility}>
           <Modal.Header>Cadastro de uma nova Imobiliária</Modal.Header>
           <Modal.Content scrolling>
-            <RealEstateForm states={states} setRealEstate={this.setCreateRealEstate} />
+            <RealEstateForm 
+              states={states} 
+              fetchCities={this.fetchCities}
+              ref={e => this.realEstateCreateForm = e} />
           </Modal.Content>
           <Modal.Actions>
             <Button color='red' onClick={this.toggleCreateModalVisibility}>Cancelar</Button>
+            <Button color='blue' onClick={this.clearCreateForm}>Limpar</Button>
+            <Button color='blue' onClick={this.save}>Salvar</Button>
+          </Modal.Actions>
+        </Modal>
+
+        <Modal 
+          size='large' dimmer
+          open={this.state.editModalVisible} 
+          onClose={this.toggleEditModalVisibility}>
+          <Modal.Header>Edição de Imobiliária</Modal.Header>
+          <Modal.Content scrolling>
+            <RealEstateForm 
+              realEstate={this.state.realEstate}
+              states={states} 
+              fetchCities={this.fetchCities}
+              ref={e => this.realEstateEditForm = e} />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color='red' onClick={this.toggleEditModalVisibility}>Cancelar</Button>
+            <Button color='blue' onClick={this.clearCreateForm}>Limpar</Button>
             <Button color='blue' onClick={this.save}>Salvar</Button>
           </Modal.Actions>
         </Modal>
