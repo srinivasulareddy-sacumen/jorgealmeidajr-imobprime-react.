@@ -40,4 +40,19 @@ export default class RealEstatesAPI {
     return request
   }
 
+  static save(data) {
+    const request  = axios({
+      method: 'post',
+      url: `${ROOT_URL}/real-estates`,
+      headers: [],
+      data
+    })
+
+    return request
+  }
+
+  static update(data) {
+
+  }
+
 }

@@ -92,8 +92,17 @@ export default class Imobiliarias extends Component {
   }
 
   save = () => {
-    console.log(this.realEstateCreateForm.getRealEstate())
-    this.toggleCreateModalVisibility()
+    if(!this.realEstateCreateForm.formHasFieldsWithErrors()) {
+      let data = this.realEstateCreateForm.getRealEstate()
+
+      RealEstatesAPI.save(data)
+        .then((response) => {
+          this.toggleCreateModalVisibility()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
   }
 
   clearCreateForm = () => {
@@ -112,6 +121,17 @@ export default class Imobiliarias extends Component {
 
   showDeleteConfirmation = (id) => {
     console.log(id)
+  }
+
+  clearEditForm = () => {
+    this.realEstateEditForm.resetForm()
+  }
+
+  update = () => {
+    if(!this.realEstateEditForm.formHasFieldsWithErrors()) {
+      let data = this.realEstateEditForm.getRealEstate()
+      
+    }
   }
 
   render() {
@@ -197,8 +217,8 @@ export default class Imobiliarias extends Component {
           </Modal.Content>
           <Modal.Actions>
             <Button color='red' onClick={this.toggleEditModalVisibility}>Cancelar</Button>
-            <Button color='blue' onClick={this.clearCreateForm}>Limpar</Button>
-            <Button color='blue' onClick={this.save}>Salvar</Button>
+            <Button color='blue' onClick={this.clearEditForm}>Limpar</Button>
+            <Button color='blue' onClick={this.update}>Salvar</Button>
           </Modal.Actions>
         </Modal>
       </div>

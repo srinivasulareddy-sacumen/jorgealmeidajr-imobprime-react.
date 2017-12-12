@@ -8,25 +8,43 @@ export default class RealEstateForm extends Component {
   constructor(props) {
     super(props)
 
+    // prepare for edit RealEstate
     if(props.realEstate) {
+      const realEstate = props.realEstate
+      
       this.state = {
-        id: props.realEstate.id,
-        name: props.realEstate.name,
-        cnpj: props.realEstate.cnpj,
-        cofeci: props.realEstate.cofeci,
+        id: realEstate.id,
+        name: realEstate.name,
+        cnpj: realEstate.cnpj,
+        cofeci: realEstate.cofeci,
 
-        addressNumber: props.realEstate.adressNumber,
-        addressDescription: props.realEstate.adressDescription,
-        addressState: props.realEstate.addressZipCode.city.state.id,
-        addressCity: props.realEstate.addressZipCode.city.id,
+        addressNumber: realEstate.addressNumber,
+        addressDescription: realEstate.addressDescription,
+
+        addressPostalCode: realEstate.addressZipCode.postalCode,
+        addressStreet: realEstate.addressZipCode.street,
+        addressRegion: realEstate.addressZipCode.region,
+        addressState: realEstate.addressZipCode.city.state.id,
+        addressCity: realEstate.addressZipCode.city.id,
+
+        nameError: false,
+        cnpjError: false,
+        cofeciError: false,
+        addressPostalCodeError: false,
 
         cities: []
       }
 
-      if(props.realEstate.addressZipCode.city) {
-        this.state = {...this.state, cities: [{key:4500, text:'Florianopoolis', value:4500}]}
+      if(realEstate.addressZipCode.city) {
+        const city = realEstate.addressZipCode.city
+
+        this.state = {
+          ...this.state, 
+          cities: [{ key: city.id, text: city.name, value: city.id }]
+        }
       }
 
+    // prepare to create a new RealEstate
     } else {
       this.state = {
         id: null,
@@ -42,13 +60,67 @@ export default class RealEstateForm extends Component {
         addressState: null,
         addressCity: null,
 
+        nameError: false,
+        cnpjError: false,
+        cofeciError: false,
+        addressPostalCodeError: false,
+
         cities: []
       }
     }
   }
 
+  componentDidMount() {
+
+  }
+
+  formHasFieldsWithErrors() {
+    let errors = {}
+
+    if(this.state.name.trim() === '')
+      errors = {...errors, nameError: true}
+    else
+      errors = {...errors, nameError: false}
+
+    if(this.state.cnpj.trim() === '')
+      errors = {...errors, cnpjError: true}
+    else
+      errors = {...errors, cnpjError: false}
+
+    if(this.state.cofeci.trim() === '')
+      errors = {...errors, cofeciError: true}
+    else
+      errors = {...errors, cofeciError: false}
+
+    if(this.state.addressPostalCode.trim() === '')
+      errors = {...errors, addressPostalCodeError: true}
+    else
+      errors = {...errors, addressPostalCodeError: false}
+
+    this.setState({...errors})
+    
+    const fieldsWithErrors = Object.keys(errors)
+      .filter(k => { return errors[k] === true })
+
+    console.log(fieldsWithErrors)
+    return fieldsWithErrors.length > 0
+  }
+
   getRealEstate() {
-    return Object.assign({}, this.state)
+    return {
+      id: this.state.id,
+      name: this.state.name,
+      cnpj: this.state.cnpj,
+      cofeci: this.state.cofeci,
+
+      addressNumber: this.state.addressNumber,
+      addressDescription: this.state.addressDescription,
+
+      addressZipCode: {
+        id: 14091, 
+        postalCode: this.state.addressPostalCode
+      }
+    }
   }
 
   handleAfterStateChange = () => {
@@ -89,26 +161,24 @@ export default class RealEstateForm extends Component {
     return (
       <Form size='small'>
         <Form.Group widths='equal'>
-          {/* error */}
           <Form.Input 
             required
+            error={this.state.nameError}
             label='Razão Social' 
             placeholder='Razão Social da Imobiliária' 
             onChange={e => this.setState({ name: e.target.value })}
             value={this.state.name} />
           
-          {/* error */}
-          <Form.Field required>
+          <Form.Field required error={this.state.cnpjError}>
             <label>CNPJ</label>
-            <Input 
+            <Input               
               label='#' 
               placeholder='99.999.999/9999-99'
               onChange={e => this.setState({ cnpj: e.target.value })}
               value={this.state.cnpj} />
           </Form.Field>
 
-          {/* error */}
-          <Form.Field required>
+          <Form.Field required error={this.state.cofeciError}>
             <label>COFECI</label>
             <Input 
               placeholder='0'
@@ -123,8 +193,7 @@ export default class RealEstateForm extends Component {
 
         <Header size='medium'>Endereço da sede</Header>
         <Form.Group>
-          {/* error */}
-          <Form.Field width={4} required>
+          <Form.Field width={4} required error={this.state.addressPostalCodeError}>
             <label>CEP</label>
             <Input 
               label='#' 
