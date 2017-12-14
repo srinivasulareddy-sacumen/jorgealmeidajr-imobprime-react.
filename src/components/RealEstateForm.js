@@ -75,22 +75,11 @@ export default class RealEstateForm extends Component {
   }
 
   formHasFieldsWithErrors() {
-    let errors = {}
-
-    if(this.state.name.trim() === '')
-      errors = {...errors, nameError: true}
-    else
-      errors = {...errors, nameError: false}
-
-    if(this.state.cnpj.trim() === '')
-      errors = {...errors, cnpjError: true}
-    else
-      errors = {...errors, cnpjError: false}
-
-    if(this.state.cofeci.trim() === '')
-      errors = {...errors, cofeciError: true}
-    else
-      errors = {...errors, cofeciError: false}
+    let errors = {
+      nameError: (this.state.name.trim() === ''),
+      cnpjError: (this.state.cnpj.trim() === ''),
+      cofeciError: (this.state.cofeci.trim() === '')
+    }
 
     if(this.state.addressPostalCode.trim() === '')
       errors = {...errors, addressPostalCodeError: true}
@@ -102,7 +91,6 @@ export default class RealEstateForm extends Component {
     const fieldsWithErrors = Object.keys(errors)
       .filter(k => { return errors[k] === true })
 
-    console.log(fieldsWithErrors)
     return fieldsWithErrors.length > 0
   }
 
@@ -110,15 +98,14 @@ export default class RealEstateForm extends Component {
     return {
       id: this.state.id,
       name: this.state.name,
-      cnpj: this.state.cnpj,
-      cofeci: this.state.cofeci,
+      cnpj: parseInt(this.state.cnpj),
+      cofeci: parseInt(this.state.cofeci),
 
-      addressNumber: this.state.addressNumber,
+      addressNumber: parseInt(this.state.addressNumber),
       addressDescription: this.state.addressDescription,
 
       addressZipCode: {
-        id: 14091, 
-        postalCode: this.state.addressPostalCode
+        id: this.state.addressZipCodeId
       }
     }
   }
@@ -135,6 +122,28 @@ export default class RealEstateForm extends Component {
   handleCitySearchFocus = async (e, data) => {
     let cities = await this.props.fetchCities(null, this.state.addressState)
     this.setState({ cities: cities.data.map((e) => ({ key: e.id, text: e.name, value: e.id })) })
+  }
+
+  handlePostalCodeBlur = e => {
+    const {addressPostalCode} = this.state
+    this.props.fetchZipCodeByPostalCode(addressPostalCode)
+      .then(r => {
+        const city = r.data.city
+
+        this.setState({
+          addressZipCodeId: r.data.id,
+          addressStreet: r.data.street,
+          addressRegion: r.data.region,
+          addressState: city.state.id,
+          addressCity: city.id,
+          cities: [{ key: city.id, text: city.name, value: city.id }]
+        })
+      })
+      .catch(error => {
+        this.props.fetchZipCodeWithViaCep(addressPostalCode)
+          .then(r => console.log(r.data))
+          .catch(error => console.log(error))
+      })
   }
 
   resetForm = () => {
@@ -199,7 +208,8 @@ export default class RealEstateForm extends Component {
               label='#' 
               placeholder='99.999-999'
               onChange={e => this.setState({ addressPostalCode: e.target.value })}
-              value={this.state.addressPostalCode} />
+              value={this.state.addressPostalCode}
+              onBlur={this.handlePostalCodeBlur} />
           </Form.Field>
 
           <Form.Input 

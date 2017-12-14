@@ -12,6 +12,7 @@ import RealEstateForm from './RealEstateForm'
 import StatesAPI from '../api/StatesAPI'
 import RealEstatesAPI from '../api/RealEstatesAPI'
 import CitiesAPI from '../api/CitiesAPI'
+import ZipCodesAPI from '../api/ZipCodesAPI'
 
 export default class Imobiliarias extends Component {
 
@@ -134,6 +135,15 @@ export default class Imobiliarias extends Component {
     }
   }
 
+  fetchZipCodeByPostalCode = (postalCode) => {
+    return ZipCodesAPI.fetchByPostalCode(postalCode)
+  }
+
+  fetchZipCodeWithViaCep = (postalCode) => {
+    postalCode = postalCode.replace(/-/g, '')
+    return ZipCodesAPI.fetchWithViaCep(postalCode)
+  }
+
   render() {
     const { states, cities, realEstates } = this.state
 
@@ -194,6 +204,8 @@ export default class Imobiliarias extends Component {
             <RealEstateForm 
               states={states} 
               fetchCities={this.fetchCities}
+              fetchZipCodeByPostalCode={this.fetchZipCodeByPostalCode}
+              fetchZipCodeWithViaCep={this.fetchZipCodeWithViaCep}
               ref={e => this.realEstateCreateForm = e} />
           </Modal.Content>
           <Modal.Actions>
