@@ -21,6 +21,7 @@ export default class RealEstateForm extends Component {
         addressNumber: realEstate.addressNumber,
         addressDescription: realEstate.addressDescription,
 
+        addressZipCodeId: realEstate.addressZipCode.id,
         addressPostalCode: realEstate.addressZipCode.postalCode,
         addressStreet: realEstate.addressZipCode.street,
         addressRegion: realEstate.addressZipCode.region,

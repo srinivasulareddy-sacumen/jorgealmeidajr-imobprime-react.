@@ -52,7 +52,14 @@ export default class RealEstatesAPI {
   }
 
   static update(data) {
+    const request  = axios({
+      method: 'put',
+      url: `${ROOT_URL}/real-estates`,
+      headers: [],
+      data
+    })
 
+    return request
   }
 
 }

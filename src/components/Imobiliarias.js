@@ -131,7 +131,15 @@ export default class Imobiliarias extends Component {
   update = () => {
     if(!this.realEstateEditForm.formHasFieldsWithErrors()) {
       let data = this.realEstateEditForm.getRealEstate()
-      
+      console.log(data)
+
+      RealEstatesAPI.update(data)
+        .then((response) => {
+          this.toggleEditModalVisibility()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 
