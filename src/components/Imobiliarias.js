@@ -67,8 +67,6 @@ export default class Imobiliarias extends Component {
   toggleEditModalVisibility = () => this.setState({ editModalVisible: !this.state.editModalVisible })
 
   handleFilter = (searchByName, searchByCNPJ, searchByState, searchByCity) => {
-    console.log(searchByName, searchByCNPJ, searchByState, searchByCity)
-
     RealEstatesAPI.filter(searchByName, searchByCNPJ, searchByState, searchByCity)
       .then((response) => {
         if(response.status === 204) { // NO CONTENT
@@ -98,6 +96,8 @@ export default class Imobiliarias extends Component {
 
       RealEstatesAPI.save(data)
         .then((response) => {
+          const params = this.realEstatesSearch.getSearchParams()
+          this.handleFilter(params.searchByName, params.searchByCNPJ, params.searchByState, params.searchByCity)
           this.toggleCreateModalVisibility()
         })
         .catch((error) => {
@@ -131,10 +131,11 @@ export default class Imobiliarias extends Component {
   update = () => {
     if(!this.realEstateEditForm.formHasFieldsWithErrors()) {
       let data = this.realEstateEditForm.getRealEstate()
-      console.log(data)
-
+      
       RealEstatesAPI.update(data)
         .then((response) => {
+          const params = this.realEstatesSearch.getSearchParams()
+          this.handleFilter(params.searchByName, params.searchByCNPJ, params.searchByState, params.searchByCity)
           this.toggleEditModalVisibility()
         })
         .catch((error) => {
@@ -153,13 +154,14 @@ export default class Imobiliarias extends Component {
   }
 
   render() {
-    const { states, cities, realEstates } = this.state
+    const { states, realEstates } = this.state
 
     return (
       <div>
         <h1>Listagem de Imobiliárias</h1>
 
         <RealEstatesSearch 
+          ref={input => this.realEstatesSearch = input}
           states={states} 
           fetchInitialRealEstatesPage={this.fetchInitialRealEstatesPage}
           fetchCities={this.fetchCities}

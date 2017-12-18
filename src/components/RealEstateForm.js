@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
 
-import { Form, Input, Select, Divider, Header } from 'semantic-ui-react'
+import { Form, Input, Divider, Header } from 'semantic-ui-react'
 
 export default class RealEstateForm extends Component {
 
@@ -11,39 +11,7 @@ export default class RealEstateForm extends Component {
     // prepare for edit RealEstate
     if(props.realEstate) {
       const realEstate = props.realEstate
-      
-      this.state = {
-        id: realEstate.id,
-        name: realEstate.name,
-        cnpj: realEstate.cnpj,
-        cofeci: realEstate.cofeci,
-
-        addressNumber: realEstate.addressNumber,
-        addressDescription: realEstate.addressDescription,
-
-        addressZipCodeId: realEstate.addressZipCode.id,
-        addressPostalCode: realEstate.addressZipCode.postalCode,
-        addressStreet: realEstate.addressZipCode.street,
-        addressRegion: realEstate.addressZipCode.region,
-        addressState: realEstate.addressZipCode.city.state.id,
-        addressCity: realEstate.addressZipCode.city.id,
-
-        nameError: false,
-        cnpjError: false,
-        cofeciError: false,
-        addressPostalCodeError: false,
-
-        cities: []
-      }
-
-      if(realEstate.addressZipCode.city) {
-        const city = realEstate.addressZipCode.city
-
-        this.state = {
-          ...this.state, 
-          cities: [{ key: city.id, text: city.name, value: city.id }]
-        }
-      }
+      this.initializeFormForEdit(realEstate)
 
     // prepare to create a new RealEstate
     } else {
@@ -61,19 +29,55 @@ export default class RealEstateForm extends Component {
         addressState: null,
         addressCity: null,
 
-        nameError: false,
-        cnpjError: false,
-        cofeciError: false,
-        addressPostalCodeError: false,
+        ...this.getInitialFormStateErrors(),
 
         cities: []
       }
     }
   }
 
-  componentDidMount() {
+  initializeFormForEdit(realEstate) {
+    this.state = {
+      id: realEstate.id,
+      name: realEstate.name,
+      cnpj: realEstate.cnpj.toString(),
+      cofeci: realEstate.cofeci.toString(),
 
+      addressNumber: (realEstate.addressNumber === null) ? '' : realEstate.addressNumber.toString(),
+      addressDescription: (realEstate.addressDescription === null) ? '' : realEstate.addressDescription.toString(),
+
+      addressZipCodeId: realEstate.addressZipCode.id,
+      addressPostalCode: realEstate.addressZipCode.postalCode,
+      addressStreet: realEstate.addressZipCode.street,
+      addressRegion: realEstate.addressZipCode.region,
+      addressState: realEstate.addressZipCode.city.state.id,
+      addressCity: realEstate.addressZipCode.city.id,
+
+      ...this.getInitialFormStateErrors(),
+
+      cities: []
+    }
+
+    if(realEstate.addressZipCode.city) {
+      const city = realEstate.addressZipCode.city
+
+      this.state = {
+        ...this.state, 
+        cities: [{ key: city.id, text: city.name, value: city.id }]
+      }
+    }
   }
+
+  getInitialFormStateErrors() {
+    return {
+      nameError: false,
+      cnpjError: false,
+      cofeciError: false,
+      addressPostalCodeError: false
+    }
+  }
+
+  componentDidMount() { }
 
   formHasFieldsWithErrors() {
     let errors = {
@@ -102,8 +106,8 @@ export default class RealEstateForm extends Component {
       cnpj: parseInt(this.state.cnpj),
       cofeci: parseInt(this.state.cofeci),
 
-      addressNumber: parseInt(this.state.addressNumber),
-      addressDescription: this.state.addressDescription,
+      addressNumber: (this.state.addressNumber.trim() === '') ? null : parseInt(this.state.addressNumber),
+      addressDescription: (this.state.addressDescription.trim() === '') ? null : this.state.addressDescription,
 
       addressZipCode: {
         id: this.state.addressZipCodeId

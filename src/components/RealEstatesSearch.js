@@ -13,6 +13,15 @@ export default class RealEstatesSearch extends Component {
     cities: []
   }
 
+  getSearchParams() {
+    return { 
+      searchByName: this.state.searchByName, 
+      searchByCNPJ: this.state.searchByCNPJ, 
+      searchByState: this.state.searchByState, 
+      searchByCity: this.state.searchByCity 
+    } 
+  }
+
   search = (e) => {
     e.preventDefault()
 
