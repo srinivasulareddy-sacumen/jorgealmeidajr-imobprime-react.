@@ -62,4 +62,14 @@ export default class RealEstatesAPI {
     return request
   }
 
+  static delete(id) {
+    const request = axios({
+      method: 'delete',
+      url: `${ROOT_URL}/real-estates/${id}`,
+      headers: []
+    })
+
+    return request
+  }
+
 }

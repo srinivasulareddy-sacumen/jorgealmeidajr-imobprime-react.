@@ -19,7 +19,10 @@ export default class Imobiliarias extends Component {
   state = {
     createModalVibible: false,
     editModalVisible: false,
+    deleteModalVisible: false,
+
     realEstate: null,
+
     states: [],
     cities: [],
     realEstates: []
@@ -65,6 +68,8 @@ export default class Imobiliarias extends Component {
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
   toggleEditModalVisibility = () => this.setState({ editModalVisible: !this.state.editModalVisible })
+
+  toggleDeleteModalVisibility = () => this.setState({ deleteModalVisible: !this.state.deleteModalVisible })
 
   handleFilter = (searchByName, searchByCNPJ, searchByState, searchByCity) => {
     RealEstatesAPI.filter(searchByName, searchByCNPJ, searchByState, searchByCity)
@@ -121,7 +126,13 @@ export default class Imobiliarias extends Component {
   }
 
   showDeleteConfirmation = (id) => {
-    console.log(id)
+    RealEstatesAPI.fetchById(id)
+      .then((response) => {
+        this.setState({ realEstate: response.data, deleteModalVisible: true })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   clearEditForm = () => {
@@ -142,6 +153,18 @@ export default class Imobiliarias extends Component {
           console.log(error)
         })
     }
+  }
+
+  delete = () => {
+    RealEstatesAPI.delete(this.state.realEstate.id)
+      .then((resp) => {
+        const params = this.realEstatesSearch.getSearchParams()
+        this.handleFilter(params.searchByName, params.searchByCNPJ, params.searchByState, params.searchByCity)
+        this.toggleDeleteModalVisibility()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   fetchZipCodeByPostalCode = (postalCode) => {
@@ -241,6 +264,25 @@ export default class Imobiliarias extends Component {
             <Button color='red' onClick={this.toggleEditModalVisibility}>Cancelar</Button>
             <Button color='blue' onClick={this.clearEditForm}>Limpar</Button>
             <Button color='blue' onClick={this.update}>Salvar</Button>
+          </Modal.Actions>
+        </Modal>
+
+        <Modal 
+          size='small' dimmer
+          open={this.state.deleteModalVisible} 
+          onClose={this.toggleDeleteModalVisibility}>
+          <Modal.Header>Confirmar Remoção de Imobiliária</Modal.Header>
+          <Modal.Content>
+            {
+              this.state.realEstate !== null &&
+              <Header as='h4' dividing>
+                Deseja mesmo remover a imobiliária({this.state.realEstate.name}) selecionada ?
+              </Header>
+            }
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color='black' onClick={this.toggleDeleteModalVisibility}>Não</Button>
+            <Button color='red' onClick={this.delete}>Sim</Button>
           </Modal.Actions>
         </Modal>
       </div>
