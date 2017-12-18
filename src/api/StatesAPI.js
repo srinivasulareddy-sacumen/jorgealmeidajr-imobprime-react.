@@ -15,4 +15,14 @@ export default class StatesAPI {
     return request
   }
 
+  static fetchByAbbreviation(abbreviation) {
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/states/${abbreviation}`,
+      headers: []
+    })
+
+    return request
+  }
+
 }
