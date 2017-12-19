@@ -258,6 +258,8 @@ export default class Imobiliarias extends Component {
               realEstate={this.state.realEstate}
               states={states} 
               fetchCities={this.fetchCities}
+              fetchZipCodeByPostalCode={this.fetchZipCodeByPostalCode}
+              fetchZipCodeWithViaCep={this.fetchZipCodeWithViaCep}
               ref={e => this.realEstateEditForm = e} />
           </Modal.Content>
           <Modal.Actions>

@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import { Form, Input, Divider, Header } from 'semantic-ui-react'
 
 import StatesAPI from '../api/StatesAPI'
+import CitiesAPI from '../api/CitiesAPI'
 
 export default class RealEstateForm extends Component {
 
@@ -115,7 +116,12 @@ export default class RealEstateForm extends Component {
         id: this.state.addressZipCodeId,
         postalCode: this.state.addressPostalCode,
         street: this.state.addressStreet,
-        region: this.state.addressRegion
+        region: this.state.addressRegion,
+        type: '',
+
+        city: {
+          id: this.state.addressCity
+        }
       }
     }
   }
@@ -157,15 +163,21 @@ export default class RealEstateForm extends Component {
   fetchZipCodeWithViaCepHandler = async (addressPostalCode) => {
     try {
       const zipCode = await this.props.fetchZipCodeWithViaCep(addressPostalCode)
-      console.log(zipCode.data)
+      
       const state = await StatesAPI.fetchByAbbreviation(zipCode.data.uf)
-      console.log(state.data)
-      //const city = 
+      const addressState = state.data.id
 
+      const cities = await CitiesAPI.filter(zipCode.data.localidade, addressState)
+      const city = cities.data[0]
+      
       this.setState({
+        addressZipCodeId: null,
         addressStreet: zipCode.data.logradouro,
         addressRegion: zipCode.data.bairro,
-        addressDescription: zipCode.data.complemento
+        addressDescription: zipCode.data.complemento,
+        addressState,
+        addressCity: city.id,
+        cities: [{ key: city.id, text: city.name, value: city.id }]
       })
     } catch(error) {
       console.log(error)
