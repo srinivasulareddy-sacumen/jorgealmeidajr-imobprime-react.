@@ -41,12 +41,7 @@ export default class Home extends Component {
     numeroGaragens: null,
     tiposImovel: [],
     cidades: [],
-    markers: [
-      { index: 1, position: { lat: -27.547659, lng: -48.497837 } },
-      { index: 2, position: { lat: -27.560695, lng: -48.501969 } },
-      { index: 3, position: { lat: -27.556242, lng: -48.499497 } },
-      { index: 4, position: { lat: -27.554760, lng: -48.497931 } }
-    ]
+    markers: []
   }
 
   componentDidMount() {
@@ -57,6 +52,17 @@ export default class Home extends Component {
       .map((cidade) => ({ key: cidade.id, text: cidade.nome, value: cidade.id }))
 
     this.setState({ tiposImovel, cidades })
+
+    ImoveisAPI.fetchPropertiesMostRecent()
+      .then(resp => {
+        const markers = resp.data.map((p) => {
+          const addressData = JSON.parse(p.addressData)
+          return { index: p.id, position: { lat: addressData.latitude, lng: addressData.longitude} }
+        })
+
+        this.setState({markers})
+      })
+      .catch(error => console.log(error))
   }
 
   toggleSearchFormVisibility = () => this.setState({ searchFormVisible: !this.state.searchFormVisible })

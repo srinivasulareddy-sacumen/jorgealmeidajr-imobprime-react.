@@ -1,5 +1,19 @@
 
+import axios from 'axios'
+
+const ROOT_URL = window.location.href.indexOf('localhost') > 0 ? 'http://localhost:8080/api' : '/api'
+
 export default class ImoveisAPI {
+
+  static fetchPropertiesMostRecent() {
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/search/properties`,
+      headers: []
+    })
+
+    return request
+  }
 
   static getTiposImovel() {
     const tiposImovel = [
