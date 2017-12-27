@@ -13,13 +13,15 @@ import {
   GoogleMap, Marker 
 } from "react-google-maps"
 
+import GoogleMapsAPI from '../api/GoogleMapsAPI'
 import ImoveisAPI from '../api/ImoveisAPI'
 import CidadesAPI from '../api/CitiesAPI'
+
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) => (
   <GoogleMap
     defaultZoom={14}
-    defaultCenter={{ lat: -27.539909, lng: -48.498802 }}
+    defaultCenter={props.defaultCenter}
   >
     {
       props.markers.map((marker) =>
@@ -41,6 +43,9 @@ export default class Home extends Component {
     numeroGaragens: null,
     tiposImovel: [],
     cidades: [],
+
+    defaultCenter: {lat: -27.5585325, lng: -48.4971103},
+    center: null,
     markers: []
   }
 
@@ -63,6 +68,38 @@ export default class Home extends Component {
         this.setState({markers})
       })
       .catch(error => console.log(error))
+
+    if (navigator.geolocation) {
+      // geolocation is available
+      navigator.geolocation.getCurrentPosition((position) => {
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+        
+        GoogleMapsAPI.fetchLocation(lat, lng)
+          .then(resp => {
+            const data = resp.data
+            
+            if(data.status === 'OK') {
+              // console.log(data)
+              const result = data.results.find((r) => {
+                return r.types.includes("locality") && r.types.includes("political")
+              })
+
+              // console.log(result.geometry.location)
+              this.setState({center: result.geometry.location, defaultCenter: null})
+            }
+            
+          })
+
+      }, (error) => {
+        console.log(error)
+
+      })
+
+    } else {
+      // geolocation is not supported
+
+    }
   }
 
   toggleSearchFormVisibility = () => this.setState({ searchFormVisible: !this.state.searchFormVisible })
@@ -72,8 +109,12 @@ export default class Home extends Component {
   handleDisponibilidadeChange = (e, { value }) => { }
 
   render() {
+    const currentCenter = (this.state.center !== null) ? this.state.center : this.state.defaultCenter
+    
     const { tiposImovel, cidades } = this.state
 
+    const googleMapURL = GoogleMapsAPI.getGoogleMapUrl()
+    
     return (
       <div>
         <Header as='h1'>Busca de Imóveis</Header>
@@ -171,8 +212,9 @@ export default class Home extends Component {
           <Sidebar.Pusher>
             {this.state.searchMode === 'map' &&
             <MyMapComponent 
+              defaultCenter={currentCenter}
               markers={this.state.markers}
-              googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbAZsAD0dyCmoVyIJJhmlGa4XtjsxFdqQ&v=3.exp&libraries=geometry,drawing,places"
+              googleMapURL={googleMapURL}
               loadingElement={<div style={{ height: `100%` }} />}
               containerElement={<div style={{ height: `700px` }} />}
               mapElement={<div style={{ height: `100%` }} />}
