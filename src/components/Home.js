@@ -44,6 +44,7 @@ export default class Home extends Component {
     tiposImovel: [],
     cidades: [],
 
+    properties: [],
     defaultCenter: {lat: -27.5585325, lng: -48.4971103},
     center: null,
     markers: []
@@ -106,11 +107,21 @@ export default class Home extends Component {
         return { index: p.id, position: { lat: addressData.latitude, lng: addressData.longitude} }
       })
 
-      this.setState({center: result.geometry.location, defaultCenter: null, markers})
+      this.setState({
+        center: result.geometry.location, 
+        defaultCenter: null, 
+        markers, 
+        properties
+      })
 
     } catch(error) {
       console.log(error)
     }
+  }
+
+  propertySearchFormButtonClicked = () => {
+    document.getElementById("propertySearch").scrollIntoView()
+    setTimeout(() => this.toggleSearchFormVisibility(), 300)
   }
 
   toggleSearchFormVisibility = () => this.setState({ searchFormVisible: !this.state.searchFormVisible })
@@ -132,7 +143,7 @@ export default class Home extends Component {
 
         <Menu>
           <Menu.Item>
-            <Button icon color='blue' onClick={() => this.toggleSearchFormVisibility()}>
+            <Button icon color='blue' onClick={this.propertySearchFormButtonClicked}>
               <Icon name='search' />
             </Button>  
           </Menu.Item>
@@ -147,16 +158,16 @@ export default class Home extends Component {
 
           <Menu.Item position='right'>
             <Button.Group>
-              <Button color='google plus' icon='world' content='Mapa'
+              <Button color='google plus' icon='world' style={{width: 50}}
                 onClick={() => this.setState({ searchMode: 'map' })}></Button>
               <Button.Or text='ou' />
-              <Button color='blue' icon='grid layout' content='Grid' 
+              <Button color='blue' icon='grid layout' style={{width: 50}}
                 onClick={() => this.setState({ searchMode: 'grid' })}></Button>
             </Button.Group>
           </Menu.Item>
         </Menu>
 
-        <Sidebar.Pushable>
+        <Sidebar.Pushable id='propertySearch'>
           <Sidebar animation='overlay' width='very wide' direction='left' visible={this.state.searchFormVisible}>
             <Segment style={{height: '100%'}}>
               <Form size='small'>
