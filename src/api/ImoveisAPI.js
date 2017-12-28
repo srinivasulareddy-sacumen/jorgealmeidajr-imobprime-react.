@@ -5,10 +5,10 @@ const ROOT_URL = window.location.href.indexOf('localhost') > 0 ? 'http://localho
 
 export default class ImoveisAPI {
 
-  static fetchPropertiesMostRecent() {
+  static fetchPropertiesMostRecent(cityId) {
     const request = axios({
       method: 'get',
-      url: `${ROOT_URL}/search/properties`,
+      url: `${ROOT_URL}/search/properties?cityId=${cityId}`,
       headers: []
     })
 

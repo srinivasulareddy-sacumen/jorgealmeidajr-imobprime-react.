@@ -28,6 +28,16 @@ export default class CitiesAPI {
     return request
   }
 
+  static fetchOne(name, stateAbbreviation) {
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/cities/${name}/${stateAbbreviation}`,
+      headers: []
+    })
+
+    return request
+  }
+
   static sortAscByString(value1, value2) {
     if (value1 < value2) // ASC
       return -1 

@@ -15,7 +15,7 @@ import {
 
 import GoogleMapsAPI from '../api/GoogleMapsAPI'
 import ImoveisAPI from '../api/ImoveisAPI'
-import CidadesAPI from '../api/CitiesAPI'
+import CitiesAPI from '../api/CitiesAPI'
 
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) => (
@@ -53,52 +53,63 @@ export default class Home extends Component {
     const tiposImovel = ImoveisAPI.getTiposImovel()
       .map((tipo) => ({ key: tipo.id, text: tipo.nome, value: tipo.id }))
 
-    const cidades = CidadesAPI.getCidades()
+    const cidades = CitiesAPI.getCidades()
       .map((cidade) => ({ key: cidade.id, text: cidade.nome, value: cidade.id }))
 
     this.setState({ tiposImovel, cidades })
 
-    ImoveisAPI.fetchPropertiesMostRecent()
-      .then(resp => {
-        const markers = resp.data.map((p) => {
-          const addressData = JSON.parse(p.addressData)
-          return { index: p.id, position: { lat: addressData.latitude, lng: addressData.longitude} }
-        })
+    this.handlePropertiesMapInit()
+  }
 
-        this.setState({markers})
-      })
-      .catch(error => console.log(error))
+  getCurrentPosition(options) {
+    return new Promise(function(resolve, reject) {
+      navigator.geolocation.getCurrentPosition(resolve, reject, options)
+    })
+  }
 
+  async handlePropertiesMapInit() {
     if (navigator.geolocation) {
       // geolocation is available
-      navigator.geolocation.getCurrentPosition((position) => {
-        const lat = position.coords.latitude
-        const lng = position.coords.longitude
+      const position = await this.getCurrentPosition()
+      const lat = position.coords.latitude
+      const lng = position.coords.longitude
         
-        GoogleMapsAPI.fetchLocation(lat, lng)
-          .then(resp => {
-            const data = resp.data
-            
-            if(data.status === 'OK') {
-              // console.log(data)
-              const result = data.results.find((r) => {
-                return r.types.includes("locality") && r.types.includes("political")
-              })
-
-              // console.log(result.geometry.location)
-              this.setState({center: result.geometry.location, defaultCenter: null})
-            }
-            
-          })
-
-      }, (error) => {
-        console.log(error)
-
-      })
+      const googleMapsResp = await GoogleMapsAPI.fetchLocation(lat, lng)  
+      
+      if(googleMapsResp.data.status === 'OK') {
+        this.handleGoogleMapsRespSuccess(googleMapsResp)
+      }
 
     } else {
-      // geolocation is not supported
+      // geolocation is not supported ...
+    }
+  }
 
+  async handleGoogleMapsRespSuccess(googleMapsResp) {
+    const result = googleMapsResp.data.results.find((r) => {
+      return r.types.includes("locality") && r.types.includes("political")
+    })
+
+    // console.log(result)
+
+    try {
+      const addressName = result.formatted_address.split(',')
+      const cityName = addressName[0].trim()
+      const stateAbbreviation = addressName[1].trim()
+      
+      const city = await CitiesAPI.fetchOne(cityName, stateAbbreviation)
+
+      const properties = await ImoveisAPI.fetchPropertiesMostRecent(city.data.id)
+  
+      const markers = properties.data.map((p) => {
+        const addressData = JSON.parse(p.addressData)
+        return { index: p.id, position: { lat: addressData.latitude, lng: addressData.longitude} }
+      })
+
+      this.setState({center: result.geometry.location, defaultCenter: null, markers})
+
+    } catch(error) {
+      console.log(error)
     }
   }
 
