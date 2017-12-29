@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { 
   Button, Icon, 
   Header, Image, Grid,
-  Menu, Input, Form,
+  Menu, Input, Select, Form,
   Sidebar, Segment,
   Modal
 } from 'semantic-ui-react'
@@ -37,6 +37,9 @@ export default class Home extends Component {
     searchFormVisible: false,
     imovelDetailsVisible: false,
     searchMode: 'map',
+
+    cityNameHomeParam: null,
+
     tipoImovel: null,
     disponibilidade: null,
     numeroQuartos: null,
@@ -44,6 +47,7 @@ export default class Home extends Component {
     tiposImovel: [],
     cidades: [],
 
+    cities: [],
     properties: [],
     defaultCenter: {lat: -27.5585325, lng: -48.4971103},
     center: null,
@@ -58,6 +62,12 @@ export default class Home extends Component {
       .map((cidade) => ({ key: cidade.id, text: cidade.nome, value: cidade.id }))
 
     this.setState({ tiposImovel, cidades })
+
+    CitiesAPI.fetchAllByName('')
+      .then((resp) => {
+        const cities = resp.data.map((c) => ({ key: c.id, text: `${c.name}, ${c.state.name}`, value: c.id }))
+        this.setState({cities}) 
+      })
 
     this.handlePropertiesMapInit()
   }
@@ -130,11 +140,20 @@ export default class Home extends Component {
 
   handleDisponibilidadeChange = (e, { value }) => { }
 
+  handleCityNameSearchChange = async (e, { searchQuery }) => {
+    let cities = await CitiesAPI.fetchAllByName(searchQuery.trim())
+    this.setState({ cities: cities.data.map((c) => ({ key: c.id, text: `${c.name}, ${c.state.name}`, value: c.id })) })
+  }
+
+  handleCityNameChange = (e, {value}) => { 
+    this.setState({ cityNameHomeParam: value })
+  }
+
   render() {
     const currentCenter = (this.state.center !== null) ? this.state.center : this.state.defaultCenter
     
-    const { tiposImovel, cidades } = this.state
-
+    const { tiposImovel, cidades, cities } = this.state
+    
     const googleMapURL = GoogleMapsAPI.getGoogleMapUrl()
     
     return (
@@ -149,11 +168,16 @@ export default class Home extends Component {
           </Menu.Item>
 
           <Menu.Item>
-            <Input 
+            {/* implement search by region/bairro */}
+            <Select 
+              placeholder='Informe a Cidade do Imóvel desejado...' 
               className='icon' icon='search' 
-              placeholder='Informe a cidade ou o bairro do imóvel...' 
-              style={{width: 380}}
-            />
+              style={{width: 380, height: 42}}
+              search
+              options={cities} 
+              onSearchChange={this.handleCityNameSearchChange}
+              onChange={this.handleCityNameChange} 
+              value={this.state.cityNameHomeParam} />
           </Menu.Item>
 
           <Menu.Item position='right'>
