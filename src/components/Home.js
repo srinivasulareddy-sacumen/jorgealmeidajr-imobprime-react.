@@ -145,8 +145,88 @@ export default class Home extends Component {
     this.setState({ cities: cities.data.map((c) => ({ key: c.id, text: `${c.name}, ${c.state.name}`, value: c.id })) })
   }
 
-  handleCityNameChange = (e, {value}) => { 
+  handleCityNameChange = async (e, {value}) => { 
+    const cityId = value
+
+    const cityResp = await CitiesAPI.fetchOneById(cityId)
+    const cityName = `${cityResp.data.name}, ${cityResp.data.state.stateAbbreviation}`
+    
+    const googleMapsResp = await GoogleMapsAPI.fetchLocationByCityName(cityName)
+    
+    if(googleMapsResp.data.status === 'OK') {
+      const result = googleMapsResp.data.results[0]
+
+      const properties = await ImoveisAPI.fetchPropertiesMostRecent(cityResp.data.id)
+  
+      const markers = properties.data.map((p) => {
+        const addressData = JSON.parse(p.addressData)
+        return { index: p.id, position: { lat: addressData.latitude, lng: addressData.longitude} }
+      })
+
+      this.setState({ 
+        center: result.geometry.location, 
+        defaultCenter: null, 
+        markers,
+        properties
+      })
+    }
+
     this.setState({ cityNameHomeParam: value })
+  }
+
+  renderGridSearchMode = () => {
+    let gridColumns = []
+
+    for (let i = 0; i < this.state.properties.data.length; i++) { 
+      let property = this.state.properties.data[i]
+      let addressData = JSON.parse(property.addressData)
+
+      gridColumns.push(
+        <Grid.Column key={property.id}>
+          <Image src='img/imovel01.jpg' size='small' />{property.imagePath}
+          Disponível para Venda<br />
+          Valor: <b>{property.price}</b><br />
+          {addressData.rua}, {addressData.numero}<br />
+          {addressData.bairro}<br />
+          {addressData.cidade.nome_cidade} - {addressData.cidade.estado.sigla_estado}<br />
+          {property.bedrooms} dormitórios<br />
+          {property.bathrooms} banheiros<br />
+          {property.garages} vaga de garagem<br />
+          Área Total: {property.totalArea} m²<br />
+          <br />
+          <b>Contacte o Corretor : Nome / CRECI</b><br />
+          Email / Celular / Telefone
+        </Grid.Column>
+      )
+    }
+
+    let gridRows = []
+    let columns = []
+    let rowKey = 1
+
+    for (let i = 0; i < gridColumns.length; i++) { 
+      columns.push(gridColumns[i])
+
+      if((i + 1) % 3 === 0) {
+        gridRows.push(
+          <Grid.Row key={rowKey++}>
+            {columns}
+          </Grid.Row>
+        )
+
+        columns = []
+      }
+
+      if(i + 1 === gridColumns.length) {
+        gridRows.push(
+          <Grid.Row key={rowKey++}>
+            {columns}
+          </Grid.Row>
+        )
+      }
+    }
+
+    return gridRows
   }
 
   render() {
@@ -270,77 +350,7 @@ export default class Home extends Component {
             {
               this.state.searchMode === 'grid' && 
               <Grid columns={3} divided>
-                <Grid.Row>
-                  <Grid.Column>
-                    <Image src='img/imovel01.jpg' size='small' />
-                    Disponível para Venda<br />
-                    Valor: <b>R$1.500.000</b><br />
-                    Rua Teste, número 1111<br />
-                    Centro, Florianópolis - SC<br />
-                    2 dormitórios<br />
-                    2 banheiros<br />
-                    1 vaga de garagem<br />
-                    Área Total: 60 m²<br />
-                    <br />
-                    <b>Contacte o Corretor : Nome / CRECI</b><br />
-                    Email / Celular / Telefone
-                  </Grid.Column>
-
-                  <Grid.Column>
-                    <Image src='img/imovel01.jpg' size='small' />
-                    Disponível para Venda<br />
-                    Valor: <b>R$1.500.000</b><br />
-                    Rua Teste, número 1111<br />
-                    Centro, Florianópolis - SC<br />
-                    2 dormitórios<br />
-                    2 banheiros<br />
-                    1 vaga de garagem<br />
-                    Área Total: 60 m²<br />
-                    <br />
-                    <b>Contacte o Corretor : Nome / CRECI</b><br />
-                    Email / Celular / Telefone
-                  </Grid.Column>
-
-                  <Grid.Column>
-                    <Image src='img/imovel01.jpg' size='small' />
-                    Disponível para Venda<br />
-                    Valor: <b>R$1.500.000</b><br />
-                    Rua Teste, número 1111<br />
-                    Centro, Florianópolis - SC<br />
-                    2 dormitórios<br />
-                    2 banheiros<br />
-                    1 vaga de garagem<br />
-                    Área Total: 60 m²<br />
-                    <br />
-                    <b>Contacte o Corretor : Nome / CRECI</b><br />
-                    Email / Celular / Telefone  
-                  </Grid.Column>
-                </Grid.Row>
-
-                <Grid.Row>
-                  <Grid.Column>
-                    <Image src='img/imovel01.jpg' size='small' />
-                    Disponível para Venda<br />
-                    Valor: <b>R$1.500.000</b><br />
-                    Rua Teste, número 1111<br />
-                    Centro, Florianópolis - SC<br />
-                    2 dormitórios<br />
-                    2 banheiros<br />
-                    1 vaga de garagem<br />
-                    Área Total: 60 m²<br />
-                    <br />
-                    <b>Contacte o Corretor : Nome / CRECI</b><br />
-                    Email / Celular / Telefone
-                  </Grid.Column>
-
-                  <Grid.Column>
-
-                  </Grid.Column>
-
-                  <Grid.Column>
-
-                  </Grid.Column>
-                </Grid.Row>
+                {this.renderGridSearchMode()}
               </Grid>
             }
           </Sidebar.Pusher>

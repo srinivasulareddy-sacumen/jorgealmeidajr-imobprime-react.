@@ -38,6 +38,16 @@ export default class CitiesAPI {
     return request
   }
 
+  static fetchOneById(id) {
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/cities/${id}`,
+      headers: []
+    })
+
+    return request
+  }
+
   static fetchAllByName(name) {
     const request = axios({
       method: 'get',

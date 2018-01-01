@@ -15,6 +15,16 @@ export default class GoogleMapsAPI {
     return request
   }
 
+  static fetchLocationByCityName(cityName) {
+    const request = axios({
+      method: 'get',
+      url: `https://maps.googleapis.com/maps/api/geocode/json?address=${cityName}&key=${API_KEY}`,
+      headers: []
+    })
+
+    return request
+  }
+
   static getGoogleMapUrl() {
     return `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&v=3.exp&libraries=geometry,drawing,places`
   }
