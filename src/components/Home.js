@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { 
   Button, Icon, 
   Header, Image, Grid,
-  Menu, Input, Select, Form,
+  Menu, Select, 
   Sidebar, Segment,
   Modal
 } from 'semantic-ui-react'
@@ -12,6 +12,8 @@ import {
   withGoogleMap, withScriptjs,
   GoogleMap, Marker 
 } from "react-google-maps"
+
+import HomePropertiesSearch from './HomePropertiesSearch'
 
 import GoogleMapsAPI from '../api/GoogleMapsAPI'
 import ImoveisAPI from '../api/ImoveisAPI'
@@ -45,8 +47,7 @@ export default class Home extends Component {
     numeroQuartos: null,
     numeroGaragens: null,
     tiposImovel: [],
-    cidades: [],
-
+    
     cities: [],
     properties: [],
     defaultCenter: {lat: -27.5585325, lng: -48.4971103},
@@ -58,10 +59,7 @@ export default class Home extends Component {
     const tiposImovel = ImoveisAPI.getTiposImovel()
       .map((tipo) => ({ key: tipo.id, text: tipo.nome, value: tipo.id }))
 
-    const cidades = CitiesAPI.getCidades()
-      .map((cidade) => ({ key: cidade.id, text: cidade.nome, value: cidade.id }))
-
-    this.setState({ tiposImovel, cidades })
+    this.setState({ tiposImovel })
 
     CitiesAPI.fetchAllByName('')
       .then((resp) => {
@@ -232,7 +230,7 @@ export default class Home extends Component {
   render() {
     const currentCenter = (this.state.center !== null) ? this.state.center : this.state.defaultCenter
     
-    const { tiposImovel, cidades, cities } = this.state
+    const { tiposImovel, cities } = this.state
     
     const googleMapURL = GoogleMapsAPI.getGoogleMapUrl()
     
@@ -274,64 +272,11 @@ export default class Home extends Component {
         <Sidebar.Pushable id='propertySearch'>
           <Sidebar animation='overlay' width='very wide' direction='left' visible={this.state.searchFormVisible}>
             <Segment style={{height: '100%'}}>
-              <Form size='small'>
-                <Form.Select label='Tipo do Imóvel' placeholder='Tipo do Imóvel' options={tiposImovel} />
-                <Form.Select search label='Cidade' placeholder='Cidade' options={cidades} />
-                <Form.Input label='Bairro' placeholder='Bairro' />
+              
+              <HomePropertiesSearch 
+                ref={(input) => this.homePropertiesSearch = input}
+                tiposImovel={tiposImovel} />
 
-                <Form.Group inline>
-                  <label>Disponível para</label>
-                  <Form.Radio label='Venda' value='venda' checked={this.state.disponibilidade === 'venda'} onChange={this.handleDisponibilidadeChange} />
-                  <Form.Radio label='Aluguel' value='aluguel' checked={this.state.disponibilidade === 'aluguel'} onChange={this.handleDisponibilidadeChange} />
-                </Form.Group>
-
-                <Form.Group widths='equal'>
-                  <Form.Field>
-                    <label>Preço inicial</label>
-                    <Input label='R$' placeholder='0,00' />
-                  </Form.Field>
-
-                  <Form.Field>
-                    <label>Preço final</label>
-                    <Input label='R$' placeholder='0,00' />
-                  </Form.Field>
-                </Form.Group>
-
-                <Form.Group widths='equal'>                  
-                  <Form.Field>
-                    <label>Área inicial</label>
-                    <Input label='m²' labelPosition='right' placeholder='0' />
-                  </Form.Field>
-
-                  <Form.Field>
-                    <label>Área final</label>
-                    <Input label='m²' labelPosition='right' placeholder='0' />
-                  </Form.Field>
-                </Form.Group>
-
-                <Form.Group inline>
-                  <label>Quartos</label>
-                  <Form.Radio label='1' value='1' checked={this.state.numeroQuartos === '1'} />
-                  <Form.Radio label='2' value='2' checked={this.state.numeroQuartos === '2'} />
-                  <Form.Radio label='+3' value='+3' checked={this.state.numeroQuartos === '+3'} />
-                </Form.Group>
-
-                <Form.Group inline>
-                  <label>Garagens</label>
-                  <Form.Radio label='1' value='1' checked={this.state.numeroGaragens === '1'} />
-                  <Form.Radio label='2' value='2' checked={this.state.numeroGaragens === '2'} />
-                  <Form.Radio label='+3' value='+3' checked={this.state.numeroGaragens === '+3'} />
-                </Form.Group>
-
-                <Button 
-                  color='red' size='small' icon='remove' content='Cancelar'
-                  onClick={() => this.toggleSearchFormVisibility()}
-                />
-                <Button 
-                  color='blue' size='small' icon='search' content='Buscar' 
-                  onClick={() => this.toggleSearchFormVisibility()}
-                />
-              </Form>
             </Segment>
           </Sidebar>
 

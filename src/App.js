@@ -17,7 +17,6 @@ import Imobiliarias from './components/Imobiliarias'
 import Imoveis from './components/Imoveis'
 import Clientes from './components/Clientes'
 
-import RealEstatesAPI from './api/RealEstatesAPI'
 import CitiesAPI from './api/CitiesAPI'
 
 export default class App extends Component {
