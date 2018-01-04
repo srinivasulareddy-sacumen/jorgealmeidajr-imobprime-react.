@@ -172,6 +172,29 @@ export default class Home extends Component {
     this.setState({ cityNameHomeParam: value })
   }
 
+  handleSearchProperties = async (cityId, properties) => {
+    const cityResp = await CitiesAPI.fetchOneById(cityId)
+    const cityName = `${cityResp.data.name}, ${cityResp.data.state.stateAbbreviation}`
+    
+    const googleMapsResp = await GoogleMapsAPI.fetchLocationByCityName(cityName)
+    
+    if(googleMapsResp.data.status === 'OK') {
+      const result = googleMapsResp.data.results[0]
+
+      const markers = properties.map((p) => {
+        const addressData = JSON.parse(p.addressData)
+        return { index: p.id, position: { lat: addressData.latitude, lng: addressData.longitude} }
+      })
+
+      this.setState({ 
+        center: result.geometry.location, 
+        defaultCenter: null, 
+        markers,
+        properties
+      })
+    }
+  }
+
   renderGridSearchMode = () => {
     let gridColumns = []
 
@@ -275,7 +298,9 @@ export default class Home extends Component {
               
               <HomePropertiesSearch 
                 ref={(input) => this.homePropertiesSearch = input}
-                tiposImovel={tiposImovel} />
+                tiposImovel={tiposImovel}
+                toggleSearchFormVisibility={this.toggleSearchFormVisibility}
+                onSearch={this.handleSearchProperties} />
 
             </Segment>
           </Sidebar>

@@ -15,6 +15,17 @@ export default class ImoveisAPI {
     return request
   }
 
+  static fetchProperties(params) {
+    const request  = axios({
+      method: 'post',
+      url: `${ROOT_URL}/searchProperties`,
+      headers: [],
+      data: params
+    })
+
+    return request
+  }
+
   static getTiposImovel() {
     const tiposImovel = [
       { nome: 'Apartamento'},

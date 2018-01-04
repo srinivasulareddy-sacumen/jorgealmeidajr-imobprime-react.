@@ -4,6 +4,8 @@ import React, { Component } from 'react'
 import { Form, Input, Button } from 'semantic-ui-react'
 
 import CitiesAPI from '../api/CitiesAPI'
+import ImoveisAPI from '../api/ImoveisAPI'
+import PropertyTypesAPI from '../api/PropertyTypesAPI'
 
 
 export default class HomePropertiesSearch extends Component {
@@ -19,15 +21,38 @@ export default class HomePropertiesSearch extends Component {
     areaMax: '',
     bedrooms: '',
     garages: '',
-    cities: []
+    cities: [],
+    propertyTypes: []
   }
 
-  componentDidMount() {
-    CitiesAPI.fetchAllByName('')
-      .then((resp) => {
-        const cities = resp.data.map((c) => ({ key: c.id, text: `${c.name}, ${c.state.name}`, value: c.id }))
-        this.setState({cities})
-      })
+  async componentDidMount() {
+    const citiesResp = await CitiesAPI.fetchAllByName('')
+    const cities = citiesResp.data.map((c) => ({ key: c.id, text: `${c.name}, ${c.state.name}`, value: c.id }))
+
+    const propertyTypesResp = await PropertyTypesAPI.fetchAll()
+    const propertyTypes = propertyTypesResp.data
+      .sort(this.sortPropertyTypesAsc)
+      .map((p) => ({ key: p.id, text: p.name, value: p.id }))
+
+    this.setState({cities, propertyTypes})
+  }
+
+  sortPropertyTypesAsc = (p1, p2) => {
+    let nameA = p1.name.toLowerCase(), nameB = p2.name.toLowerCase()
+    if (nameA < nameB) //sort string ascending
+        return -1 
+    if (nameA > nameB)
+        return 1
+    return 0 //default return value (no sorting)
+  }
+
+  sortPropertyTypesDesc = (p1, p2) => {
+    let nameA = p1.name.toLowerCase(), nameB = p2.name.toLowerCase()
+    if (nameA > nameB) //sort string descending
+        return -1 
+    if (nameA < nameB)
+        return 1
+    return 0 //default return value (no sorting)
   }
 
   handlePropertyStateChange = (newState) => this.setState({ propertyState: newState })
@@ -40,12 +65,22 @@ export default class HomePropertiesSearch extends Component {
       })
   }
 
+  handleSearchButtonClicked = () => {
+    ImoveisAPI.fetchProperties({...this.state})
+      .then((resp) => {
+        this.props.onSearch(this.state.city, resp.data)
+        this.props.toggleSearchFormVisibility()
+      })
+  }
+
   render() {
     return(
       <Form size='small'>
         <Form.Select 
           label='Tipo do Imóvel' placeholder='Tipo do Imóvel' 
-          options={this.props.tiposImovel} />
+          options={this.state.propertyTypes}
+          onChange={(e, {value}) => this.setState({ propertyType: value })} 
+          value={this.state.propertyType} />
 
         <Form.Select 
           label='Cidade' placeholder='Cidade'
@@ -147,11 +182,11 @@ export default class HomePropertiesSearch extends Component {
 
         <Button 
           color='red' size='small' icon='remove' content='Cancelar'
-          onClick={() => this.toggleSearchFormVisibility()}
+          onClick={() => this.props.toggleSearchFormVisibility()}
         />
         <Button 
           color='blue' size='small' icon='search' content='Buscar' 
-          onClick={() => this.toggleSearchFormVisibility()}
+          onClick={this.handleSearchButtonClicked}
         />
       </Form>
     )
