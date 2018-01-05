@@ -66,11 +66,26 @@ export default class HomePropertiesSearch extends Component {
   }
 
   handleSearchButtonClicked = () => {
-    ImoveisAPI.fetchProperties({...this.state})
+    ImoveisAPI.fetchProperties(this.getSearchParamsFromState(this.state))
       .then((resp) => {
-        this.props.onSearch(this.state.city, resp.data)
+        this.props.onSearch(this.state.city, resp)
         this.props.toggleSearchFormVisibility()
       })
+  }
+
+  getSearchParamsFromState = state => {
+    return {
+      city: state.city,
+      propertyType: state.propertyType,
+      region: (state.region.trim() === '') ? null : state.region,
+      propertyState: state.propertyState,
+      priceMin: (state.priceMin.trim() === '') ? null : state.priceMin,
+      priceMax: (state.priceMax.trim() === '') ? null : state.priceMax,
+      areaMin: (state.areaMin.trim() === '') ? null : state.areaMin,
+      areaMax: (state.areaMax.trim() === '') ? null : state.areaMax,
+      bedrooms: state.bedrooms,
+      garages: state.garages
+    }
   }
 
   render() {

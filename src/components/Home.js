@@ -22,6 +22,7 @@ import CitiesAPI from '../api/CitiesAPI'
 
 const MyMapComponent = withScriptjs(withGoogleMap((props) => (
   <GoogleMap
+    ref={props.onMapMounted}
     defaultZoom={14}
     defaultCenter={props.defaultCenter}
   >
@@ -39,15 +40,7 @@ export default class Home extends Component {
     searchFormVisible: false,
     imovelDetailsVisible: false,
     searchMode: 'map',
-
-    cityNameHomeParam: null,
-
-    tipoImovel: null,
-    disponibilidade: null,
-    numeroQuartos: null,
-    numeroGaragens: null,
-    tiposImovel: [],
-    
+    cityNameHomeParam: null,    
     cities: [],
     properties: [],
     defaultCenter: {lat: -27.5585325, lng: -48.4971103},
@@ -56,11 +49,6 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
-    const tiposImovel = ImoveisAPI.getTiposImovel()
-      .map((tipo) => ({ key: tipo.id, text: tipo.nome, value: tipo.id }))
-
-    this.setState({ tiposImovel })
-
     CitiesAPI.fetchAllByName('')
       .then((resp) => {
         const cities = resp.data.map((c) => ({ key: c.id, text: `${c.name}, ${c.state.name}`, value: c.id }))
@@ -136,8 +124,6 @@ export default class Home extends Component {
 
   toggleImovelDetailsVisibility = () => this.setState({ imovelDetailsVisible: !this.state.imovelDetailsVisible })
 
-  handleDisponibilidadeChange = (e, { value }) => { }
-
   handleCityNameSearchChange = async (e, { searchQuery }) => {
     let cities = await CitiesAPI.fetchAllByName(searchQuery.trim())
     this.setState({ cities: cities.data.map((c) => ({ key: c.id, text: `${c.name}, ${c.state.name}`, value: c.id })) })
@@ -167,11 +153,15 @@ export default class Home extends Component {
         markers,
         properties
       })
+
+      this.map.panTo(result.geometry.location)
     }
 
     this.setState({ cityNameHomeParam: value })
   }
 
+  handleMapMounted = (map) => this.map = map
+  
   handleSearchProperties = async (cityId, properties) => {
     const cityResp = await CitiesAPI.fetchOneById(cityId)
     const cityName = `${cityResp.data.name}, ${cityResp.data.state.stateAbbreviation}`
@@ -181,7 +171,7 @@ export default class Home extends Component {
     if(googleMapsResp.data.status === 'OK') {
       const result = googleMapsResp.data.results[0]
 
-      const markers = properties.map((p) => {
+      const markers = properties.data.map((p) => {
         const addressData = JSON.parse(p.addressData)
         return { index: p.id, position: { lat: addressData.latitude, lng: addressData.longitude} }
       })
@@ -192,6 +182,8 @@ export default class Home extends Component {
         markers,
         properties
       })
+
+      this.map.panTo(result.geometry.location)
     }
   }
 
@@ -253,7 +245,7 @@ export default class Home extends Component {
   render() {
     const currentCenter = (this.state.center !== null) ? this.state.center : this.state.defaultCenter
     
-    const { tiposImovel, cities } = this.state
+    const { cities } = this.state
     
     const googleMapURL = GoogleMapsAPI.getGoogleMapUrl()
     
@@ -297,8 +289,6 @@ export default class Home extends Component {
             <Segment style={{height: '100%'}}>
               
               <HomePropertiesSearch 
-                ref={(input) => this.homePropertiesSearch = input}
-                tiposImovel={tiposImovel}
                 toggleSearchFormVisibility={this.toggleSearchFormVisibility}
                 onSearch={this.handleSearchProperties} />
 
@@ -308,6 +298,7 @@ export default class Home extends Component {
           <Sidebar.Pusher>
             {this.state.searchMode === 'map' &&
             <MyMapComponent 
+              onMapMounted={this.handleMapMounted}
               defaultCenter={currentCenter}
               markers={this.state.markers}
               googleMapURL={googleMapURL}
