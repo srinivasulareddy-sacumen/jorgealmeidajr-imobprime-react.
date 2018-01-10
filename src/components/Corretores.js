@@ -6,6 +6,7 @@ import {
   Table, Icon
 } from 'semantic-ui-react'
 
+import AgentsAPI from '../api/AgentsAPI'
 import CidadesAPI from '../api/CitiesAPI'
 import ImobiliariasAPI from '../api/RealEstatesAPI'
 
@@ -15,7 +16,9 @@ export default class Corretores extends Component {
     createModalVibible: false,
     estados: [],
     cidades: [],
-    imobiliarias: []
+    imobiliarias: [],
+
+    agents: []
   }
 
   componentDidMount() {
@@ -25,10 +28,14 @@ export default class Corretores extends Component {
     const cidades = CidadesAPI.getCidades()
       .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
 
-    const imobiliarias = ImobiliariasAPI.getImobiliarias()
+    const imobiliarias = []
       .map((i) => ({ key: i.id, text: i.nome, value: i.id }))
 
     this.setState({ estados, cidades, imobiliarias })
+
+    AgentsAPI.fetchAll()
+      .then((resp) => console.log(resp.data))
+      .catch((error) => console.log(error))
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
