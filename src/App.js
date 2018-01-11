@@ -12,7 +12,7 @@ import logo from './logo.svg'
 import './App.css'
 
 import Home from './components/Home'
-import Corretores from './components/Corretores'
+import Agents from './components/Agents'
 import Imobiliarias from './components/Imobiliarias'
 import Imoveis from './components/Imoveis'
 import Clientes from './components/Clientes'
@@ -307,7 +307,7 @@ export default class App extends Component {
                 <Route path="/home" component={Home}/>
                 <Route path="/clientes" component={Clientes}/>
                 <Route path="/imoveis" component={Imoveis}/>
-                <Route path="/corretores" component={Corretores}/>
+                <Route path="/corretores" component={Agents}/>
                 <Route path="/imobiliarias" component={Imobiliarias}/>
               </Switch>
             </div>

@@ -7,41 +7,55 @@ import {
 } from 'semantic-ui-react'
 
 import AgentsAPI from '../api/AgentsAPI'
-import CidadesAPI from '../api/CitiesAPI'
-import ImobiliariasAPI from '../api/RealEstatesAPI'
+import StatesAPI from '../api/StatesAPI'
+import CitiesAPI from '../api/CitiesAPI'
+import RealEstatesAPI from '../api/RealEstatesAPI'
 
-export default class Corretores extends Component {
+export default class Agents extends Component {
 
   state = {
     createModalVibible: false,
-    estados: [],
-    cidades: [],
+    editModalVisible: false,
+    deleteModalVisible: false,
+
     imobiliarias: [],
 
-    agents: []
+    agents: [],
+    states: [],
+    cities: []
   }
 
   componentDidMount() {
-    const estados = CidadesAPI.getEstados()
-      .map((c) => ({ key: c.id, text: c.nome, value: c.id }))
-
-    const cidades = CidadesAPI.getCidades()
-      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
-
     const imobiliarias = []
       .map((i) => ({ key: i.id, text: i.nome, value: i.id }))
 
-    this.setState({ estados, cidades, imobiliarias })
+    this.setState({ imobiliarias })
 
+    StatesAPI.fetchAll()
+      .then((resp) => {
+        const states = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+        this.setState({states})
+      })
+      .catch((error) => console.log(error))
+
+    CitiesAPI.fetchAll()
+      .then((resp) => {
+        const cities = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+        this.setState({cities})
+      })
+      .catch((error) => console.log(error))
+    
     AgentsAPI.fetchAll()
-      .then((resp) => console.log(resp.data))
+      .then((resp) => this.setState({agents: resp.data}))
       .catch((error) => console.log(error))
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
   render() {
-    const { estados, cidades, imobiliarias } = this.state
+    const { imobiliarias } = this.state
+
+    const { states, cities, agents } = this.state
 
     return (
       <div>
@@ -61,8 +75,8 @@ export default class Corretores extends Component {
 
           <Form.Group widths='equal'>
             <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={imobiliarias} />
-            <Form.Select label='Estado' placeholder='Estado de atuação do Corretor' search options={estados} />
-            <Form.Select label='Cidade' placeholder='Cidade de atuação do Corretor' search options={cidades} />
+            <Form.Select label='Estado' placeholder='Estado de atuação do Corretor' search options={states} />
+            <Form.Select label='Cidade' placeholder='Cidade de atuação do Corretor' search options={cities} />
           </Form.Group>
 
           <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
@@ -88,29 +102,35 @@ export default class Corretores extends Component {
           </Table.Header>
 
           <Table.Body>
-            <Table.Row>
-              <Table.Cell>Maria</Table.Cell>
-              <Table.Cell>999.999.999-99</Table.Cell>
-              <Table.Cell>1500</Table.Cell>
-              <Table.Cell>Florianópolis/SC</Table.Cell>
-              <Table.Cell>48 3232 3232</Table.Cell>
-              <Table.Cell>48 93232 3232</Table.Cell>
-              <Table.Cell>maria@gmail.com</Table.Cell>
+          {
+            agents.map(a => {
+              return (
+                <Table.Row key={a.id}>
+                  <Table.Cell>{a.name}</Table.Cell>
+                  <Table.Cell>{a.cpf}</Table.Cell>
+                  <Table.Cell>{a.creci}</Table.Cell>
+                  <Table.Cell>{a.city && a.city.name} / {a.state.stateAbbreviation}</Table.Cell>
+                  <Table.Cell>{a.phoneNumber}</Table.Cell>
+                  <Table.Cell>{a.cellPhoneNumber}</Table.Cell>
+                  <Table.Cell>{a.email}</Table.Cell>
 
-              <Table.Cell>
-                <Form.Radio label='Sim' value='yes' checked />
-                <Form.Radio label='Não' value='no' />
-              </Table.Cell>
+                  <Table.Cell>
+                    <Form.Radio label='Sim' value='yes' checked />
+                    <Form.Radio label='Não' value='no' />
+                  </Table.Cell>
 
-              <Table.Cell collapsing textAlign='left'>
-                <Button color='blue' size='small' icon>
-                  <Icon name='edit' />
-                </Button>
-                <Button color='red' size='small' icon>
-                  <Icon name='remove' />
-                </Button>
-              </Table.Cell>
-            </Table.Row>
+                  <Table.Cell collapsing textAlign='left'>
+                    <Button color='blue' size='small' icon>
+                      <Icon name='edit' />
+                    </Button>
+                    <Button color='red' size='small' icon>
+                      <Icon name='remove' />
+                    </Button>
+                  </Table.Cell>
+                </Table.Row>
+              )
+            })
+          }
           </Table.Body>
         </Table>
 
@@ -163,8 +183,8 @@ export default class Corretores extends Component {
               <Divider />
 
               <Form.Group widths='equal'>
-                <Form.Select label='Estado' placeholder='Estado de atuação' search options={estados} required error />
-                <Form.Select label='Cidade' placeholder='Cidade de atuação' search options={cidades} />
+                <Form.Select label='Estado' placeholder='Estado de atuação' search options={states} required error />
+                <Form.Select label='Cidade' placeholder='Cidade de atuação' search options={cities} />
               </Form.Group>
             </Form>
           </Modal.Content>
