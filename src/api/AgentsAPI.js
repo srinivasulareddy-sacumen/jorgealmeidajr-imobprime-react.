@@ -15,4 +15,15 @@ export default class AgentsAPI {
     return request
   }
 
+  static fetchAllByParams(params) {
+    const request = axios({
+      method: 'post',
+      url: `${ROOT_URL}/searchAgents`,
+      headers: [],
+      data: params
+    })
+
+    return request
+  }
+
 }

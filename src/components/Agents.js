@@ -6,6 +6,8 @@ import {
   Table, Icon
 } from 'semantic-ui-react'
 
+import AgentsSearch from './AgentsSearch'
+
 import AgentsAPI from '../api/AgentsAPI'
 import StatesAPI from '../api/StatesAPI'
 import CitiesAPI from '../api/CitiesAPI'
@@ -18,33 +20,10 @@ export default class Agents extends Component {
     editModalVisible: false,
     deleteModalVisible: false,
 
-    imobiliarias: [],
-
-    agents: [],
-    states: [],
-    cities: []
+    agents: []
   }
 
   componentDidMount() {
-    const imobiliarias = []
-      .map((i) => ({ key: i.id, text: i.nome, value: i.id }))
-
-    this.setState({ imobiliarias })
-
-    StatesAPI.fetchAll()
-      .then((resp) => {
-        const states = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
-        this.setState({states})
-      })
-      .catch((error) => console.log(error))
-
-    CitiesAPI.fetchAll()
-      .then((resp) => {
-        const cities = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
-        this.setState({cities})
-      })
-      .catch((error) => console.log(error))
-    
     AgentsAPI.fetchAll()
       .then((resp) => this.setState({agents: resp.data}))
       .catch((error) => console.log(error))
@@ -52,37 +31,23 @@ export default class Agents extends Component {
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
-  render() {
-    const { imobiliarias } = this.state
+  handleFilter = (params) => {
+    AgentsAPI.fetchAllByParams(params)
+      .then((resp) => this.setState({agents: resp.data}))
+      .catch((error) => console.log(error))
+  }
 
-    const { states, cities, agents } = this.state
+  render() {
+    const { agents } = this.state
 
     return (
       <div>
         <h1>Listagem de Corretores</h1>
 
-        <Form size='small'>
-          <Form.Group>
-            <Form.Input label='Nome' placeholder='Nome do Corretor' width={8} />
-            
-            <Form.Field width={4}>
-              <label>CPF</label>
-              <Input label='#' placeholder='999.999.999-99' />
-            </Form.Field>
-
-            <Form.Input label='CRECI' placeholder='0' width={4} />
-          </Form.Group>
-
-          <Form.Group widths='equal'>
-            <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={imobiliarias} />
-            <Form.Select label='Estado' placeholder='Estado de atuação do Corretor' search options={states} />
-            <Form.Select label='Cidade' placeholder='Cidade de atuação do Corretor' search options={cities} />
-          </Form.Group>
-
-          <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
-          <Button color='blue' size='small' style={{width: 90}}>Limpar</Button>
-          <Button color='green' size='small' style={{width: 90}} onClick={this.toggleCreateModalVisibility}>Adicionar</Button>
-        </Form>
+        <AgentsSearch 
+          ref={input => this.agentsSearch = input}
+          onFilter={this.handleFilter}
+        />
 
         <Divider />
 
@@ -137,13 +102,12 @@ export default class Agents extends Component {
         <Modal 
           size='large' dimmer
           open={this.state.createModalVibible} 
-          onClose={this.toggleCreateModalVisibility}
-        >
+          onClose={this.toggleCreateModalVisibility}>
           <Modal.Header>Cadastro de um novo Corretor</Modal.Header>
           <Modal.Content scrolling>
             <Form size='small'>
               <Form.Group widths='equal'>
-                <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={imobiliarias} required error />
+                <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={[]} required error />
                 <Form.Input label='Nome' placeholder='Nome do Corretor' required error />
               </Form.Group>
 
@@ -183,8 +147,8 @@ export default class Agents extends Component {
               <Divider />
 
               <Form.Group widths='equal'>
-                <Form.Select label='Estado' placeholder='Estado de atuação' search options={states} required error />
-                <Form.Select label='Cidade' placeholder='Cidade de atuação' search options={cities} />
+                <Form.Select label='Estado' placeholder='Estado de atuação' search options={[]} required error />
+                <Form.Select label='Cidade' placeholder='Cidade de atuação' search options={[]} />
               </Form.Group>
             </Form>
           </Modal.Content>
