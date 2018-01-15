@@ -40,6 +40,10 @@ export default class RealEstatesAPI {
     return request
   }
 
+  static fetchAllByName(name) {
+    return this.filter(name, null, null, null)
+  }
+
   static save(data) {
     const request  = axios({
       method: 'post',

@@ -10,12 +10,7 @@ import CitiesAPI from '../api/CitiesAPI'
 export default class AgentsSearch extends Component {
 
   state = {
-    searchByName: '',
-    searchByCPF: '',
-    searchByCreci: '',
-    searchByRealEstate: null,
-    searchByState: null,
-    searchByCity: null,
+    ...this.getInitialFormState(),
 
     realEstates: [],
     states: [],
@@ -23,12 +18,7 @@ export default class AgentsSearch extends Component {
   }
 
   componentDidMount() {
-    RealEstatesAPI.fetchAll()
-      .then((resp) => {
-        const realEstates = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
-        this.setState({realEstates})
-      })
-      .catch((error) => console.log(error))
+    this.fetchInitialRealEstates()
 
     StatesAPI.fetchAll()
       .then((resp) => {
@@ -37,6 +27,19 @@ export default class AgentsSearch extends Component {
       })
       .catch((error) => console.log(error))
 
+    this.fetchInitialCities()
+  }
+
+  fetchInitialRealEstates = () => {
+    RealEstatesAPI.fetchAll()
+      .then((resp) => {
+        const realEstates = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+        this.setState({realEstates})
+      })
+      .catch((error) => console.log(error))
+  }
+
+  fetchInitialCities = () => {
     CitiesAPI.fetchAll()
       .then((resp) => {
         const cities = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
@@ -45,34 +48,79 @@ export default class AgentsSearch extends Component {
       .catch((error) => console.log(error))
   }
 
+  getInitialFormState() {
+    return {
+      name: '',
+      cpf: '',
+      creci: '',
+      realEstateId: null,
+      stateId: null,
+      cityId: null
+    }
+  }
+
   clearSearchForm = (e) => {
     e.preventDefault()
-    
-    // this.props.fetchInitialRealEstatesPage()
 
-    this.setState({
-      searchByName: '',
-      searchByCPF: '',
-      searchByCreci: '',
-      searchByRealEstate: null,
-      searchByState: null,
-      searchByCity: null
-    })
+    this.setState({...this.getInitialFormState()})
+
+    this.fetchInitialRealEstates()
+    this.fetchInitialCities()
+    this.props.fetchInitialAgents()
   }
 
   search = (e) => {
     e.preventDefault()
 
     const params = {
-      name: this.state.searchByName,
-      cpf: this.state.searchByCPF,
-      creci: this.state.searchByCreci,
-      realEstateId: this.state.searchByRealEstate,
-      stateId: this.state.searchByState,
-      cityId: this.state.searchByCity,
+      name: this.state.name,
+      cpf: this.state.cpf,
+      creci: this.state.creci,
+      realEstateId: this.state.realEstateId,
+      stateId: this.state.stateId,
+      cityId: this.state.cityId,
     }
 
     this.props.onFilter(params)
+  }
+
+  handleRealEstateNameSearchChange = (e, {searchQuery}) => {
+    RealEstatesAPI.fetchAllByName(searchQuery.trim())
+      .then((resp) => {
+        const realEstates = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+        this.setState({realEstates})
+      })
+      .catch((error) => {
+        console.log(error)
+        this.setState({realEstates: []})
+      })
+  }
+
+  handleStateChange = (e, {value}) => {
+    const stateId = value
+    this.setState({stateId})
+
+    CitiesAPI.filter('', stateId)
+      .then((resp) => {
+        const cities = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+        this.setState({cityId: null, cities})
+      })
+      .catch((error) => {
+        console.log(error)
+        this.setState({cityId: null, cities: []})
+      })
+  }
+
+  handleCityNameSearchChange = (e, { searchQuery }) => {
+    CitiesAPI.filter(searchQuery, this.state.stateId)
+      .then((resp) => {
+        const cities = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+        this.setState({cityId: null, cities})
+      })
+      .catch((error) => {
+        console.log(error)
+        this.setState({cityId: null, cities: []})
+      })
   }
 
   render() {
@@ -86,8 +134,8 @@ export default class AgentsSearch extends Component {
             <Input 
               placeholder='Nome do Corretor' 
               className='form-input' 
-              onChange={e => this.setState({searchByName: e.target.value})}
-              value={this.state.searchByName} />
+              onChange={e => this.setState({name: e.target.value})}
+              value={this.state.name} />
           </Form.Field>
           
           <Form.Field width={4}>
@@ -95,8 +143,8 @@ export default class AgentsSearch extends Component {
             <Input 
               label='#' placeholder='999.999.999-99' 
               className='form-input' 
-              onChange={e => this.setState({searchByCPF: e.target.value})}
-              value={this.state.searchByCPF} />
+              onChange={e => this.setState({cpf: e.target.value})}
+              value={this.state.cpf} />
           </Form.Field>
 
           <Form.Field width={4}>
@@ -104,8 +152,8 @@ export default class AgentsSearch extends Component {
             <Input 
               placeholder='0' 
               className='form-input' 
-              onChange={e => this.setState({searchByCreci: e.target.value})}
-              value={this.state.searchByCreci} />
+              onChange={e => this.setState({creci: e.target.value})}
+              value={this.state.creci} />
           </Form.Field>
         </Form.Group>
 
@@ -117,8 +165,9 @@ export default class AgentsSearch extends Component {
               className='form-select'
               search 
               options={realEstates}
-              onChange={(e, {value}) => this.setState({searchByRealEstate: value})} 
-              value={this.state.searchByRealEstate} />
+              onSearchChange={this.handleRealEstateNameSearchChange}
+              onChange={(e, {value}) => this.setState({realEstateId: value})} 
+              value={this.state.realEstateId} />
           </Form.Field>
           
           <Form.Field>
@@ -128,8 +177,8 @@ export default class AgentsSearch extends Component {
               className='form-select'
               search 
               options={states}
-              onChange={(e, {value}) => this.setState({searchByState: value})} 
-              value={this.state.searchByState} />
+              onChange={this.handleStateChange} 
+              value={this.state.stateId} />
           </Form.Field>
 
           <Form.Field>
@@ -139,12 +188,13 @@ export default class AgentsSearch extends Component {
               className='form-select'
               search 
               options={cities}
-              onChange={(e, {value}) => this.setState({searchByCity: value})} 
-              value={this.state.searchByCity} />
+              onSearchChange={this.handleCityNameSearchChange}
+              onChange={(e, {value}) => this.setState({cityId: value})} 
+              value={this.state.cityId} />
           </Form.Field>
         </Form.Group>
 
-        {/* JSON.stringify(this.state, null, 2) */}
+        {/*JSON.stringify(this.state, null, 2)*/}
 
         <Button color='blue' size='small' style={{width: 90}} onClick={this.search}>Buscar</Button>
         <Button color='blue' size='small' style={{width: 90}} onClick={this.clearSearchForm}>Limpar</Button>

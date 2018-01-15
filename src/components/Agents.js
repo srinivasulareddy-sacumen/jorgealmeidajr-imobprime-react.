@@ -24,6 +24,10 @@ export default class Agents extends Component {
   }
 
   componentDidMount() {
+    this.fetchInitialAgents()
+  }
+
+  fetchInitialAgents = () => {
     AgentsAPI.fetchAll()
       .then((resp) => this.setState({agents: resp.data}))
       .catch((error) => console.log(error))
@@ -34,7 +38,10 @@ export default class Agents extends Component {
   handleFilter = (params) => {
     AgentsAPI.fetchAllByParams(params)
       .then((resp) => this.setState({agents: resp.data}))
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error)
+        this.setState({agents: []})
+      })
   }
 
   render() {
@@ -46,6 +53,7 @@ export default class Agents extends Component {
 
         <AgentsSearch 
           ref={input => this.agentsSearch = input}
+          fetchInitialAgents={this.fetchInitialAgents}
           onFilter={this.handleFilter}
         />
 
