@@ -1,17 +1,11 @@
 import React, { Component } from 'react'
 
-import { 
-  Form, Input, Button, 
-  Divider, Modal,
-  Table, Icon
-} from 'semantic-ui-react'
+import { Form, Button, Divider, Modal, Table, Icon } from 'semantic-ui-react'
 
 import AgentsSearch from './AgentsSearch'
+import AgentForm from './AgentForm'
 
 import AgentsAPI from '../api/AgentsAPI'
-import StatesAPI from '../api/StatesAPI'
-import CitiesAPI from '../api/CitiesAPI'
-import RealEstatesAPI from '../api/RealEstatesAPI'
 
 export default class Agents extends Component {
 
@@ -55,6 +49,7 @@ export default class Agents extends Component {
           ref={input => this.agentsSearch = input}
           fetchInitialAgents={this.fetchInitialAgents}
           onFilter={this.handleFilter}
+          toggleCreateModalVisibility={this.toggleCreateModalVisibility}
         />
 
         <Divider />
@@ -112,53 +107,8 @@ export default class Agents extends Component {
           open={this.state.createModalVibible} 
           onClose={this.toggleCreateModalVisibility}>
           <Modal.Header>Cadastro de um novo Corretor</Modal.Header>
-          <Modal.Content scrolling>
-            <Form size='small'>
-              <Form.Group widths='equal'>
-                <Form.Select label='Imobiliária' placeholder='Imobiliária' search options={[]} required error />
-                <Form.Input label='Nome' placeholder='Nome do Corretor' required error />
-              </Form.Group>
-
-              <Form.Group widths='equal'>
-                <Form.Field required error>
-                  <label>CPF</label>
-                  <Input label='#' placeholder='999.999.999-99' />
-                </Form.Field>
-
-                <Form.Input label='CRECI' placeholder='0' required error />
-              </Form.Group>
-
-              <Form.Group widths='equal'>
-                <Form.Field required error>
-                  <label>Email</label>
-                  <Input label='@' placeholder='Email do Corretor' />
-                </Form.Field>
-
-                <Form.Field>
-                  <label>Site</label>
-                  <Input label='http://' placeholder='Site do Corretor' />
-                </Form.Field>
-              </Form.Group>
-
-              <Form.Group widths='equal'>
-                <Form.Field>
-                  <label>Telefone</label>
-                  <Input label='#' placeholder='(99) 9999-9999' />
-                </Form.Field>
-
-                <Form.Field>
-                  <label>Celular</label>
-                  <Input label='#' placeholder='(99) 99999-9999' />
-                </Form.Field>
-              </Form.Group>
-
-              <Divider />
-
-              <Form.Group widths='equal'>
-                <Form.Select label='Estado' placeholder='Estado de atuação' search options={[]} required error />
-                <Form.Select label='Cidade' placeholder='Cidade de atuação' search options={[]} />
-              </Form.Group>
-            </Form>
+          <Modal.Content scrolling>            
+            <AgentForm />
           </Modal.Content>
           <Modal.Actions>
             <Button color='red' onClick={this.toggleCreateModalVisibility}>Cancelar</Button>
