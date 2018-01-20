@@ -26,4 +26,36 @@ export default class AgentsAPI {
     return request
   }
 
+  static save(data) {
+    const request  = axios({
+      method: 'post',
+      url: `${ROOT_URL}/agents`,
+      headers: [],
+      data
+    })
+
+    return request
+  }
+
+  static update(data) {
+    const request  = axios({
+      method: 'put',
+      url: `${ROOT_URL}/agents`,
+      headers: [],
+      data
+    })
+
+    return request
+  }
+
+  static delete(id) {
+    const request = axios({
+      method: 'delete',
+      url: `${ROOT_URL}/agents/${id}`,
+      headers: []
+    })
+
+    return request
+  }
+
 }

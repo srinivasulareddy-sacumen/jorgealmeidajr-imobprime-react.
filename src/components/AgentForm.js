@@ -31,12 +31,25 @@ export default class AgentForm extends Component {
         city: {id: null},
         realEstates: [],
         states: [],
-        cities: []
+        cities: [],
+
+        ...this.getInitialStateErrors()
       }
 
       this.fetchRealEstates()
       this.fetchStates()
       this.fetchInitialCities()
+    }
+  }
+
+  getInitialStateErrors() {
+    return {
+      realEstateError: false,
+      nameError: false,
+      cpfError: false,
+      creciError: false,
+      emailError: false,
+      stateError: false
     }
   }
 
@@ -106,6 +119,42 @@ export default class AgentForm extends Component {
       })
   }
 
+  formHasFieldsWithErrors() {
+    let errors = {
+      realEstateError: (this.state.realEstate.id === null),
+      nameError: (this.state.name.trim() === ''),
+      cpfError: (this.state.cpf.trim() === ''),
+      creciError: (this.state.creci.trim() === ''),
+      emailError: (this.state.email.trim() === ''),
+      stateError: (this.state.state.id === null)
+    }
+
+    this.setState({...errors})
+    
+    const fieldsWithErrors = Object.keys(errors)
+      .filter(k => { return errors[k] === true })
+
+    return fieldsWithErrors.length > 0
+  }
+
+  getAgent() {
+    return {
+      id: this.state.id,
+      
+      name: this.state.name,
+      cpf: this.state.cpf,
+      creci: this.state.creci,
+      email: this.state.email,
+      site: this.state.site,
+      phoneNumber: this.state.phoneNumber,
+      cellPhoneNumber: this.state.cellPhoneNumber,
+
+      realEstate: this.state.realEstate,
+      state: this.state.state,
+      city: this.state.city,
+    }
+  }
+
   render() {
     const {realEstates, states, cities} = this.state
 
@@ -114,7 +163,7 @@ export default class AgentForm extends Component {
         {/*JSON.stringify(this.state, null, 2)*/}
 
         <Form.Group widths='equal'>
-          <Form.Field required error>
+          <Form.Field required error={this.state.realEstateError}>
             <label>Imobiliária</label>
             <Select 
               placeholder='Selecione a Imobiliária'
@@ -125,7 +174,7 @@ export default class AgentForm extends Component {
               value={this.state.realEstate.id} />
           </Form.Field>
 
-          <Form.Field required error>
+          <Form.Field required error={this.state.nameError}>
             <label>Nome</label>
             <Input 
               placeholder='Nome do Corretor' 
@@ -135,7 +184,7 @@ export default class AgentForm extends Component {
         </Form.Group>
 
         <Form.Group widths='equal'>
-          <Form.Field required error>
+          <Form.Field required error={this.state.cpfError}>
             <label>CPF</label>
             <Input 
               label='#' placeholder='999.999.999-99' 
@@ -143,7 +192,7 @@ export default class AgentForm extends Component {
               value={this.state.cpf} />
           </Form.Field>
 
-          <Form.Field required error>
+          <Form.Field required error={this.state.creciError}>
             <label>CRECI</label>
             <Input 
               placeholder='0' 
@@ -153,7 +202,7 @@ export default class AgentForm extends Component {
         </Form.Group>
 
         <Form.Group widths='equal'>
-          <Form.Field required error>
+          <Form.Field required error={this.state.emailError}>
             <label>Email</label>
             <Input 
               label='@' placeholder='Email do Corretor'
@@ -191,7 +240,7 @@ export default class AgentForm extends Component {
         <Divider />
 
         <Form.Group widths='equal'>
-          <Form.Field required error>
+          <Form.Field required error={this.state.stateError}>
             <label>Estado</label>
             <Select 
               placeholder='Selecione o Estado de atuação do Corretor'

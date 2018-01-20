@@ -38,6 +38,22 @@ export default class Agents extends Component {
       })
   }
 
+  save = () => {
+    if(!this.createForm.formHasFieldsWithErrors()) {
+      let data = this.createForm.getAgent()
+
+      AgentsAPI.save(data)
+        .then((response) => {
+          //const params = this.realEstatesSearch.getSearchParams()
+          //this.handleFilter(params.searchByName, params.searchByCNPJ, params.searchByState, params.searchByCity)
+          this.toggleCreateModalVisibility()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  }
+
   render() {
     const { agents } = this.state
 
@@ -46,7 +62,7 @@ export default class Agents extends Component {
         <h1>Listagem de Corretores</h1>
 
         <AgentsSearch 
-          ref={input => this.agentsSearch = input}
+          ref={e => this.searchForm = e}
           fetchInitialAgents={this.fetchInitialAgents}
           onFilter={this.handleFilter}
           toggleCreateModalVisibility={this.toggleCreateModalVisibility}
@@ -108,11 +124,13 @@ export default class Agents extends Component {
           onClose={this.toggleCreateModalVisibility}>
           <Modal.Header>Cadastro de um novo Corretor</Modal.Header>
           <Modal.Content scrolling>            
-            <AgentForm />
+            <AgentForm 
+              ref={e => this.createForm = e} 
+            />
           </Modal.Content>
           <Modal.Actions>
             <Button color='red' onClick={this.toggleCreateModalVisibility}>Cancelar</Button>
-            <Button color='blue' onClick={this.toggleCreateModalVisibility}>Salvar</Button>
+            <Button color='blue' onClick={this.save}>Salvar</Button>
           </Modal.Actions>
         </Modal>
       </div>
