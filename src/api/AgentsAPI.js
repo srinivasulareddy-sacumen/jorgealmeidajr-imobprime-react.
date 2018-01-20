@@ -26,6 +26,16 @@ export default class AgentsAPI {
     return request
   }
 
+  static fetchById(id) {
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/agents/${id}`,
+      headers: []
+    })
+
+    return request
+  }
+
   static save(data) {
     const request  = axios({
       method: 'post',

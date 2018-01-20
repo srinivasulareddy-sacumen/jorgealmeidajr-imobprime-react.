@@ -14,6 +14,7 @@ export default class Agents extends Component {
     editModalVisible: false,
     deleteModalVisible: false,
 
+    agent: null,
     agents: []
   }
 
@@ -28,6 +29,8 @@ export default class Agents extends Component {
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
+
+  toggleEditModalVisibility = () => this.setState({ editModalVisible: !this.state.editModalVisible })
 
   handleFilter = (params) => {
     AgentsAPI.fetchAllByParams(params)
@@ -44,14 +47,25 @@ export default class Agents extends Component {
 
       AgentsAPI.save(data)
         .then((response) => {
-          //const params = this.realEstatesSearch.getSearchParams()
-          //this.handleFilter(params.searchByName, params.searchByCNPJ, params.searchByState, params.searchByCity)
+          const params = this.searchForm.getSearchParams()
+          this.handleFilter(params)
           this.toggleCreateModalVisibility()
         })
         .catch((error) => {
           console.log(error)
         })
     }
+  }
+
+  showEditForm = (id) => {
+    AgentsAPI.fetchById(id)
+      .then((response) => {
+        this.setState({ agent: response.data, editModalVisible: true })
+      })
+      .catch((error) => {
+        console.log(error)
+        this.setState({ agent: null, editModalVisible: false })
+      })
   }
 
   render() {
@@ -104,7 +118,7 @@ export default class Agents extends Component {
                   </Table.Cell>
 
                   <Table.Cell collapsing textAlign='left'>
-                    <Button color='blue' size='small' icon>
+                    <Button color='blue' size='small' icon onClick={() => this.showEditForm(a.id)}>
                       <Icon name='edit' />
                     </Button>
                     <Button color='red' size='small' icon>
@@ -131,6 +145,23 @@ export default class Agents extends Component {
           <Modal.Actions>
             <Button color='red' onClick={this.toggleCreateModalVisibility}>Cancelar</Button>
             <Button color='blue' onClick={this.save}>Salvar</Button>
+          </Modal.Actions>
+        </Modal>
+
+        <Modal 
+          size='large' dimmer
+          open={this.state.editModalVisible} 
+          onClose={this.toggleEditModalVisibility}>
+          <Modal.Header>Edição de Corretor</Modal.Header>
+          <Modal.Content scrolling>
+            <AgentForm 
+              ref={e => this.editForm = e}
+              agent={this.state.agent} 
+            />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color='red' onClick={this.toggleEditModalVisibility}>Cancelar</Button>
+            <Button color='blue' onClick={this.update}>Salvar</Button>
           </Modal.Actions>
         </Modal>
       </div>

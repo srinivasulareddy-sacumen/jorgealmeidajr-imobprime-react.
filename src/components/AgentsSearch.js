@@ -84,6 +84,17 @@ export default class AgentsSearch extends Component {
     this.props.onFilter(params)
   }
 
+  getSearchParams() {
+    return { 
+      name: this.state.name,
+      cpf: this.state.cpf,
+      creci: this.state.creci,
+      realEstateId: this.state.realEstateId,
+      stateId: this.state.stateId,
+      cityId: this.state.cityId
+    }
+  }
+
   handleRealEstateNameSearchChange = (e, {searchQuery}) => {
     RealEstatesAPI.fetchAllByName(searchQuery.trim())
       .then((resp) => {

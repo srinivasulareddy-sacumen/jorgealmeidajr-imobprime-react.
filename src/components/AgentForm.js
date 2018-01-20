@@ -14,7 +14,8 @@ export default class AgentForm extends Component {
 
     // prepare for EDIT
     if(props.agent) {
-      
+      this.initFormForEdit(props.agent)
+
     // prepare to CREATE
     } else {
       this.state = {
@@ -40,6 +41,49 @@ export default class AgentForm extends Component {
       this.fetchStates()
       this.fetchInitialCities()
     }
+  }
+
+  initFormForEdit(agent) {
+    this.state = {
+      ...agent,
+      
+      realEstates: [],
+      states: [],
+      cities: [],
+
+      ...this.getInitialStateErrors()
+    }
+
+    if(this.state.city == null) {
+      this.state = {
+        ...this.state,
+        city: {id: null}
+      }
+    }
+
+    RealEstatesAPI.fetchAllByName(this.state.realEstate.name.slice(0, 4).trim())
+      .then((resp) => {
+        const realEstates = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+        this.setState({realEstates})
+      })
+      .catch((error) => {
+        console.log(error)
+        this.setState({realEstates: []})
+      })
+
+    this.fetchStates()
+
+    const cityName = (this.state.city.name) ? this.state.city.name.slice(0, 4) : ''
+
+    CitiesAPI.filter(cityName, this.state.state.id)
+      .then((resp) => {
+        const cities = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+        this.setState({cities})
+      })
+      .catch((error) => {
+        console.log(error)
+        this.setState({cities: []})
+      })
   }
 
   getInitialStateErrors() {
@@ -140,7 +184,7 @@ export default class AgentForm extends Component {
   getAgent() {
     return {
       id: this.state.id,
-      
+
       name: this.state.name,
       cpf: this.state.cpf,
       creci: this.state.creci,
