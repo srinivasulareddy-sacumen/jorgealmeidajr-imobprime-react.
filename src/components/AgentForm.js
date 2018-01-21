@@ -46,7 +46,8 @@ export default class AgentForm extends Component {
   initFormForEdit(agent) {
     this.state = {
       ...agent,
-      
+      creci: agent.creci.toString(),
+
       realEstates: [],
       states: [],
       cities: [],
@@ -61,9 +62,16 @@ export default class AgentForm extends Component {
       }
     }
 
-    RealEstatesAPI.fetchAllByName(this.state.realEstate.name.slice(0, 4).trim())
+    RealEstatesAPI.fetchAll()
       .then((resp) => {
         const realEstates = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+
+        const realEstate = realEstates.find((r) => {return r.key === this.state.realEstate.id})
+        
+        if(realEstate === undefined) {
+          realEstates.unshift(realEstate)
+        }
+
         this.setState({realEstates})
       })
       .catch((error) => {

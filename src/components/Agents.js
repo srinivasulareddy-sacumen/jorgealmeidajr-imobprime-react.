@@ -68,6 +68,23 @@ export default class Agents extends Component {
       })
   }
 
+  update = () => {
+    if(!this.editForm.formHasFieldsWithErrors()) {
+      let data = this.editForm.getAgent()
+
+      AgentsAPI.update(data)
+        .then((response) => {
+          const params = this.searchForm.getSearchParams()
+          this.handleFilter(params)
+
+          this.toggleEditModalVisibility()
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+  }
+
   render() {
     const { agents } = this.state
 
