@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Form, Button, Divider, Modal, Table, Icon } from 'semantic-ui-react'
+import { Form, Button, Divider, Modal, Table, Icon, Header } from 'semantic-ui-react'
 
 import AgentsSearch from './AgentsSearch'
 import AgentForm from './AgentForm'
@@ -31,6 +31,8 @@ export default class Agents extends Component {
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
   toggleEditModalVisibility = () => this.setState({ editModalVisible: !this.state.editModalVisible })
+
+  toggleDeleteModalVisibility = () => this.setState({ deleteModalVisible: !this.state.deleteModalVisible })
 
   handleFilter = (params) => {
     AgentsAPI.fetchAllByParams(params)
@@ -83,6 +85,29 @@ export default class Agents extends Component {
           console.log(error)
         })
     }
+  }
+
+  showDeleteConfirmation = (id) => {
+    AgentsAPI.fetchById(id)
+      .then((response) => {
+        this.setState({ agent: response.data, deleteModalVisible: true })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  delete = () => {
+    AgentsAPI.delete(this.state.agent.id)
+      .then((resp) => {
+        const params = this.searchForm.getSearchParams()
+        this.handleFilter(params)
+
+        this.toggleDeleteModalVisibility()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   render() {
@@ -138,7 +163,7 @@ export default class Agents extends Component {
                     <Button color='blue' size='small' icon onClick={() => this.showEditForm(a.id)}>
                       <Icon name='edit' />
                     </Button>
-                    <Button color='red' size='small' icon>
+                    <Button color='red' size='small' icon onClick={() => this.showDeleteConfirmation(a.id)}>
                       <Icon name='remove' />
                     </Button>
                   </Table.Cell>
@@ -179,6 +204,25 @@ export default class Agents extends Component {
           <Modal.Actions>
             <Button color='red' onClick={this.toggleEditModalVisibility}>Cancelar</Button>
             <Button color='blue' onClick={this.update}>Salvar</Button>
+          </Modal.Actions>
+        </Modal>
+
+        <Modal 
+          size='small' dimmer
+          open={this.state.deleteModalVisible} 
+          onClose={this.toggleDeleteModalVisibility}>
+          <Modal.Header>Confirmar Remoção do Corretor</Modal.Header>
+          <Modal.Content>
+            {
+              this.state.agent !== null &&
+              <Header as='h4' dividing>
+                Deseja mesmo remover o Corretor({this.state.agent.name}) selecionado ?
+              </Header>
+            }
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color='black' onClick={this.toggleDeleteModalVisibility}>Não</Button>
+            <Button color='red' onClick={this.delete}>Sim</Button>
           </Modal.Actions>
         </Modal>
       </div>

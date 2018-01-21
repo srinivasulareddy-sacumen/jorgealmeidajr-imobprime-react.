@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
 
-import { Form, Input, Select, Button, Divider } from 'semantic-ui-react'
+import { Form, Input, Select, Divider } from 'semantic-ui-react'
 
 import RealEstatesAPI from '../api/RealEstatesAPI'
 import StatesAPI from '../api/StatesAPI'
