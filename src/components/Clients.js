@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import { Form, Input, Button, Divider, Header, Table, Icon, Modal } from 'semantic-ui-react'
 
+import ClientsSearchForm from './ClientsSearchForm'
+
 import ClientsAPI from '../api/ClientsAPI'
 import CitiesAPI from '../api/CitiesAPI'
 
@@ -67,25 +69,9 @@ export default class Clients extends Component {
       <div>
         <h1>Listagem de Clientes</h1>
 
-        <Form size='small'>
-          <Form.Group widths='equal'>
-            <Form.Input label='Nome' placeholder='Nome do Cliente' />
-            
-            <Form.Field>
-              <label>CPF</label>
-              <Input label='#' placeholder='999.999.999-99' />
-            </Form.Field>
-          </Form.Group>
-
-          <Form.Group widths='equal'>
-            <Form.Select label='Estado' placeholder='Estado' search options={estados} />
-            <Form.Select label='Cidade' placeholder='Cidade' search options={cidades} />
-          </Form.Group>
-
-          <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
-          <Button color='blue' size='small' style={{width: 90}}>Limpar</Button>
-          <Button color='green' size='small' style={{width: 90}} onClick={this.toggleCreateModalVisibility}>Adicionar</Button>
-        </Form>
+        <ClientsSearchForm 
+        
+        />
 
         <Divider />
 
