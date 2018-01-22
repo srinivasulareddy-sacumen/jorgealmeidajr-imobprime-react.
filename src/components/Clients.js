@@ -1,36 +1,67 @@
 import React, { Component } from 'react'
 
-import { 
-  Form, Input, Button, 
-  Divider, Header,
-  Table, Icon, 
-  Modal
-} from 'semantic-ui-react'
+import { Form, Input, Button, Divider, Header, Table, Icon, Modal } from 'semantic-ui-react'
 
-import CidadesAPI from '../api/CitiesAPI'
+import ClientsAPI from '../api/ClientsAPI'
+import CitiesAPI from '../api/CitiesAPI'
 
-export default class Clientes extends Component {
+export default class Clients extends Component {
 
   state = {
     createModalVibible: false,
+    editModalVisible: false,
+    deleteModalVisible: false,
+
+    client: null,
+    clients: [],
+
     estados: [],
     cidades: []
   }
 
   componentDidMount() {
-    const estados = CidadesAPI.getEstados()
+    const estados = CitiesAPI.getEstados()
       .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
 
-    const cidades = CidadesAPI.getCidades()
+    const cidades = CitiesAPI.getCidades()
       .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
 
-    this.setState({ estados, cidades })
+    this.setState({ estados, cidades });
+
+    (async () => {
+      try {
+        const clients = await this.fetchInitialClients()
+        //console.log(clients)
+
+        this.setState({clients})
+      } catch(error) {
+        console.log(error)
+      }
+    })();
+  }
+
+  fetchInitialClients = async () => {
+    const resp = await ClientsAPI.fetchAll()
+    return resp.data.map((client) => ({ ...client, attributes: JSON.parse(client.attributes) }))
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
+  toggleEditModalVisibility = () => this.setState({ editModalVisible: !this.state.editModalVisible })
+
+  toggleDeleteModalVisibility = () => this.setState({ deleteModalVisible: !this.state.deleteModalVisible })
+
+  getCityStr = (client) => {
+    const endereco = client.attributes.endereco
+
+    if(endereco === undefined)
+      return ''
+
+    return `${endereco.cidade.nome_cidade} / ${endereco.cidade.estado.sigla_estado}`
+  }
+
   render() {
-    const { estados, cidades } = this.state
+    const { estados, cidades, clients } = this.state
 
     return (
       <div>
@@ -72,22 +103,28 @@ export default class Clientes extends Component {
           </Table.Header>
 
           <Table.Body>
-            <Table.Row>
-              <Table.Cell>Maria</Table.Cell>
-              <Table.Cell>111.111.111-11</Table.Cell>
-              <Table.Cell>Florianopolis/SC</Table.Cell>
-              <Table.Cell>(048) 3232-3232</Table.Cell>
-              <Table.Cell>(048) 93232-3232</Table.Cell>
-              <Table.Cell>maria@gmail.com</Table.Cell>
-              <Table.Cell collapsing textAlign='left'>
-                <Button color='blue' size='small' icon>
-                  <Icon name='edit' />
-                </Button>
-                <Button color='red' size='small' icon>
-                  <Icon name='remove' />
-                </Button>
-              </Table.Cell>
-            </Table.Row>
+          {
+            clients.map(client => {
+              return (
+                <Table.Row key={client.id}>
+                  <Table.Cell>{client.name}</Table.Cell>
+                  <Table.Cell>{client.cpf}</Table.Cell>
+                  <Table.Cell>{this.getCityStr(client)}</Table.Cell>
+                  <Table.Cell>{client.phoneNumber}</Table.Cell>
+                  <Table.Cell>{client.cellPhoneNumber}</Table.Cell>
+                  <Table.Cell>{client.email}</Table.Cell>
+                  <Table.Cell collapsing textAlign='left'>
+                    <Button color='blue' size='small' icon>
+                      <Icon name='edit' />
+                    </Button>
+                    <Button color='red' size='small' icon>
+                      <Icon name='remove' />
+                    </Button>
+                  </Table.Cell>
+                </Table.Row>
+              )
+            })
+          }
           </Table.Body>
         </Table>
 
