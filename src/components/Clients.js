@@ -32,10 +32,7 @@ export default class Clients extends Component {
 
     (async () => {
       try {
-        const clients = await this.fetchInitialClients()
-        //console.log(clients)
-
-        this.setState({clients})
+        this.fetchInitialClients()
       } catch(error) {
         console.log(error)
       }
@@ -44,7 +41,11 @@ export default class Clients extends Component {
 
   fetchInitialClients = async () => {
     const resp = await ClientsAPI.fetchAll()
-    return resp.data.map((client) => ({ ...client, attributes: JSON.parse(client.attributes) }))
+    
+    const clients = resp.data.map((client) => ({ ...client, attributes: JSON.parse(client.attributes) }))
+    // console.log(clients)
+
+    this.setState({clients})
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
@@ -62,6 +63,16 @@ export default class Clients extends Component {
     return `${endereco.cidade.nome_cidade} / ${endereco.cidade.estado.sigla_estado}`
   }
 
+  handleFilter = async (params) => {
+    try {
+      const resp = await ClientsAPI.fetchAllByParams(params)
+      this.setState({clients: resp.data})
+    } catch(error) {
+      console.log(error)
+      this.setState({clients: []})
+    }
+  }
+
   render() {
     const { estados, cidades, clients } = this.state
 
@@ -70,7 +81,10 @@ export default class Clients extends Component {
         <h1>Listagem de Clientes</h1>
 
         <ClientsSearchForm 
-        
+          ref={e => this.searchForm = e}
+          fetchInitialClients={this.fetchInitialClients}
+          onFilter={this.handleFilter}
+          toggleCreateModalVisibility={this.toggleCreateModalVisibility}
         />
 
         <Divider />

@@ -82,6 +82,32 @@ export default class ClientsSearchForm extends Component {
     }
   }
 
+  search = (e) => {
+    e.preventDefault()
+
+    const params = {
+      name: this.state.name,
+      cpf: this.state.cpf,
+      stateId: this.state.stateId,
+      cityId: this.state.cityId,
+    }
+
+    this.props.onFilter(params)
+  }
+
+  clearSearchForm = async (e) => {
+    e.preventDefault()
+
+    try {
+      const cities = await this.fetchInitialCities()
+      this.setState({...this.getInitialFormState(), cities})
+
+      this.props.fetchInitialClients()
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
   render() {
     const {states, cities} = this.state
     
@@ -132,8 +158,8 @@ export default class ClientsSearchForm extends Component {
           </Form.Field>
         </Form.Group>
 
-        <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
-        <Button color='blue' size='small' style={{width: 90}}>Limpar</Button>
+        <Button color='blue' size='small' style={{width: 90}} onClick={this.search}>Buscar</Button>
+        <Button color='blue' size='small' style={{width: 90}} onClick={this.clearSearchForm}>Limpar</Button>
         <Button color='green' size='small' style={{width: 90}} onClick={this.props.toggleCreateModalVisibility}>Adicionar</Button>
       </Form>
     )

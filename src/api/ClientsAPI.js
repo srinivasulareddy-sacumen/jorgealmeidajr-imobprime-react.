@@ -15,4 +15,15 @@ export default class ClientsAPI {
     return request
   }
 
+  static fetchAllByParams(params) {
+    const request = axios({
+      method: 'post',
+      url: `${ROOT_URL}/search-clients`,
+      headers: [],
+      data: params
+    })
+
+    return request
+  }
+
 }
