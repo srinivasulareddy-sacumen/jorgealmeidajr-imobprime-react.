@@ -66,7 +66,10 @@ export default class Clients extends Component {
   handleFilter = async (params) => {
     try {
       const resp = await ClientsAPI.fetchAllByParams(params)
-      this.setState({clients: resp.data})
+      const clients = resp.data.map((client) => ({ ...client, attributes: JSON.parse(client.attributes) }))
+      
+      // console.log(clients)
+      this.setState({clients})
     } catch(error) {
       console.log(error)
       this.setState({clients: []})
