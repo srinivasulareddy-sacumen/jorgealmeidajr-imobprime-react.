@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 
-import { Form, Input, Button, Divider, Header, Table, Icon, Modal } from 'semantic-ui-react'
+import { Button, Divider, Table, Icon, Modal } from 'semantic-ui-react'
 
 import ClientsSearchForm from './ClientsSearchForm'
+import ClientFormModal from './ClientFormModal'
 
 import ClientsAPI from '../api/ClientsAPI'
-import CitiesAPI from '../api/CitiesAPI'
 
 export default class Clients extends Component {
 
@@ -15,21 +15,10 @@ export default class Clients extends Component {
     deleteModalVisible: false,
 
     client: null,
-    clients: [],
-
-    estados: [],
-    cidades: []
+    clients: []
   }
 
   componentDidMount() {
-    const estados = CitiesAPI.getEstados()
-      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
-
-    const cidades = CitiesAPI.getCidades()
-      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
-
-    this.setState({ estados, cidades });
-
     (async () => {
       try {
         this.fetchInitialClients()
@@ -77,7 +66,7 @@ export default class Clients extends Component {
   }
 
   render() {
-    const { estados, cidades, clients } = this.state
+    const { clients } = this.state
 
     return (
       <div>
@@ -131,69 +120,11 @@ export default class Clients extends Component {
           </Table.Body>
         </Table>
 
-        <Modal 
-          size='large' dimmer
-          open={this.state.createModalVibible} 
+        <ClientFormModal 
+          title='Cadastro de um novo Cliente'
+          open={this.state.createModalVibible}
           onClose={this.toggleCreateModalVisibility}
-        >
-          <Modal.Header>Cadastro de um novo Cliente</Modal.Header>
-          <Modal.Content scrolling>
-            <Form size='small'>
-              <Form.Group widths='equal'>
-                <Form.Input label='Nome' placeholder='Nome do Cliente' required error />
-                
-                <Form.Field required error>
-                  <label>CPF</label>
-                  <Input label='#' placeholder='999.999.999-99' />
-                </Form.Field>
-              </Form.Group>
-
-              <Form.Group widths='equal'>
-                <Form.Field required error>
-                  <label>Email</label>
-                  <Input label='@' placeholder='Email do Cliente' />
-                </Form.Field>
-
-                <Form.Field>
-                  <label>Celular</label>
-                  <Input label='#' placeholder='(99) 99999-9999' />
-                </Form.Field>
-
-                <Form.Field>
-                  <label>Telefone</label>
-                  <Input label='#' placeholder='(99) 9999-9999' />
-                </Form.Field>
-              </Form.Group>
-
-              <Divider />
-
-              <Header size='medium'>Endereço do Cliente</Header>
-              <Form.Group>
-                <Form.Field width={4} required error>
-                  <label>CEP</label>
-                  <Input label='#' placeholder='99.999-999' />
-                </Form.Field>
-
-                <Form.Input label='Rua' placeholder='Rua' width={6} />
-                <Form.Input label='Bairro' placeholder='Bairro' width={6} />
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Input label='Número' placeholder='0' width={4} />
-                <Form.Input label='Complemento' placeholder='Complemento' width={6} />
-              </Form.Group>
-
-              <Form.Group widths='equal'>
-                <Form.Select label='Estado' placeholder='Estado' search options={estados} />
-                <Form.Select label='Cidade' placeholder='Cidade' search options={cidades} />
-              </Form.Group>
-            </Form>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button color='red' onClick={this.toggleCreateModalVisibility}>Cancelar</Button>
-            <Button color='blue' onClick={this.toggleCreateModalVisibility}>Salvar</Button>
-          </Modal.Actions>
-        </Modal>
+        />
 
       </div>
     )
