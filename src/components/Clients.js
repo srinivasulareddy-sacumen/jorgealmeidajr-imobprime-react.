@@ -65,6 +65,10 @@ export default class Clients extends Component {
     }
   }
 
+  save = (client) => {
+    console.log(client)
+  }
+
   render() {
     const { clients } = this.state
 
@@ -124,6 +128,7 @@ export default class Clients extends Component {
           title='Cadastro de um novo Cliente'
           open={this.state.createModalVibible}
           onClose={this.toggleCreateModalVisibility}
+          onSave={this.save}
         />
 
       </div>

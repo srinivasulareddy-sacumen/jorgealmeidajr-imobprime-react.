@@ -5,6 +5,7 @@ import { Form, Input, Select, Divider, Header, Button, Modal } from 'semantic-ui
 
 import StatesAPI from '../api/StatesAPI'
 import CitiesAPI from '../api/CitiesAPI'
+import ZipCodesAPI from '../api/ZipCodesAPI'
 
 export default class ClientFormModal extends Component {
 
@@ -42,8 +43,8 @@ export default class ClientFormModal extends Component {
       type: '',
       addressNumber: '',
       addressDescription: '',
-      state: {id: null},
-      city: {id: null},
+      stateId: null,
+      cityId: null,
       
       ...this.getInitialStateErrors(),
 
@@ -82,6 +83,97 @@ export default class ClientFormModal extends Component {
   async fetchInitialCities() {
     const resp = await CitiesAPI.fetchAll()
     return resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+  }
+
+  handleStateChange = async (e, {value}) => {
+    try {
+      const stateId = value
+
+      const resp = await CitiesAPI.filter('', stateId)
+      const cities = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+
+      this.setState({stateId, cityId: null, cities})
+    } catch(error) {
+      console.log(error)
+      this.setState({stateId: null, cityId: null, cities: []})
+    }
+  }
+
+  handleCityNameSearchChange = async (e, { searchQuery }) => {
+    try {
+      const resp = await CitiesAPI.filter(searchQuery, this.state.stateId)
+      const cities = resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+
+      this.setState({cityId: null, cities})
+    } catch(error) {
+      console.log(error)
+      this.setState({cityId: null, cities: []})
+    }
+  }
+
+  handlePostalCodeBlur = async () => {
+    const resp = await ZipCodesAPI.fetchByPostalCode(this.state.postalCode)
+    const zipCode = resp.data
+    // console.log(zipCode)
+
+    const city = zipCode.city
+
+    this.setState({
+      street: zipCode.street,
+      region: zipCode.region,
+      stateId: city.state.id,
+      cityId: city.id,
+      cities: [{ key: city.id, text: city.name, value: city.id }]
+    })
+  }
+
+  handleSave = () => {
+    if(!this.formHasFieldsWithErrors()) {
+      this.props.onSave(this.getClient())
+    }
+  }
+
+  formHasFieldsWithErrors() {
+    let errors = {
+      nameError: (this.state.name.trim() === ''),
+      cpfError: (this.state.cpf.trim() === ''),
+      emailError: (this.state.email.trim() === ''),
+      postalCodeError: (this.state.postalCode.trim() === '')
+    }
+
+    this.setState({...errors})
+    
+    const fieldsWithErrors = Object.keys(errors)
+      .filter(k => { return errors[k] === true })
+
+    return fieldsWithErrors.length > 0
+  }
+
+  getClient = () => {
+    const endereco = {
+      cep: this.state.postalCode,
+      rua : this.state.street,
+      bairro : this.state.region,
+      complemento : this.state.addressDescription,
+      numero : this.state.addressNumber,
+
+      cidade : {
+        estado : {
+          id_estado : this.state.stateId
+        },
+        id_cidade : this.state.cityId
+      }
+    }
+
+    return {
+      id: this.state.id,
+      name: this.state.name,
+      cpf: this.state.cpf,
+      email: this.state.email,
+      phoneNumber: this.state.phoneNumber,
+      cellPhoneNumber: this.state.cellPhoneNumber,
+      attributes: JSON.stringify({endereco})
+    }
   }
 
   render() {
@@ -148,7 +240,8 @@ export default class ClientFormModal extends Component {
               <Form.Field width={4} required error={this.state.postalCodeError}>
                 <label>CEP</label>
                 <Input 
-                  label='#' placeholder='99.999-999'
+                  label='#' placeholder='99999-999'
+                  onBlur={this.handlePostalCodeBlur}
                   onChange={e => this.setState({postalCode: e.target.value})}
                   value={this.state.postalCode} />
               </Form.Field>
@@ -177,14 +270,32 @@ export default class ClientFormModal extends Component {
             </Form.Group>
 
             <Form.Group widths='equal'>
-              <Form.Select label='Estado' placeholder='Estado' search options={states} />
-              <Form.Select label='Cidade' placeholder='Cidade' search options={cities} />
+              <Form.Field>
+                <label>Estado</label>
+                <Select 
+                  placeholder='Selecione o Estado'
+                  search 
+                  options={states}
+                  onChange={this.handleStateChange} 
+                  value={this.state.stateId} />
+              </Form.Field>
+
+              <Form.Field>
+                <label>Cidade</label>
+                <Select 
+                  placeholder='Selecione a Cidade'
+                  search 
+                  options={cities}
+                  onSearchChange={this.handleCityNameSearchChange}
+                  onChange={(e, {value}) => this.setState({cityId: value})} 
+                  value={this.state.cityId} />
+              </Form.Field>
             </Form.Group>
           </Form>
         </Modal.Content>
         <Modal.Actions>
           <Button color='red' onClick={this.props.onClose}>Cancelar</Button>
-          <Button color='blue' onClick={this.props.onClose}>Salvar</Button>
+          <Button color='blue' onClick={this.handleSave}>Salvar</Button>
         </Modal.Actions>
       </Modal>
     )
