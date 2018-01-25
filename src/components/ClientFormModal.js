@@ -21,6 +21,12 @@ export default class ClientFormModal extends Component {
 
   initStateForEdit(client) {
     this.state = {
+      name: client.name,
+      cpf: client.cpf,
+      email: client.email,
+      phoneNumber: client.phoneNumber,
+      cellPhoneNumber: client.cellPhoneNumber,
+
       ...this.getInitialStateErrors(),
 
       states: [],
@@ -195,6 +201,27 @@ export default class ClientFormModal extends Component {
       ...this.getInitialStateForCreate(),
       states, 
       cities
+    })
+  }
+
+  setClient(client) {
+    this.setState({
+      name: client.name,
+      cpf: client.cpf,
+      email: client.email,
+      phoneNumber: client.phoneNumber,
+      cellPhoneNumber: client.cellPhoneNumber,
+
+      postalCode: client.attributes.endereco.cep,
+      region: client.attributes.endereco.bairro,
+      street: client.attributes.endereco.rua,
+      type: '',
+      addressNumber: client.attributes.endereco.numero,
+      addressDescription: client.attributes.endereco.complemento,
+      stateId: client.attributes.endereco.cidade.estado.id_estado,
+      cityId: null, // TODO: this field must be set and cities: must be set
+
+      ...this.getInitialStateErrors(),
     })
   }
 

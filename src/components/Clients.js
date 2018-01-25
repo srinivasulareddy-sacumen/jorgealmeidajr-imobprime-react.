@@ -78,6 +78,23 @@ export default class Clients extends Component {
     }
   }
 
+  showEditForm = async (id) => {
+    try {
+      const resp = await ClientsAPI.fetchById(id)
+
+      const attributes = JSON.parse(resp.data.attributes)
+      const client = { ...resp.data, attributes }
+
+      this.setState({ client })
+
+      this.editModal.setClient(client)
+
+      this.toggleEditModalVisibility()
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
   render() {
     const { clients } = this.state
 
@@ -119,10 +136,10 @@ export default class Clients extends Component {
                   <Table.Cell>{client.cellPhoneNumber}</Table.Cell>
                   <Table.Cell>{client.email}</Table.Cell>
                   <Table.Cell collapsing textAlign='left'>
-                    <Button color='blue' size='small' icon>
+                    <Button color='blue' size='small' icon onClick={() => this.showEditForm(client.id)}>
                       <Icon name='edit' />
                     </Button>
-                    <Button color='red' size='small' icon>
+                    <Button color='red' size='small' icon onClick={() => this.showDeleteConfirmation(client.id)}>
                       <Icon name='remove' />
                     </Button>
                   </Table.Cell>
@@ -138,6 +155,15 @@ export default class Clients extends Component {
           open={this.state.createModalVibible}
           onClose={this.toggleCreateModalVisibility}
           onSave={this.save}
+        />
+
+        <ClientFormModal 
+          ref={e => this.editModal = e}
+          title='Edição de um Cliente'
+          open={this.state.editModalVisible}
+          onClose={this.toggleEditModalVisibility}
+          client={this.state.client}
+          onUpdate={this.update}
         />
 
       </div>
