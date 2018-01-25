@@ -15,7 +15,7 @@ export default class ClientFormModal extends Component {
     if(props.client && props.client.id) {
       this.initStateForEdit(props.client)
     } else {
-      this.initStateForCreate()
+      this.state = this.getInitialStateForCreate()
     }
   }
 
@@ -28,8 +28,8 @@ export default class ClientFormModal extends Component {
     }
   }
 
-  initStateForCreate() {
-    this.state = {
+  getInitialStateForCreate() {
+    return {
       id: null,
       name: '',
       cpf: '',
@@ -127,9 +127,14 @@ export default class ClientFormModal extends Component {
     })
   }
 
-  handleSave = () => {
+  handleSave = async () => {
     if(!this.formHasFieldsWithErrors()) {
-      this.props.onSave(this.getClient())
+      const citiesResp = await CitiesAPI.fetchOneById(this.state.cityId)
+      const city = citiesResp.data
+      
+      await this.props.onSave(this.getClient(city))
+
+      this.setState(this.getInitialStateForCreate())
     }
   }
 
@@ -149,19 +154,23 @@ export default class ClientFormModal extends Component {
     return fieldsWithErrors.length > 0
   }
 
-  getClient = () => {
+  getClient = (city) => {
     const endereco = {
       cep: this.state.postalCode,
-      rua : this.state.street,
-      bairro : this.state.region,
-      complemento : this.state.addressDescription,
-      numero : this.state.addressNumber,
+      rua: this.state.street,
+      bairro: this.state.region,
+      complemento: this.state.addressDescription,
+      numero: this.state.addressNumber,
 
       cidade : {
+        id_cidade: city.id,
+        nome_cidade: city.name,
+
         estado : {
-          id_estado : this.state.stateId
-        },
-        id_cidade : this.state.cityId
+          id_estado: city.state.id,
+          nome_estado: city.state.name,
+          sigla_estado: city.state.stateAbbreviation
+        }
       }
     }
 
@@ -176,6 +185,19 @@ export default class ClientFormModal extends Component {
     }
   }
 
+  handleClose = async () => {
+    this.props.onClose()
+
+    const states = await this.fetchStates()
+    const cities = await this.fetchInitialCities()
+
+    this.setState({
+      ...this.getInitialStateForCreate(),
+      states, 
+      cities
+    })
+  }
+
   render() {
     const { states, cities } = this.state
 
@@ -183,7 +205,7 @@ export default class ClientFormModal extends Component {
       <Modal 
         size='large' dimmer
         open={this.props.open} 
-        onClose={this.props.onClose}>
+        onClose={this.handleClose}>
         <Modal.Header>{this.props.title}</Modal.Header>
         <Modal.Content scrolling>
           {/*JSON.stringify(this.state, null, 2)*/}
@@ -294,7 +316,7 @@ export default class ClientFormModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button color='red' onClick={this.props.onClose}>Cancelar</Button>
+          <Button color='red' onClick={this.handleClose}>Cancelar</Button>
           <Button color='blue' onClick={this.handleSave}>Salvar</Button>
         </Modal.Actions>
       </Modal>

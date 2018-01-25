@@ -65,8 +65,17 @@ export default class Clients extends Component {
     }
   }
 
-  save = (client) => {
-    console.log(client)
+  save = async (client) => {
+    try {
+      await ClientsAPI.save(client)
+
+      const params = this.searchForm.getSearchParams()
+      await this.handleFilter(params)
+
+      this.toggleCreateModalVisibility()
+    } catch(error) {
+      console.log(error)
+    }
   }
 
   render() {

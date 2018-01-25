@@ -26,4 +26,46 @@ export default class ClientsAPI {
     return request
   }
 
+  static fetchById(id) {
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/clients/${id}`,
+      headers: []
+    })
+
+    return request
+  }
+
+  static save(data) {
+    const request  = axios({
+      method: 'post',
+      url: `${ROOT_URL}/clients`,
+      headers: [],
+      data
+    })
+
+    return request
+  }
+
+  static update(data) {
+    const request  = axios({
+      method: 'put',
+      url: `${ROOT_URL}/clients`,
+      headers: [],
+      data
+    })
+
+    return request
+  }
+
+  static delete(id) {
+    const request = axios({
+      method: 'delete',
+      url: `${ROOT_URL}/clients/${id}`,
+      headers: []
+    })
+
+    return request
+  }
+
 }
