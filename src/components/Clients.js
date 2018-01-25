@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Button, Divider, Table, Icon, Modal } from 'semantic-ui-react'
+import { Button, Divider, Table, Icon, Modal, Header } from 'semantic-ui-react'
 
 import ClientsSearchForm from './ClientsSearchForm'
 import ClientFormModal from './ClientFormModal'
@@ -95,6 +95,30 @@ export default class Clients extends Component {
     }
   }
 
+  showDeleteConfirmation = async (id) => {
+    try {
+      const resp = await ClientsAPI.fetchById(id)
+      const client = resp.data
+
+      this.setState({ client, deleteModalVisible: true })
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
+  delete = async () => {
+    try {
+      await ClientsAPI.delete(this.state.client.id)
+
+      const params = this.searchForm.getSearchParams()
+      await this.handleFilter(params)
+
+      this.toggleDeleteModalVisibility()
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
   render() {
     const { clients } = this.state
 
@@ -165,6 +189,25 @@ export default class Clients extends Component {
           client={this.state.client}
           onUpdate={this.update}
         />
+
+        <Modal 
+          size='small' dimmer
+          open={this.state.deleteModalVisible} 
+          onClose={this.toggleDeleteModalVisibility}>
+          <Modal.Header>Confirmar Remoção do Cliente</Modal.Header>
+          <Modal.Content>
+            {
+              this.state.client !== null &&
+              <Header as='h4' dividing>
+                Deseja mesmo remover o Cliente ({this.state.client.name}) selecionado ?
+              </Header>
+            }
+          </Modal.Content>
+          <Modal.Actions>
+            <Button color='black' onClick={this.toggleDeleteModalVisibility}>Não</Button>
+            <Button color='red' onClick={this.delete}>Sim</Button>
+          </Modal.Actions>
+        </Modal>
 
       </div>
     )
