@@ -67,12 +67,20 @@ export default class Clients extends Component {
 
   save = async (client) => {
     try {
-      await ClientsAPI.save(client)
-
+      if(client.id === null) {
+        await ClientsAPI.save(client)
+      } else {
+        await ClientsAPI.update(client)
+      }
+      
       const params = this.searchForm.getSearchParams()
       await this.handleFilter(params)
 
-      this.toggleCreateModalVisibility()
+      if(client.id === null) {
+        this.toggleCreateModalVisibility()
+      } else {
+        this.toggleEditModalVisibility()
+      }
     } catch(error) {
       console.log(error)
     }
@@ -87,7 +95,7 @@ export default class Clients extends Component {
 
       this.setState({ client })
 
-      this.editModal.setClient(client)
+      await this.editModal.setClient(client)
 
       this.toggleEditModalVisibility()
     } catch(error) {
@@ -186,8 +194,8 @@ export default class Clients extends Component {
           title='Edição de um Cliente'
           open={this.state.editModalVisible}
           onClose={this.toggleEditModalVisibility}
-          client={this.state.client}
-          onUpdate={this.update}
+          
+          onSave={this.save}
         />
 
         <Modal 

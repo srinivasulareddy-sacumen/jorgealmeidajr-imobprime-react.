@@ -69,16 +69,18 @@ export default class ClientFormModal extends Component {
   }
 
   componentDidMount() {
-    (async () => {
-      try {
-        const states = await this.fetchStates()
-        const cities = await this.fetchInitialCities()
+    this.initFormFields()
+  }
 
-        this.setState({states, cities})
-      } catch(error) {
-        console.log(error)
-      }
-    })();
+  async initFormFields() {
+    try {
+      const states = await this.fetchStates()
+      const cities = await this.fetchInitialCities()
+
+      this.setState({states, cities})
+    } catch(error) {
+      console.log(error)
+    }
   }
 
   async fetchStates() {
@@ -187,7 +189,7 @@ export default class ClientFormModal extends Component {
       email: this.state.email,
       phoneNumber: this.state.phoneNumber,
       cellPhoneNumber: this.state.cellPhoneNumber,
-      attributes: JSON.stringify({endereco})
+      attributes: JSON.stringify({endereco, imoveis: [], tipo_cliente: 'proprietário'})
     }
   }
 
@@ -204,24 +206,42 @@ export default class ClientFormModal extends Component {
     })
   }
 
-  setClient(client) {
+  async setClient(client) {
+    const states = await this.fetchStates()
+    const cities = await this.fetchInitialCities()
+
+    const endereco = client.attributes.endereco
+
+    const city = cities.find((c) => c.id === endereco.cidade.id_cidade)
+
+    if(city === undefined) {
+      cities.unshift({
+        key: endereco.cidade.id_cidade, 
+        text: endereco.cidade.nome_cidade, 
+        value: endereco.cidade.id_cidade
+      })
+    }
+
     this.setState({
+      id: client.id,
       name: client.name,
       cpf: client.cpf,
       email: client.email,
       phoneNumber: client.phoneNumber,
       cellPhoneNumber: client.cellPhoneNumber,
 
-      postalCode: client.attributes.endereco.cep,
-      region: client.attributes.endereco.bairro,
-      street: client.attributes.endereco.rua,
+      postalCode: endereco.cep,
+      region: endereco.bairro,
+      street: endereco.rua,
       type: '',
-      addressNumber: client.attributes.endereco.numero,
-      addressDescription: client.attributes.endereco.complemento,
-      stateId: client.attributes.endereco.cidade.estado.id_estado,
-      cityId: null, // TODO: this field must be set and cities: must be set
+      addressNumber: endereco.numero,
+      addressDescription: endereco.complemento,
+      stateId: endereco.cidade.estado.id_estado,
+      cityId: endereco.cidade.id_cidade,
 
       ...this.getInitialStateErrors(),
+      states,
+      cities
     })
   }
 
