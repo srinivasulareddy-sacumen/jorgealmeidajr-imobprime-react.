@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 
 import { 
-  Form, Input, Select, Button, 
+  Form, Input, Button, 
   Divider, Modal, Header, Image,
   Table, Icon
 } from 'semantic-ui-react'
+
+import PropertiesSearchForm from './PropertiesSearchForm'
 
 import PropertiesAPI from '../api/PropertiesAPI'
 import CitiesAPI from '../api/CitiesAPI'
@@ -13,6 +15,8 @@ export default class Properties extends Component {
 
   state = {
     createModalVibible: false,
+    editModalVisible: false,
+    deleteModalVisible: false,
 
     properties: [],
 
@@ -38,81 +42,30 @@ export default class Properties extends Component {
     this.setState({ tiposImovel, situacoesImovel, cidades, estados });
 
     (async () => {
-      const propertiesResp = await PropertiesAPI.fetchAll()
-      const properties = propertiesResp.data
-      console.log(properties)
+      await this.fetchInitialProperties()  
     })();
+  }
+
+  fetchInitialProperties = async () => {
+    const propertiesResp = await PropertiesAPI.fetchAll()
+    const properties = propertiesResp.data
+
+    this.setState({properties})
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
 
   render() {
-    const { tiposImovel, situacoesImovel, cidades, estados } = this.state
+    const { tiposImovel, situacoesImovel, cidades, estados,  properties } = this.state
 
     return (
       <div>
         <h1>Listagem de Imóveis</h1>
 
-        <Form size='small'>
-          <Form.Group widths='equal'>
-            <Form.Field>
-              <label>Proprietário</label>
-              <Form.Group inline>
-                <Select search placeholder='Nome do Proprietátio do Imóvel' className='form-select' style={{width: '90%'}} />
-                
-                <Button color='blue' size='tiny' icon style={{marginLeft: 4}}>
-                  <Icon name='edit' />
-                </Button>
-              </Form.Group>
-            </Form.Field>
-
-            <Form.Field>
-              <label>Tipo de Imóvel</label>
-              <Select placeholder='Selecione o Tipo de Imóvel' options={tiposImovel} className='form-select' />
-            </Form.Field>
-
-            <Form.Field>
-              <label>Situação do Imóvel</label>
-              <Select placeholder='Selecione a Situação do Imóvel' options={situacoesImovel} className='form-select' />
-            </Form.Field>
-          </Form.Group>
-
-          <Form.Group widths='equal'>
-            <Form.Field>
-              <label>Estado</label>
-              <Select label='Estado' search placeholder='Selecione o Estado' options={estados} className='form-select' />
-            </Form.Field>
-
-            <Form.Field>
-              <label>Cidade</label>
-              <Select search placeholder='Selecione a Cidade' options={cidades} className='form-select' />
-            </Form.Field>
-          </Form.Group>
-
-          <Form.Group widths='equal'>
-            <Form.Field>
-              <label>Preço inicial</label>
-              <Input label='R$' placeholder='0,00' className='form-input' />
-            </Form.Field>
-            <Form.Field>
-              <label>Preço final</label>
-              <Input label='R$' placeholder='0,00' className='form-input' />
-            </Form.Field>
-
-            <Form.Field>
-              <label>Área inicial</label>
-              <Input label='m²' labelPosition='right' placeholder='0' className='form-input' />
-            </Form.Field>
-            <Form.Field>
-              <label>Área final</label>
-              <Input label='m²' labelPosition='right' placeholder='0' className='form-input' />
-            </Form.Field>
-          </Form.Group>
-
-          <Button color='blue' size='small' style={{width: 90}}>Buscar</Button>
-          <Button color='blue' size='small' style={{width: 90}}>Limpar</Button>
-          <Button color='green' size='small' style={{width: 90}} onClick={this.toggleCreateModalVisibility}>Adicionar</Button>
-        </Form>
+        <PropertiesSearchForm 
+          fetchInitialProperties={this.fetchInitialProperties}
+          toggleCreateModalVisibility={this.toggleCreateModalVisibility}
+        />
 
         <Divider />
 
@@ -131,23 +84,29 @@ export default class Properties extends Component {
           </Table.Header>
 
           <Table.Body>
-            <Table.Row>
-              <Table.Cell><Image src='img/imovel01.jpg' size='medium' /></Table.Cell>
-              <Table.Cell>Maria</Table.Cell>
-              <Table.Cell>Casa</Table.Cell>
-              <Table.Cell>Venda</Table.Cell>
-              <Table.Cell>Florianópolis/SC</Table.Cell>
-              <Table.Cell>R$ 250.000</Table.Cell>
-              <Table.Cell>100 m²</Table.Cell>
-              <Table.Cell collapsing textAlign='left'>
-                <Button color='blue' size='small' icon>
-                  <Icon name='edit' />
-                </Button>
-                <Button color='red' size='small' icon>
-                  <Icon name='remove' />
-                </Button>
-              </Table.Cell>
-            </Table.Row>
+          {
+            properties.map(property => (
+              <Table.Row key={property.id}>
+                <Table.Cell><b>TODO:</b> <Image src='img/imovel01.jpg' size='small' /></Table.Cell>
+                <Table.Cell><b>TODO:</b> owner</Table.Cell>
+                <Table.Cell>{property.type.name}</Table.Cell>
+                <Table.Cell>{property.state.name}</Table.Cell>
+                <Table.Cell><b>TODO:</b> Florianópolis/SC</Table.Cell>
+                <Table.Cell>{property.price}</Table.Cell>
+                <Table.Cell>{property.totalArea} m²</Table.Cell>
+
+                <Table.Cell collapsing textAlign='left'>
+                  <Button color='blue' size='small' icon>
+                    <Icon name='edit' />
+                  </Button>
+
+                  <Button color='red' size='small' icon>
+                    <Icon name='remove' />
+                  </Button>
+                </Table.Cell>
+              </Table.Row>
+            ))
+          }
           </Table.Body>
         </Table>
 
