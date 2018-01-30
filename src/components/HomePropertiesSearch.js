@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { Form, Input, Button } from 'semantic-ui-react'
 
 import CitiesAPI from '../api/CitiesAPI'
-import ImoveisAPI from '../api/ImoveisAPI'
+import ImoveisAPI from '../api/PropertiesAPI'
 import PropertyTypesAPI from '../api/PropertyTypesAPI'
 
 

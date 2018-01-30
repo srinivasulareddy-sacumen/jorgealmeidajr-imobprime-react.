@@ -14,7 +14,7 @@ import './App.css'
 import Home from './components/Home'
 import Agents from './components/Agents'
 import Imobiliarias from './components/Imobiliarias'
-import Imoveis from './components/Imoveis'
+import Properties from './components/Properties'
 import Clients from './components/Clients'
 
 import CitiesAPI from './api/CitiesAPI'
@@ -306,7 +306,7 @@ export default class App extends Component {
                 <Route exact path="/" component={Home}/>
                 <Route path="/home" component={Home}/>
                 <Route path="/clientes" component={Clients}/>
-                <Route path="/imoveis" component={Imoveis}/>
+                <Route path="/imoveis" component={Properties}/>
                 <Route path="/corretores" component={Agents}/>
                 <Route path="/imobiliarias" component={Imobiliarias}/>
               </Switch>

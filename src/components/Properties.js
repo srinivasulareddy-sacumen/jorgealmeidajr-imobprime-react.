@@ -6,33 +6,42 @@ import {
   Table, Icon
 } from 'semantic-ui-react'
 
-import ImoveisAPI from '../api/ImoveisAPI'
-import CidadesAPI from '../api/CitiesAPI'
+import PropertiesAPI from '../api/PropertiesAPI'
+import CitiesAPI from '../api/CitiesAPI'
 
-export default class Imoveis extends Component {
+export default class Properties extends Component {
 
   state = {
+    createModalVibible: false,
+
+    properties: [],
+
     tiposImovel: [],
     situacoesImovel: [],
     cidades: [],
-    estados: [],
-    createModalVibible: false
+    estados: []
   }
 
   componentDidMount() {
-    const tiposImovel = ImoveisAPI.getTiposImovel()
+    const tiposImovel = PropertiesAPI.getTiposImovel()
       .map((tipo) => ({ key: tipo.id, text: tipo.nome, value: tipo.id }))
 
-    const situacoesImovel = ImoveisAPI.getSituaçoesImovel()
+    const situacoesImovel = PropertiesAPI.getSituaçoesImovel()
       .map((situacao) => ({ key: situacao.id, text: situacao.nome, value: situacao.id }))
 
-    const cidades = CidadesAPI.getCidades()
+    const cidades = CitiesAPI.getCidades()
       .map((c) => ({ key: c.id, text: c.nome, value: c.id }))
 
-    const estados = CidadesAPI.getEstados()
+    const estados = CitiesAPI.getEstados()
       .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
 
-    this.setState({ tiposImovel, situacoesImovel, cidades, estados })
+    this.setState({ tiposImovel, situacoesImovel, cidades, estados });
+
+    (async () => {
+      const propertiesResp = await PropertiesAPI.fetchAll()
+      const properties = propertiesResp.data
+      console.log(properties)
+    })();
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })

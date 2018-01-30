@@ -16,7 +16,7 @@ import HomePropertiesSearch from './HomePropertiesSearch'
 import HomePropertyModal from './HomePropertyModal'
 
 import GoogleMapsAPI from '../api/GoogleMapsAPI'
-import ImoveisAPI from '../api/ImoveisAPI'
+import ImoveisAPI from '../api/PropertiesAPI'
 import CitiesAPI from '../api/CitiesAPI'
 
 

@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const ROOT_URL = window.location.href.indexOf('localhost') > 0 ? 'http://localhost:8080/api' : '/api'
 
-export default class ImoveisAPI {
+export default class PropertiesAPI {
 
   static fetchPropertiesMostRecent(cityId) {
     const request = axios({
@@ -25,6 +25,39 @@ export default class ImoveisAPI {
 
     return request
   }
+
+
+  static fetchAll() {
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/properties`,
+      headers: []
+    })
+
+    return request
+  }
+
+  static fetchAllByParams(params) {
+    const request = axios({
+      method: 'post',
+      url: `${ROOT_URL}/search-properties`,
+      headers: [],
+      data: params
+    })
+
+    return request
+  }
+
+  static fetchById(id) {
+    const request = axios({
+      method: 'get',
+      url: `${ROOT_URL}/properties/${id}`,
+      headers: []
+    })
+
+    return request
+  }
+
 
   static getTiposImovel() {
     const tiposImovel = [
