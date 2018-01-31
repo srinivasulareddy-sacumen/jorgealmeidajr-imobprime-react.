@@ -95,6 +95,28 @@ export default class PropertiesSearchForm extends Component {
     }
   }
 
+  search = async (e) => {
+    e.preventDefault()
+
+    const params = {
+      ownerId: this.state.ownerId,
+      
+      propertyTypeId: this.state.propertyTypeId,
+      propertyStateId: this.state.propertyStateId,
+      
+      stateId: this.state.stateId,
+      cityId: this.state.cityId,
+
+      priceMin: this.state.priceMin,
+      priceMax: this.state.priceMax,
+      
+      areaMin: this.state.areaMin,
+      areaMax: this.state.areaMax,
+    }
+
+    await this.props.onFilter(params)
+  }
+
   render() {
     const {states, cities} = this.state
     
@@ -115,12 +137,12 @@ export default class PropertiesSearchForm extends Component {
 
         <Form.Group widths='equal'>
           <Form.Field>
-            <label>Tipo de Imóvel</label>
+            <label>TODO: Tipo de Imóvel</label>
             <Select placeholder='Selecione o Tipo de Imóvel' options={[]} className='form-select' />
           </Form.Field>
 
           <Form.Field>
-            <label>Situação do Imóvel</label>
+            <label>TODO: Situação do Imóvel</label>
             <Select placeholder='Selecione a Situação do Imóvel' options={[]} className='form-select' />
           </Form.Field>
         </Form.Group>

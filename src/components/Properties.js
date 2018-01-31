@@ -48,12 +48,37 @@ export default class Properties extends Component {
 
   fetchInitialProperties = async () => {
     const propertiesResp = await PropertiesAPI.fetchAll()
-    const properties = propertiesResp.data
+    const properties = propertiesResp.data.map((p) => ({ ...p, addressData: JSON.parse(p.addressData) }))
 
     this.setState({properties})
   }
 
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
+
+  handleFilter = async (params) => {
+    try {
+      const resp = await PropertiesAPI.fetchAllByParams(params)
+      const properties = resp.data.map((p) => ({ ...p, addressData: JSON.parse(p.addressData) }))
+      
+      // console.log(properties)
+      this.setState({properties})
+
+    } catch(error) {
+      console.log(error)
+      this.setState({properties: []})
+    }
+  }
+
+  renderAddressData = (property) => {
+    if(!property.addressData.cidade) {
+      return ''
+    }
+
+    let nome_cidade = property.addressData.cidade.nome_cidade
+    let sigla_estado = property.addressData.cidade.estado.sigla_estado
+
+    return `${nome_cidade} / ${sigla_estado}`
+  }
 
   render() {
     const { tiposImovel, situacoesImovel, cidades, estados,  properties } = this.state
@@ -65,6 +90,7 @@ export default class Properties extends Component {
         <PropertiesSearchForm 
           fetchInitialProperties={this.fetchInitialProperties}
           toggleCreateModalVisibility={this.toggleCreateModalVisibility}
+          onFilter={this.handleFilter}
         />
 
         <Divider />
@@ -87,11 +113,11 @@ export default class Properties extends Component {
           {
             properties.map(property => (
               <Table.Row key={property.id}>
-                <Table.Cell><b>TODO:</b> <Image src='img/imovel01.jpg' size='small' /></Table.Cell>
+                <Table.Cell><b>TODO: {property.imagePath}</b> <Image src='img/imovel01.jpg' size='small' /></Table.Cell>
                 <Table.Cell><b>TODO:</b> owner</Table.Cell>
                 <Table.Cell>{property.type.name}</Table.Cell>
                 <Table.Cell>{property.state.name}</Table.Cell>
-                <Table.Cell><b>TODO:</b> Florianópolis/SC</Table.Cell>
+                <Table.Cell>{this.renderAddressData(property)}</Table.Cell>
                 <Table.Cell>{property.price}</Table.Cell>
                 <Table.Cell>{property.totalArea} m²</Table.Cell>
 
