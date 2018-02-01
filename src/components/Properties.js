@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 
-import { 
-  Form, Input, Button, 
-  Divider, Modal, Header, Image,
-  Table, Icon
-} from 'semantic-ui-react'
+import { Button, Divider, Image, Table, Icon } from 'semantic-ui-react'
 
 import PropertiesSearchForm from './PropertiesSearchForm'
+import PropertyCreateModal from './PropertyCreateModal'
+import PropertyDeleteModal from './PropertyDeleteModal'
 
 import PropertiesAPI from '../api/PropertiesAPI'
-import CitiesAPI from '../api/CitiesAPI'
 
 export default class Properties extends Component {
 
@@ -19,30 +16,19 @@ export default class Properties extends Component {
     deleteModalVisible: false,
 
     properties: [],
-
-    tiposImovel: [],
-    situacoesImovel: [],
-    cidades: [],
-    estados: []
+    createProperty: { type: {}, state: {} }, 
+    editProperty: null,
+    deleteProperty: null,
   }
 
   componentDidMount() {
-    const tiposImovel = PropertiesAPI.getTiposImovel()
-      .map((tipo) => ({ key: tipo.id, text: tipo.nome, value: tipo.id }))
-
-    const situacoesImovel = PropertiesAPI.getSituaçoesImovel()
-      .map((situacao) => ({ key: situacao.id, text: situacao.nome, value: situacao.id }))
-
-    const cidades = CitiesAPI.getCidades()
-      .map((c) => ({ key: c.id, text: c.nome, value: c.id }))
-
-    const estados = CitiesAPI.getEstados()
-      .map((e) => ({ key: e.id, text: e.nome, value: e.id }))
-
-    this.setState({ tiposImovel, situacoesImovel, cidades, estados });
-
     (async () => {
-      await this.fetchInitialProperties()  
+      await this.fetchInitialProperties()
+
+      this.setState({
+        createProperty: this.getCreateProperty()
+      })
+
     })();
   }
 
@@ -53,7 +39,31 @@ export default class Properties extends Component {
     this.setState({properties})
   }
 
+  getCreateProperty() {
+    return {
+      id: null,
+      imagePath: '',
+      totalArea: '',
+      bedrooms: '',
+      bathrooms: '',
+      garages: '',
+      description: '',
+      price: '',
+      priceCondo: '',
+      addressData: {},
+
+      type: {id: null},
+      state: {id: null},
+    }
+  }
+
   toggleCreateModalVisibility = () => this.setState({ createModalVibible: !this.state.createModalVibible })
+
+  closeDeleteModal = () => {
+    this.setState({
+      deleteProperty: null, deleteModalVibible: false 
+    })
+  }
 
   handleFilter = async (params) => {
     try {
@@ -80,8 +90,32 @@ export default class Properties extends Component {
     return `${nome_cidade} / ${sigla_estado}`
   }
 
+  updateCreateProperty = (obj) => {
+    this.setState({
+      createProperty: {
+        ...this.state.createProperty, 
+        ...obj
+      }
+    })
+  }
+
+  showDeleteConfirmation = async (property, id) => {
+    try {
+      //const resp = await PropertiesAPI.fetchById(id)
+      //const property = resp.data
+
+      this.setState({ 
+        deleteProperty: property, 
+        deleteModalVisible: true 
+      })
+
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
   render() {
-    const { tiposImovel, situacoesImovel, cidades, estados,  properties } = this.state
+    const { properties } = this.state
 
     return (
       <div>
@@ -126,7 +160,7 @@ export default class Properties extends Component {
                     <Icon name='edit' />
                   </Button>
 
-                  <Button color='red' size='small' icon>
+                  <Button color='red' size='small' icon onClick={() => this.showDeleteConfirmation(property)}>
                     <Icon name='remove' />
                   </Button>
                 </Table.Cell>
@@ -136,78 +170,23 @@ export default class Properties extends Component {
           </Table.Body>
         </Table>
 
+        <PropertyCreateModal 
+          createModalVibible={this.state.createModalVibible}
+          toggleCreateModalVisibility={this.toggleCreateModalVisibility}
+          property={this.state.createProperty}
+          updateCreateProperty={this.updateCreateProperty}
+          
+        />
 
-        <Modal 
-          size='large' dimmer
-          open={this.state.createModalVibible} 
-          onClose={this.toggleCreateModalVisibility}
-        >
-          <Modal.Header>Cadastro de um novo Imóvel</Modal.Header>
-          <Modal.Content scrolling>
-            <Form size='small'>
-              <Form.Select label='Proprietário' required error search placeholder='Proprietário do Imóvel' />
-              
-              <Form.Group widths='equal'>
-                <Form.Select label='Tipo de Imóvel' required error placeholder='Tipo de Imóvel' options={tiposImovel} />
-                <Form.Select label='Situação do Imóvel' placeholder='Situação do Imóvel' options={situacoesImovel} />
+        {
+          this.state.deleteProperty !== null && 
+          <PropertyDeleteModal 
+            deleteModalVisible={this.state.deleteModalVisible}
+            closeDeleteModal={this.closeDeleteModal}
+            property={this.state.deleteProperty}
+          />
+        }
 
-                <Form.Field>
-                  <label>Área total</label>
-                  <Input label='m²' labelPosition='right' placeholder='0' />
-                </Form.Field>
-              </Form.Group>
-              
-              <Form.Group widths='equal'>
-                <Form.Field>
-                  <label>Valor</label>
-                  <Input label='R$' placeholder='0,00' />
-                </Form.Field>
-
-                <Form.Field>
-                  <label>Valor do Condomínio</label>
-                  <Input label='R$' placeholder='0,00' />
-                </Form.Field>
-
-                <Form.Input label='Número de Quartos' placeholder='0' />
-                <Form.Input label='Número de Banheiros' placeholder='0' />
-                <Form.Input label='Vagas na Garagem' placeholder='0' />
-              </Form.Group>
-
-              <Form.Input type="file" label='Foto Principal do Imóvel' />
-
-              <Divider />
-              
-              <Header size='medium'>Endereço do Imóvel</Header>
-              <Form.Group>
-                <Form.Field required error>
-                  <label>CEP</label>
-                  <Input label='#' placeholder='99.999-999' width={4} />
-                </Form.Field>
-
-                <Form.Input label='Rua' placeholder='Rua' width={6} />
-                <Form.Input label='Bairro' placeholder='Bairro' width={6} />
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Input label='Número' placeholder='0' width={4} />
-                <Form.Input label='Complemento' placeholder='Complemento' width={6} />
-              </Form.Group>
-
-              <Form.Group widths='equal'>
-                <Form.Select label='Estado' search placeholder='Estado' options={estados} />
-                <Form.Select label='Cidade' search placeholder='Cidade' options={cidades} />
-              </Form.Group>
-
-              <Divider />
-
-              <Form.TextArea label='Descrição' placeholder='Informações Gerais sobre o Imóvel...' style={{ minHeight: 100 }} />
-            </Form>
-          </Modal.Content>
-          <Modal.Actions>
-            <Button color='red' onClick={this.toggleCreateModalVisibility}>Cancelar</Button>
-            <Button color='blue' onClick={this.toggleCreateModalVisibility}>Salvar</Button>
-          </Modal.Actions>
-        </Modal>
       </div>
     )
   }
