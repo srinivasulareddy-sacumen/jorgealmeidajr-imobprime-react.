@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 
 import { Form, Input, Select, Button, Icon } from 'semantic-ui-react'
 
+import PropertyTypesAPI from '../api/PropertyTypesAPI'
+import PropertyStatesAPI from '../api/PropertyStatesAPI'
 import StatesAPI from '../api/StatesAPI'
 import CitiesAPI from '../api/CitiesAPI'
 
@@ -11,6 +13,8 @@ export default class PropertiesSearchForm extends Component {
   state = {
     ...this.getInitialFormState(),
 
+    propertyTypes: [],
+    propertyStates: [],
     states: [],
     cities: []
   }
@@ -38,8 +42,15 @@ export default class PropertiesSearchForm extends Component {
       try {
         const states = await this.fetchStates()
         const cities = await this.fetchInitialCities()
+        const propertyTypes = await this.fetchPropertyTypes()
+        const propertyStates = await this.fetchPropertyStates()
 
-        this.setState({states, cities})
+        this.setState({
+          propertyTypes, 
+          propertyStates, 
+          states, 
+          cities
+        })
       } catch(error) {
         console.log(error)
       }
@@ -53,6 +64,16 @@ export default class PropertiesSearchForm extends Component {
 
   async fetchInitialCities() {
     const resp = await CitiesAPI.fetchAll()
+    return resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+  }
+
+  async fetchPropertyTypes() {
+    const resp = await PropertyTypesAPI.fetchAll()
+    return resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
+  }
+
+  async fetchPropertyStates() {
+    const resp = await PropertyStatesAPI.fetchAll()
     return resp.data.map((e) => ({ key: e.id, text: e.name, value: e.id }))
   }
 
@@ -118,7 +139,7 @@ export default class PropertiesSearchForm extends Component {
   }
 
   render() {
-    const {states, cities} = this.state
+    const {propertyTypes, propertyStates, states, cities} = this.state
     
     return (
       <Form size='small'>
@@ -137,13 +158,25 @@ export default class PropertiesSearchForm extends Component {
 
         <Form.Group widths='equal'>
           <Form.Field>
-            <label>TODO: Tipo de Imóvel</label>
-            <Select placeholder='Selecione o Tipo de Imóvel' options={[]} className='form-select' />
+            <label>Tipo de Imóvel</label>
+            <Select 
+              placeholder='Selecione o Tipo de Imóvel' 
+              className='form-select'
+              search
+              options={propertyTypes}
+              onChange={(e, {value}) => this.setState({propertyTypeId: value})} 
+              value={this.state.propertyTypeId} />
           </Form.Field>
 
           <Form.Field>
-            <label>TODO: Situação do Imóvel</label>
-            <Select placeholder='Selecione a Situação do Imóvel' options={[]} className='form-select' />
+            <label>Situação do Imóvel</label>
+            <Select 
+              placeholder='Selecione a Situação do Imóvel' 
+              className='form-select'
+              search
+              options={propertyStates}
+              onChange={(e, {value}) => this.setState({propertyStateId: value})} 
+              value={this.state.propertyStateId} />
           </Form.Field>
         </Form.Group>
 
