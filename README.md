@@ -141,48 +141,51 @@ The image below is a printscreen of the `Properties` page that has CRUD function
 
 ### Clients TODOS
 
-*	Um corretor vai possuir varios clientes. 
-*	Preciso planejar como vincular o corretor ao cliente. Hoje todo cliente fica vinculado ao um mesmo corretor de id = 1.
+Um corretor vai possuir varios clientes.
+Preciso planejar como vincular o corretor ao cliente. 
+Hoje todo cliente fica vinculado ao um mesmo corretor de id = 1.
 	
-	Preciso mudar o schema na coluna atributos na tabela cliente.
-	Hoje estado esta dentro de cidade.
-	Na coluna atributos teriamos o seguinte schema:
-	endereco: {
-		cidade: {},
-		estado: {}
-	}
-	Poderia aproveitar e renomear para o ingles?
-	Essa modificacao afeta o cadastro e edicao de cliente, e afeta todos os dados na base de teste.
-	Seria necessario modificar as rotinas no imobprime-scripts.
+Preciso mudar o schema na coluna atributos na tabela cliente.
+Hoje estado esta dentro de cidade.
+Na coluna atributos teriamos o seguinte schema:
+endereco: {
+	cidade: {},
+	estado: {}
+}
+Poderia aproveitar e renomear para o ingles?
+Essa modificacao afeta o cadastro e edicao de cliente, e afeta todos os dados na base de teste.
+Seria necessario modificar as rotinas no imobprime-scripts.
 
-*	No cadastro e na edicao, o campo cep/postalCode precisa tratar o erro quando nao existe o cep cadastrado na base de dados. 
-	Ele deve buscar o cep no ViaCep.
+No cadastro e na edicao, o campo cep/postalCode precisa tratar o erro quando nao existe o cep cadastrado na base de dados. 
+Ele deve buscar o cep no ViaCep.
 
-*	Clear form for create or edit client.
+Clear form for create or edit client.
 
-*	Na coluna atributos temos 'imoveis': [], 'tipo_cliente': 'interessado||proprietário'.
-	Esta faltando tratar esses campos no sistema.
-	Para o tipo de cliente basta colocar um radio button.
-	Falta planejar como associar imoveis a um cliente.
+Na coluna atributos temos 'imoveis': [], 'tipo_cliente': 'interessado||proprietário'.
+Esta faltando tratar esses campos no sistema.
+Para o tipo de cliente basta colocar um radio button.
+Falta planejar como associar imoveis a um cliente.
 
-*	Falta planejar o que fazer com os combos de estado e cidade quando criar ou editar um cliente.
+Falta planejar o que fazer com os combos de estado e cidade quando criar ou editar um cliente.
 
-*	No campo de cep/postalCode so funciona quando o usuario digita o caractere '-'.
-	Ex: 88032600 nao funciona, 88032-600 funciona.
-	Isso pode afetar o cadastro de imobiliarias tambem.
+No campo de cep/postalCode so funciona quando o usuario digita o caractere '-'.
+Ex: 88032600 nao funciona, 88032-600 funciona.
+Isso pode afetar o cadastro de imobiliarias tambem.
 
 ### Properties TODOS
-*	Vai ficar faltando vincular o endereco(uso o cep ou a rua?) a um ponto(lat, long).
-	Essa rotina usaria o GoogleMaps. Seria necessario alterar os dados da base de teste?
+
+Vai ficar faltando vincular o endereco(uso o cep ou a rua?) a um ponto(lat, long).
+Essa rotina usaria o GoogleMaps. Seria necessario alterar os dados da base de teste?
 	
-*	Nao esta sendo feito o upload da imagem. 
-	Deve ser possivel salvar varias imagens, a primeira imagem seria a principal.
-	Salvar as imagens em um diretorio na maquina/servidor, ou usar o Firebase ou o Amazon S3.
+Nao esta sendo feito o upload da imagem. 
+Deve ser possivel salvar varias imagens, a primeira imagem seria a principal.
+Salvar as imagens em um diretorio na maquina/servidor, ou usar o Firebase ou o Amazon S3.
 	
-*	Esta faltando criar o PropertyEditModal component.
-	Foi feito o modal para create e delete, mas eles nao estao acessando o backend.
+Esta faltando criar o PropertyEditModal component.
+Foi feito o modal para create e delete, mas eles nao estao acessando o backend.
 	
-*	No create/edit falta definir como tratar o campo addressData JSON.
+No create/edit falta definir como tratar o campo addressData JSON.
 	
-*	Search properties precisa ser refeito com spring jdbc template. Tive problemas com a coluna JSON usando native query em JPA.
+Search properties precisa ser refeito com spring jdbc template. 
+Tive problemas com a coluna JSON usando native query em JPA.
 	
