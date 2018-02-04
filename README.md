@@ -112,32 +112,45 @@ The image below is a printscreen of the `Properties` page that has CRUD function
 ## Missing Features to implement
 
 * Authentication security with JWT or other library;
+
 * Authorization and access control with login and profile (admin and real estate agent);
+
 * Internationalization (change the locales between english or brazilian portuguese);
+
 * Improve database test and apply indexing;
+
 * Add pagination and sorting capabilities in all data tables;
+
 * Add mask in input fields that values need to be formatted;
+
 * Inplace row editing in data tables(use this feature in simple fields like strings, not for combo boxes),
+
 * Install redux for state management.
 
 ### Home TODOS
 
-* BUG: Busca de propriedades by params esta dando um erro, a url de request fica como '/city/null', null eh o id da cidade.
-* Clear search form na busca de imoveis by params.
-* Search by region in the input search.
+BUG: Busca de propriedades by params esta dando um erro, a url de request fica como '/city/null', null eh o id da cidade.
+
+Clear search form na busca de imoveis by params.
+
+Search by region in the input search.
 	
 ### Real Estates TODOS
 
-* Nao esta sendo feito o upload da imagem do logo no create e no edit.
-* No listar deve-se mostrar a imagem do logo.
-* Refatorar o component Imobiliarias e rename to RealEstates.
+Nao esta sendo feito o upload da imagem do logo no create e no edit.
+
+No listar deve-se mostrar a imagem do logo.
+
+Refatorar o component Imobiliarias e rename to RealEstates.
 
 ### Agents TODOS
 
-* Falta ativar/desativar o corretor de maneira inplace na grid de listagem.
-* Clear form for create or edit agent.
-* No frontend e no backend preciso validar o CPF, CNPJ, phoneNumber, cellPhoneNumber, email e site informados.
-  Essas rotinas que serao implementadas podem ser usadas e outras telas nesse sistema.
+Falta ativar/desativar o corretor de maneira inplace na grid de listagem.
+
+Clear form for create or edit agent.
+
+No frontend e no backend preciso validar o CPF, CNPJ, phoneNumber, cellPhoneNumber, email e site informados.
+Essas rotinas que serao implementadas podem ser usadas e outras telas nesse sistema.
 
 ### Clients TODOS
 
@@ -148,11 +161,13 @@ Hoje todo cliente fica vinculado ao um mesmo corretor de id = 1.
 Preciso mudar o schema na coluna atributos na tabela cliente.
 Hoje estado esta dentro de cidade.
 Na coluna atributos teriamos o seguinte schema:
+```
 endereco: {
 	cidade: {},
 	estado: {}
 }
-Poderia aproveitar e renomear para o ingles?
+```
+Poderia aproveitar e renomear os campos do JSON para o ingles?
 Essa modificacao afeta o cadastro e edicao de cliente, e afeta todos os dados na base de teste.
 Seria necessario modificar as rotinas no imobprime-scripts.
 
@@ -188,4 +203,4 @@ No create/edit falta definir como tratar o campo addressData JSON.
 	
 Search properties precisa ser refeito com spring jdbc template. 
 Tive problemas com a coluna JSON usando native query em JPA.
-	
+
