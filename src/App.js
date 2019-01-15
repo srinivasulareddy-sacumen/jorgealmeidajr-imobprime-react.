@@ -137,8 +137,8 @@ export default class App extends Component {
 
   render() {
     const { activeItem, meusDadosVisible, imobiliarias, estados, cidades } = this.state
-    const emailPlaceholder = `Coloque 'admin' ou 'corretor'`
-    const versao = "0.1.0"
+    const emailPlaceholder = "Coloque 'admin' ou 'corretor'";
+    const versao = "1.0.0";
 
     return (
       <div className="App">
