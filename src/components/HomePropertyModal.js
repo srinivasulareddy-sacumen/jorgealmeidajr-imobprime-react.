@@ -6,7 +6,7 @@ import { Modal, Grid, Header, Button, Image } from 'semantic-ui-react'
 const HomePropertyModal = (props) => {
   return (
     <Modal 
-      size='large' dimmer={false} 
+      size='large' dimmer 
       open={props.open} 
       onClose={props.onClose}>
       <Modal.Header>Detalhes do Imóvel Selecionado</Modal.Header>

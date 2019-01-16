@@ -81,7 +81,7 @@ export default class PropertyCreateModal extends Component {
   }
 
   render() {
-    const {propertyTypes, propertyStates, states, cities} = this.state
+    const {propertyTypes, propertyStates} = this.state
 
     return (
       <Modal 
