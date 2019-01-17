@@ -1,7 +1,7 @@
 
-# iMobPrime - React Frontend for a Real Estate Management App
+# iMobPrime - React Frontend for a Real Estate App
 
-This is a **React** project created with the [Create React App](https://github.com/facebookincubator/create-react-app) utility and contains only the `frontend` of a prototype for a `Real Estate Management Application`.
+This is a **React** project created with the [Create React App](https://github.com/facebookincubator/create-react-app) utility and contains the frontend of a prototype for Real Estate Management Application.
 
 This frontend project is using Rest API endpoints from the project [imobprime-spring-boot](https://github.com/jorgealmeidajr/imobprime-spring-boot).
 
@@ -9,13 +9,14 @@ This frontend project is using Rest API endpoints from the project [imobprime-sp
 
 - [Introduction](#introduction)
 - [Folder Structure](#folder-structure)
-- [Available Scripts](#available-scripts)
 - [Features](#features)
 - [Missing Features to implement](#missing-features-to-implement)
 
 ## Introduction
 
-This project was created to be used by `Real Estate Agents or Brokers` that have to manage many `Properties` for their `Clients`. Those `Real Estate Agents or Brokers` are associated and work with `Real Estates`. For this application there are `Clients` and their data are managed by `Real Estate Agents or Brokers`. There are `Clients or Owners` that have properties to sell or rent and `Clients Interested` in a `Property` to buy or rent.
+This project was created to be used by `Real Estate Agents or Brokers` that have to manage many `Properties` for their `Clients`. Those `Real Estate Agents or Brokers` are associated(optional) and work with `Real Estates`. 
+
+For this application there are `Clients` and their data are managed by `Real Estate Agents or Brokers`. There are `Clients or Owners` that have properties to sell or rent and `Clients Interested` in a `Property` to buy or rent.
 
 This project is going to focus in the `Real Estate Agents or Brokers` necessities, they are going to be the main actor for this project. This application will provide an easy and fast way for `Clients Interested` in a `Property` to search properties to sell or rent.
 
@@ -25,40 +26,10 @@ The folder structure of the project looks like this:
 
 ```
 imobprime-react/
-  README.md
-  package.json
-  public/
   src/
     api/        -> Classes for REST API integration
     components/ -> React Components
-    App.js
-    index.js
 ```
-
-## Available Scripts
-
-In the root project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](#running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
 
 ## Features
 
