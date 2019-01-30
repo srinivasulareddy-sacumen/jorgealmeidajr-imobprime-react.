@@ -1,24 +1,38 @@
 
-# iMobPrime - React Frontend for a Real Estate App
+# iMobPrime - React Frontend for a Real Estate Management App
 
-This is a **React** project created with the [Create React App](https://github.com/facebookincubator/create-react-app) utility and contains the frontend of a prototype for Real Estate Management Application.
+This is a **React** project created initially with the [Create React App](https://github.com/facebookincubator/create-react-app) utility and contains the frontend of a prototype application for Real Estate Management.
 
-This frontend project is using Rest API endpoints from the project [imobprime-spring-boot](https://github.com/jorgealmeidajr/imobprime-spring-boot).
+This frontend project is using Rest API endpoints provided by project [imobprime-spring-boot](https://github.com/jorgealmeidajr/imobprime-spring-boot).
+
 
 ## Table of Contents
 
 - [Introduction](#introduction)
+- [What was learned and used in this project](#learning)
 - [Folder Structure](#folder-structure)
 - [Features](#features)
 - [Missing Features to implement](#missing-features-to-implement)
 
+
 ## Introduction
 
-This project was created to be used by `Real Estate Agents or Brokers` that have to manage many `Properties` for their `Clients`. Those `Real Estate Agents or Brokers` are associated(optional) and work with `Real Estates`. 
+This project was created to be a proof of concept for a prototype application. The purpose of this application is to manage real estates.
 
-For this application there are `Clients` and their data are managed by `Real Estate Agents or Brokers`. There are `Clients or Owners` that have properties to sell or rent and `Clients Interested` in a `Property` to buy or rent.
+This project was created to be used by `Real Estate Agents or Brokers` that have to manage many properties for their clients. Those `Real Estate Agents or Brokers` are associated and work with a `Real Estates Agency`. The last mentioned relationship is optional.
 
-This project is going to focus in the `Real Estate Agents or Brokers` necessities, they are going to be the main actor for this project. This application will provide an easy and fast way for `Clients Interested` in a `Property` to search properties to sell or rent.
+For this application there are `Clients` and their data are managed by `Real Estate Agents or Brokers`. There are potential clients and clients who own properties managed by an agent. Those properties are available to sell or rent, and there are clients interested in a `Property` to buy or rent.
+
+This project is focusing in the `Real Estate Agents or Brokers` necessities, they are going to be the main actor for this project. This application will provide an easy and fast way for clients interested in searching properties available for sale or rent.
+
+
+## What was learned and used in this project
+
+- [Axios](https://github.com/axios/axios) was used for the REST API calls.
+- React state was managed without Redux.
+- [React Google Maps](https://github.com/tomchentw/react-google-maps) component used for integration with Google Maps. This dependency will be kept as an example. In the future this functionality will be removed.
+- [Semantic-UI-React](https://react.semantic-ui.com/) provided visual components ready for use and integration with Semantic-UI.
+
 
 ## Folder Structure
 
@@ -31,11 +45,12 @@ imobprime-react/
     components/ -> React Components
 ```
 
+
 ## Features
 
 ### Home Page
 
-This page is going to be public and accessed by anyone.
+The home page is going to be public and accessed by anyone. This feature do not require authentication by the user.
 
 The image below is the initial page of the application. You can click in the search button in the left to filter properties by some parameters. You can search properties available to sell or rent in the input text typing the city name or district name. At the right there are two buttons that change the way to see the result of search, you can choose the map format default that uses Google Maps or the grid. 
 
