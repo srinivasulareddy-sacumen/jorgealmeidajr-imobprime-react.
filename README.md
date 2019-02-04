@@ -3,6 +3,8 @@
 
 This is a **React** project created initially with the [Create React App](https://github.com/facebookincubator/create-react-app) utility and contains the frontend of a prototype application for Real Estate Management.
 
+This project is a web application that does not have responsive capabilities and is not designed to run in a mobile screen. 
+
 This frontend project is using Rest API endpoints provided by project [imobprime-spring-boot](https://github.com/jorgealmeidajr/imobprime-spring-boot).
 
 
@@ -29,6 +31,8 @@ This project is focusing in the `Real Estate Agents or Brokers` necessities, the
 
 ## Basic Usage
 
+First, run the command at the prompt: `$ npm install` to install the dependencies.
+
 Before starting this frontend application, the backend project must be running. The database also needs to be prepared before running the backend. To check the requirements, simply access the backend project [imobprime-spring-boot](https://github.com/jorgealmeidajr/imobprime-spring-boot).
 
 If all the requirements have been set properly, to run this frontend application just run the command at the prompt: `$ npm start`.
@@ -36,7 +40,9 @@ If all the requirements have been set properly, to run this frontend application
 
 ## What was learned or used in this project
 
-- React state was managed without Redux.
+- React v16 features.
+- Javascript ES6+ features.
+- React state managed without Redux.
 - [Axios](https://github.com/axios/axios) was used for the REST API calls.
 - Access of Google Maps JavaScript API.
 - [React Google Maps](https://github.com/tomchentw/react-google-maps) component used for integration with Google Maps. This dependency will be kept as an example. In the future this functionality will be removed.
