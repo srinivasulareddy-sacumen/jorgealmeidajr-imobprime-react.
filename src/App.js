@@ -320,7 +320,7 @@ export default class App extends Component {
             <Icon name='github' size='huge' />Acessar o código-fonte da aplicação
           </a>
         </footer>
-      </div>
+      
     )
   }
 
